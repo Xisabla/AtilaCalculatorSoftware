@@ -39,12 +39,13 @@ int main(int argc, char *argv[]) {
 	GiD_PostInit();
 
 	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-	Str_binary_data_GiD binary_data(std::string("/media/jean/DATA/Ecole/projetZong/C++/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
+	cout<<"The current path is aloo "<<filesystem::current_path()<<endl;
+	Str_binary_data_GiD binary_data(string("/media/jean/DATA/Ecole/AtilaCalculatorSoftware/obj/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
 	binary_data.read_meshes();
 	binary_data.write_meshes();
 
 	while (auto one_result = binary_data.read_one_result()) {
-		binary_data.results_.emplace_back(std::move(*one_result));
+		binary_data.results_.emplace_back(move(*one_result));
 	}
 	ofstream SaveFile("test.flavia.res");
 	//for (auto& res : binary_data.results_) {
@@ -63,21 +64,21 @@ int main(int argc, char *argv[]) {
 	//	}
 	//}
 	for (auto& res : binary_data.results_) {
-		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< std::endl;;
+		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< endl;;
 		SaveFile << "Values";
 		//for (auto& comp : res.component_names_) {
 		//	SaveFile << comp << " ";
 		//}
-		SaveFile << std::endl;
+		SaveFile << endl;
 		for (auto i = 0; i < res.number_of_results_; ++i) {
 			auto [node_number, data] = res.get_one_result(i);
 			SaveFile << node_number << " ";
 			for (auto j = 0; j < res.result_size_; ++j) {
 				SaveFile << data[j] << " ";
 			}
-			SaveFile << std::endl;
+			SaveFile << endl;
 		}
-		SaveFile << "End Values" << std::endl;
+		SaveFile << "End Values" << endl;
 	}
 	SaveFile.close();
 

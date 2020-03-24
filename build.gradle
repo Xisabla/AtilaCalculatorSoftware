@@ -30,4 +30,8 @@ application {
         linkerArgs.add '-lz'
         linkerArgs.add '-lgidpost'
     }
+    task run(type: Exec, dependsOn: build) {
+    workingDir "$buildDir/exe/main/debug"
+    executable "./${project.name}"
+    } 
     }
