@@ -12,9 +12,9 @@ plugins {
 
     // Apply the cpp-unit-test plugin to add support for building and running C++ test executables
     id 'cpp-unit-test'
+    
 }
 // Set the target operating system and architecture for this application
-
 application {
     targetMachines = [
         machines.linux.x86_64
@@ -32,6 +32,10 @@ application {
     }
     task run(type: Exec, dependsOn: build) {
     workingDir "$buildDir/exe/main/debug"
-    executable "./${project.name}"
+    args "$projectDir/obj/"
+    executable "./${project.name}"  
     } 
+    dependencies {
+        implementation "io.qt:core:5.1"
+    }
     }

@@ -29,18 +29,12 @@ using std::string;
 
 
 int main(int argc, char *argv[]) {
-
-
 	double f = 0.;
 	char dummy_char[SIZE];
-
-	
-
 	GiD_PostInit();
-
 	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-	cout<<"The current path is aloo "<<filesystem::current_path()<<endl;
-	Str_binary_data_GiD binary_data(string("/media/jean/DATA/Ecole/AtilaCalculatorSoftware/obj/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
+	cout<<string(argv[1])+string("Bar-Thermal-3034bSSE3-Pascal.flavia.res")<<endl;
+	Str_binary_data_GiD binary_data(string(argv[1])+string("Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
 	binary_data.read_meshes();
 	binary_data.write_meshes();
 
