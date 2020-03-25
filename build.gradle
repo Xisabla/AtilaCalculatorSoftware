@@ -35,7 +35,5 @@ application {
     args "$projectDir/obj/"
     executable "./${project.name}"  
     } 
-    dependencies {
-        implementation "io.qt:core:5.1"
-    }
+    
     }
