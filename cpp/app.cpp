@@ -16,9 +16,9 @@
 #include <filesystem>
 #include <fstream>
 #include "app.h"
-
 #include "binary_data_GiD.hpp"
-
+#include "mainwindow.h"
+#include <QApplication>
 using namespace std;
 
 using std::cout;
@@ -29,12 +29,17 @@ using std::string;
 
 
 int main(int argc, char *argv[]) {
+	QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+
+    
 	double f = 0.;
 	char dummy_char[SIZE];
 	GiD_PostInit();
 	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-	cout<<string(argv[1])+string("Bar-Thermal-3034bSSE3-Pascal.flavia.res")<<endl;
-	Str_binary_data_GiD binary_data(string(argv[1])+string("Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
+	cout<<"the directory is"<<argv[1]<<endl;
+	Str_binary_data_GiD binary_data(string(argv[1])+string("/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
 	binary_data.read_meshes();
 	binary_data.write_meshes();
 
@@ -78,4 +83,5 @@ int main(int argc, char *argv[]) {
 
 	GiD_ClosePostResultFile();
 	GiD_PostDone();
+	return a.exec();
 }

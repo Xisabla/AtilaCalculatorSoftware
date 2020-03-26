@@ -2,6 +2,8 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "files.associations": {
         "*.tcc": "cpp",
-        "string": "cpp"
-    }
+        "string": "cpp",
+        "fstream": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
