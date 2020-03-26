@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 include_directories(headers)
-
+include_directories(qt)
 # set the project name
 project(AtilaCalculatorSoftware)
 
@@ -11,6 +11,7 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "cpp/*.cpp")
 
@@ -19,9 +20,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add the executable
-add_executable(app ${SOURCES}
+add_executable(app 
 qt/mainwindow.ui
 qt/mainwindow.cpp
+${SOURCES}
 )
 
 target_compile_options (app PRIVATE -std=c++17)

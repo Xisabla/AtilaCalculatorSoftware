@@ -7,11 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QLabel *label = new QLabel(this);
-    label->setText("first line\nsecond line");    
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+const int MainWindow::getui(){
+    return 1;
+} 

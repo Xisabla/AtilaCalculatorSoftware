@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
     MainWindow w;
     w.show();
+	cout<<w.getui()<<"bb"<<endl;
 	double f = 0.;
 	char dummy_char[SIZE];
 	GiD_PostInit();
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 	while (auto one_result = binary_data.read_one_result()) {
 		binary_data.results_.emplace_back(move(*one_result));
 	}
-	ofstream SaveFile("test.flavia.res");
+	//ofstream SaveFile("test.flavia.res");
 	//for (auto& res : binary_data.results_) {
 	//	std::cout << "Analysis  " << "''" << res.analysis_ << "''" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  ";
 	//	for (auto& comp : res.component_names_) {
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]) {
 	//		std::cout << std::endl;
 	//	}
 	//}
-	for (auto& res : binary_data.results_) {
+	/*for (auto& res : binary_data.results_) {
 		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< endl;;
 		SaveFile << "Values";
 		//for (auto& comp : res.component_names_) {
@@ -77,8 +78,19 @@ int main(int argc, char *argv[]) {
 		}
 		SaveFile << "End Values" << endl;
 	}
-	SaveFile.close();
-
+	SaveFile.close();*/
+   /* for (auto &&res  : binary_data.results_)
+	{
+		for (auto i = 0; i < res.number_of_results_; ++i) {
+			auto [node_number, data] = res.get_one_result(i);
+			cout<<node_number << " ";
+			for (auto j = 0; j < res.result_size_; ++j) {
+				cout << data[j] << " ";
+			}
+			cout<< endl;
+		}
+	}*/
+	
 	GiD_ClosePostResultFile();
 	GiD_PostDone();
 	return a.exec();
