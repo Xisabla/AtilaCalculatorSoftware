@@ -32,8 +32,6 @@ int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
     MainWindow w;
     w.show();
-
-    
 	double f = 0.;
 	char dummy_char[SIZE];
 	GiD_PostInit();

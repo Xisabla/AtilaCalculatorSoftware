@@ -17,11 +17,14 @@
    <widget class="QTimeEdit" name="timeEdit">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>170</y>
+      <x>0</x>
+      <y>0</y>
       <width>118</width>
       <height>24</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -34,6 +37,13 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBonjourDoud">
+    <property name="title">
+     <string>BonjourDoud</string>
+    </property>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menuBonjourDoud"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

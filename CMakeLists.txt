@@ -20,7 +20,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add the executable
 add_executable(app ${SOURCES}
-cpp/mainwindow.ui
+qt/mainwindow.ui
+qt/mainwindow.cpp
 )
 
 target_compile_options (app PRIVATE -std=c++17)
