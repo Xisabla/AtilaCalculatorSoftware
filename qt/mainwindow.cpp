@@ -8,11 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 }
-
+const void MainWindow::setTextinTextZone(const QString& a ){
+    ui->textEdit->setText(a);
+}
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-const int MainWindow::getui(){
-    return 1;
-} 

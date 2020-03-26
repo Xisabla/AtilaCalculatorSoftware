@@ -20,7 +20,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 using namespace std;
-
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -31,8 +30,7 @@ using std::string;
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
     MainWindow w;
-    w.show();
-	cout<<w.getui()<<"bb"<<endl;
+	w.show();
 	double f = 0.;
 	char dummy_char[SIZE];
 	GiD_PostInit();
@@ -79,17 +77,19 @@ int main(int argc, char *argv[]) {
 		SaveFile << "End Values" << endl;
 	}
 	SaveFile.close();*/
-   /* for (auto &&res  : binary_data.results_)
+    for (auto &&res  : binary_data.results_)
 	{
 		for (auto i = 0; i < res.number_of_results_; ++i) {
 			auto [node_number, data] = res.get_one_result(i);
 			cout<<node_number << " ";
+			w.setTextinTextZone(node_number + " ");
 			for (auto j = 0; j < res.result_size_; ++j) {
 				cout << data[j] << " ";
+				w.setTextinTextZone(data[j]);
 			}
 			cout<< endl;
 		}
-	}*/
+	}
 	
 	GiD_ClosePostResultFile();
 	GiD_PostDone();
