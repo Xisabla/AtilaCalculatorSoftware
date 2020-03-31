@@ -3,21 +3,19 @@
 
 #include <QMainWindow>
 #include <QString>
+#include "ui_mainwindow.h"
 
-namespace Ui {
-class MainWindow;
-}
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow , private Ui::MainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow();
     const void setTextinTextZone(const QString& a );
     ~MainWindow();
-private:
-    Ui::MainWindow *ui;
+public slots:
+    void slotExit();
 };
 
 #endif // MAINWINDOW_H

@@ -19,6 +19,8 @@
 #include "binary_data_GiD.hpp"
 #include "mainwindow.h"
 #include <QApplication>
+#include <QSurfaceFormat>
+#include <QVTKOpenGLNativeWidget.h>
 using namespace std;
 using std::cout;
 using std::cerr;
@@ -28,6 +30,7 @@ using std::string;
 
 
 int main(int argc, char *argv[]) {
+	QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 	QApplication a(argc, argv);
     MainWindow w;
 	w.show();
@@ -35,7 +38,6 @@ int main(int argc, char *argv[]) {
 	char dummy_char[SIZE];
 	GiD_PostInit();
 	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-	cout<<"the directory is"<<argv[1]<<endl;
 	Str_binary_data_GiD binary_data(string(argv[1])+string("/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
 	binary_data.read_meshes();
 	binary_data.write_meshes();
@@ -77,20 +79,6 @@ int main(int argc, char *argv[]) {
 		SaveFile << "End Values" << endl;
 	}
 	SaveFile.close();*/
-    for (auto &&res  : binary_data.results_)
-	{
-		for (auto i = 0; i < res.number_of_results_; ++i) {
-			auto [node_number, data] = res.get_one_result(i);
-			cout<<node_number << " ";
-			w.setTextinTextZone(node_number + " ");
-			for (auto j = 0; j < res.result_size_; ++j) {
-				cout << data[j] << " ";
-				w.setTextinTextZone(data[j]);
-			}
-			cout<< endl;
-		}
-	}
-	
 	GiD_ClosePostResultFile();
 	GiD_PostDone();
 	return a.exec();
