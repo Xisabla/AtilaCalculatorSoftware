@@ -15,8 +15,6 @@
 #include <math.h>
 #include <filesystem>
 #include <fstream>
-#include "app.h"
-#include "binary_data_GiD.hpp"
 #include "mainwindow.h"
 #include <QApplication>
 #include <QSurfaceFormat>
@@ -32,19 +30,13 @@ using std::string;
 int main(int argc, char *argv[]) {
 	QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 	QApplication a(argc, argv);
-    MainWindow w;
+    MainWindow w(argv[1]);
 	w.show();
-	double f = 0.;
-	char dummy_char[SIZE];
-	GiD_PostInit();
-	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-	Str_binary_data_GiD binary_data(string(argv[1])+string("/Bar-Thermal-3034bSSE3-Pascal.flavia.res"));
-	binary_data.read_meshes();
-	binary_data.write_meshes();
+	//double f = 0.;
+	//char dummy_char[SIZE];
+	
 
-	while (auto one_result = binary_data.read_one_result()) {
-		binary_data.results_.emplace_back(move(*one_result));
-	}
+
 	//ofstream SaveFile("test.flavia.res");
 	//for (auto& res : binary_data.results_) {
 	//	std::cout << "Analysis  " << "''" << res.analysis_ << "''" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  ";
@@ -79,7 +71,6 @@ int main(int argc, char *argv[]) {
 		SaveFile << "End Values" << endl;
 	}
 	SaveFile.close();*/
-	GiD_ClosePostResultFile();
-	GiD_PostDone();
+	
 	return a.exec();
 }
