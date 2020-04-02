@@ -29,10 +29,10 @@ MainWindow::MainWindow(char *c)
     {
       for (auto &&nodes : mesh.tab_of_nodes_)
       {
-        cout<<"Node coord is :"<<nodes.number<<" "<<nodes.coord[0]<<" "<<nodes.coord[1]<<" "<<nodes.coord[2]<<endl;
         points->InsertNextPoint(nodes.coord[0],nodes.coord[1],nodes.coord[2]);
         nnode++;
       }
+      cout<<"Element is "<<mesh.elements_[10]<<endl;
     }    
     auto pointsPolydata = vtkSmartPointer<vtkPolyData>::New();
     pointsPolydata->SetPoints(points);
