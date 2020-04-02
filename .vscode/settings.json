@@ -3,7 +3,8 @@
     "files.associations": {
         "*.tcc": "cpp",
         "string": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "*.txx": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
