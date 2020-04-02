@@ -31,46 +31,6 @@ int main(int argc, char *argv[]) {
 	QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 	QApplication a(argc, argv);
     MainWindow w(argv[1]);
-	w.show();
-	//double f = 0.;
-	//char dummy_char[SIZE];
-	
-
-
-	//ofstream SaveFile("test.flavia.res");
-	//for (auto& res : binary_data.results_) {
-	//	std::cout << "Analysis  " << "''" << res.analysis_ << "''" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  ";
-	//	for (auto& comp : res.component_names_) {
-	//		std::cout << comp << " ";
-	//	}
-	//	std::cout << std::endl;
-	//	for (auto i = 0; i < res.number_of_results_; ++i) {
-	//		auto [node_number, data] = res.get_one_result(i);
-	//		std::cout << node_number << " ";
-	//		for (auto j = 0; j < res.result_size_; ++j) {
-	//			std::cout << data[j] << " ";
-	//		}
-	//		std::cout << std::endl;
-	//	}
-	//}
-	/*for (auto& res : binary_data.results_) {
-		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< endl;;
-		SaveFile << "Values";
-		//for (auto& comp : res.component_names_) {
-		//	SaveFile << comp << " ";
-		//}
-		SaveFile << endl;
-		for (auto i = 0; i < res.number_of_results_; ++i) {
-			auto [node_number, data] = res.get_one_result(i);
-			SaveFile << node_number << " ";
-			for (auto j = 0; j < res.result_size_; ++j) {
-				SaveFile << data[j] << " ";
-			}
-			SaveFile << endl;
-		}
-		SaveFile << "End Values" << endl;
-	}
-	SaveFile.close();*/
-	
+	w.show();	
 	return a.exec();
 }
