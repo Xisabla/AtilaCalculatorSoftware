@@ -4,7 +4,8 @@
         "*.tcc": "cpp",
         "string": "cpp",
         "fstream": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "tuple": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
