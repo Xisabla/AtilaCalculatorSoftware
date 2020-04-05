@@ -10,6 +10,7 @@
 #include <vtkFloatArray.h>
 #include <QStringList>
 #include <QStringListModel>
+#include <vtkOrientationMarkerWidget.h>
 
 #include "ui_mainwindow.h"
 #include "binary_data_GiD.hpp"
@@ -24,6 +25,7 @@ public:
 public slots:
     void slotExit();
 private : 
+    vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
     std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const int > createTrianglesFromMeshCoordinates(Str_binary_data_GiD &binary_data);

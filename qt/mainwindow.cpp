@@ -6,12 +6,13 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkPointData.h>
+#include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkPolyData.h>
 #include <vtkAxesActor.h>
 #include <vtkLookupTable.h>
-#include <vtkOrientationMarkerWidget.h>
+#include <QVTKInteractor.h>
 #include <QString>
 
 MainWindow::MainWindow(char *c )
@@ -26,7 +27,7 @@ MainWindow::MainWindow(char *c )
     auto [points , triangles , nb_points] = this->createTrianglesFromMeshCoordinates(binary_data);
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-    qvtkWidget->setRenderWindow(renderWindow);
+    this->qvtkWidget->setRenderWindow(renderWindow);
     
     this->setScalars(nb_points);
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -48,16 +49,32 @@ MainWindow::MainWindow(char *c )
     auto polyActor = vtkSmartPointer<vtkActor>::New();
     polyActor->SetMapper(polyMapper);
     polyActor->GetProperty()->SetPointSize(2);
+
+    vtkSmartPointer<vtkAxesActor> axes = 
+    vtkSmartPointer<vtkAxesActor>::New();
     
 
     // VTK Renderer
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(polyActor);
+    //renderer->AddActor(axes);
     renderer->SetBackground(colors->GetColor3d("SteelBlue").GetData());
 
     this->qvtkWidget->renderWindow()->AddRenderer (renderer);
     this->qvtkWidget->renderWindow()->SetWindowName("AtilaSoftwareCalculator");
+    
 
+  this->widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+  double rgba[4]{0.0, 0.0, 0.0, 0.0};
+  colors->GetColor("Carrot",rgba);
+  this->widget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+  this->widget->SetOrientationMarker( axes );
+  this->widget->SetInteractor( this->qvtkWidget->interactor() );
+  this->widget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
+  this->widget->SetDefaultRenderer(renderer);
+  this->widget->SetEnabled( 1 );
+  this->widget->InteractiveOn();
+    renderer->ResetCamera();
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 }
 const void MainWindow::setScalars(const int &nb_points){
