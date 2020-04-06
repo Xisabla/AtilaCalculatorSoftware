@@ -14,6 +14,9 @@
    <string>AtilaCalculatorSoftware</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
    <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
     <property name="geometry">
      <rect>
@@ -91,7 +94,15 @@
      <string>Options</string>
     </property>
     <addaction name="actionToogle_Informations"/>
+    <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuOpen_File">
+    <property name="title">
+     <string>Open File</string>
+    </property>
+    <addaction name="actionOpenFile"/>
+   </widget>
+   <addaction name="menuOpen_File"/>
    <addaction name="menuOptions"/>
   </widget>
   <action name="actionOpenFile">

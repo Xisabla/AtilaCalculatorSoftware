@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkNamedColors.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -14,6 +13,7 @@
 #include <vtkLookupTable.h>
 #include <QVTKInteractor.h>
 #include <QString>
+#include <QtWidgets>
 
 MainWindow::MainWindow(char *c )
 {
@@ -21,8 +21,8 @@ MainWindow::MainWindow(char *c )
     Str_binary_data_GiD binary_data(string( string(c) + string("/Bar-Thermal-3034bSSE3-Pascal.flavia.res")));
 	  binary_data.read_meshes();
     while (auto one_result = binary_data.read_one_result()) {
-		binary_data.results_.emplace_back(std::move(*one_result));
-	  }
+		  binary_data.results_.emplace_back(std::move(*one_result));
+	    }
     
     auto [points , triangles , nb_points] = this->createTrianglesFromMeshCoordinates(binary_data);
 
@@ -50,10 +50,6 @@ MainWindow::MainWindow(char *c )
     polyActor->SetMapper(polyMapper);
     polyActor->GetProperty()->SetPointSize(2);
 
-    vtkSmartPointer<vtkAxesActor> axes = 
-    vtkSmartPointer<vtkAxesActor>::New();
-    
-
     // VTK Renderer
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->AddActor(polyActor);
@@ -62,20 +58,11 @@ MainWindow::MainWindow(char *c )
 
     this->qvtkWidget->renderWindow()->AddRenderer (renderer);
     this->qvtkWidget->renderWindow()->SetWindowName("AtilaSoftwareCalculator");
-    
-
-  this->widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
-  double rgba[4]{0.0, 0.0, 0.0, 0.0};
-  colors->GetColor("Carrot",rgba);
-  this->widget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
-  this->widget->SetOrientationMarker( axes );
-  this->widget->SetInteractor( this->qvtkWidget->interactor() );
-  this->widget->SetViewport( 0.0, 0.0, 0.4, 0.4 );
-  this->widget->SetDefaultRenderer(renderer);
-  this->widget->SetEnabled( 1 );
-  this->widget->InteractiveOn();
+    this->setAxes(colors);
     renderer->ResetCamera();
+
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
+    connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
 }
 const void MainWindow::setScalars(const int &nb_points){
     this->scalars = vtkSmartPointer<vtkFloatArray>::New();
@@ -84,6 +71,18 @@ const void MainWindow::setScalars(const int &nb_points){
     {
       scalars->SetValue(i,static_cast<float>(i)/nb_points);
     }
+}
+const void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
+    auto axes = vtkSmartPointer<vtkAxesActor>::New();
+    this->widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+    double rgba[4]{0.0, 0.0, 0.0, 0.0};
+    colors->GetColor("Carrot",rgba);
+    this->widget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    this->widget->SetOrientationMarker( axes );
+    this->widget->SetInteractor( this->qvtkWidget->interactor() );
+    this->widget->SetViewport( 0.0, 0.0, 0.2, 0.2 );
+    this->widget->SetEnabled( 1 );
+    this->widget->InteractiveOn();
 }
 std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const int > MainWindow::createTrianglesFromMeshCoordinates(Str_binary_data_GiD &binary_data){
     auto points = vtkSmartPointer<vtkPoints>::New();
@@ -125,5 +124,15 @@ MainWindow::~MainWindow()
 }
 void MainWindow::slotExit()
 {
+    cout<<"Out"<<endl;
+    this->~MainWindow();
     qApp->exit();
+}
+void MainWindow::slotOpenFile(){
+  cout<<"Opening of a file .."<<endl;
+  QString fileName = QFileDialog::getOpenFileName(this);
+  if (!fileName.isEmpty()){
+    cout<<"File name is "<<fileName.toStdString()<<endl;
+  }
+            
 }

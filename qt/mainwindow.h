@@ -11,6 +11,7 @@
 #include <QStringList>
 #include <QStringListModel>
 #include <vtkOrientationMarkerWidget.h>
+#include <vtkNamedColors.h>
 
 #include "ui_mainwindow.h"
 #include "binary_data_GiD.hpp"
@@ -24,12 +25,14 @@ public:
     ~MainWindow();
 public slots:
     void slotExit();
+    void slotOpenFile();
 private : 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
     std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const int > createTrianglesFromMeshCoordinates(Str_binary_data_GiD &binary_data);
     const void setScalars(const int &nb_points);
+    const void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
 };
 
 #endif // MAINWINDOW_H

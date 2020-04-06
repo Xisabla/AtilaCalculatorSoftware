@@ -14,18 +14,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <filesystem>
-#include <fstream>
 #include "mainwindow.h"
 #include <QApplication>
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
 using namespace std;
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::string;
-
-
 
 int main(int argc, char *argv[]) {
 	QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
