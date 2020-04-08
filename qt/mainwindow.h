@@ -4,8 +4,6 @@
 #include <tuple>
 #include <QMainWindow>
 #include <QString>
-#include <vtkTriangle.h>
-#include <vtkCellArray.h>
 #include <vtkSmartPointer.h>
 #include <vtkFloatArray.h>
 #include <QStringList>
@@ -14,13 +12,14 @@
 #include <vtkNamedColors.h>
 
 #include "ui_mainwindow.h"
-#include "binary_data_GiD.hpp"
+#include "binary_data_class.hpp"
 
 
 class MainWindow : public QMainWindow , public Ui::MainWindow
 {
     Q_OBJECT
 public:
+    Binary_data_class *binary;
     MainWindow(char *c);
     ~MainWindow();
 public slots:
@@ -30,9 +29,8 @@ private :
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
-    std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const int > createTrianglesFromMeshCoordinates(Str_binary_data_GiD &binary_data);
-    const void setScalars(const int &nb_points);
-    const void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
+    void setScalars(const int &nb_points);
+    void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
 };
 
 #endif // MAINWINDOW_H

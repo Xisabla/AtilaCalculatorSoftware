@@ -3,7 +3,7 @@
 #include <string>
 #include <zlib.h>
 #include <math.h>
-
+#include <iostream>
 #include "binary_data.hpp"
 #include "gidpost.h"
 
@@ -53,6 +53,7 @@ Str_binary_data::~Str_binary_data(){
 	gzclose(file_msh_);
 	meshes_.clear();
 	results_.clear();
+	std::cout<<"clearing ... "<<std::endl;
 }
 
 Str_binary_data::Str_binary_data(string file) : file_msh_(gzopen((file).c_str(), "r1")) {
