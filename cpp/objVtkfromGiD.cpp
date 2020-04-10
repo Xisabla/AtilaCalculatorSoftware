@@ -2,8 +2,9 @@
 #include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolygon.h>
+#include <typeinfo>
 
-
+using namespace std ; 
 std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const int, QStringList > ObjVtkfromGiD::createPolygonFromMeshCoordinates(Binary_data_class *binary_data){
     auto points = vtkSmartPointer<vtkPoints>::New();
     auto cellArray = vtkSmartPointer<vtkCellArray>::New();
@@ -11,6 +12,7 @@ std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const in
     int nb_points = 0; 
     for (auto &&mesh : binary_data->meshes_)
     {
+        cout<<"mesh nb of elem "<< mesh.nb_of_elements_ << " mesh nnode "<< mesh.nnode_<<endl; 
         List<< (QString::fromStdString("Mesh Name : ").toUpper()+ QString::fromStdString(mesh.mesh_name_))
             << (QString::fromStdString("Mesh Dimension : ").toUpper()+ QString::number(mesh.ndim_))
             << (QString::fromStdString("Element Type : ").toUpper()+ QString::fromStdString(mesh.element_name_))
@@ -35,4 +37,15 @@ std::tuple< vtkSmartPointer<vtkPoints> , vtkSmartPointer<vtkCellArray> ,const in
     }
     return std::make_tuple(points,cellArray,nb_points,List);
     throw std::invalid_argument("binary data");   
+}
+vtkSmartPointer<vtkFloatArray> ObjVtkfromGiD::setScalarsXYZ(Binary_data_class *binary_data,int choice){
+    auto scalars = vtkSmartPointer<vtkFloatArray>::New(); 
+    auto &res = binary_data->results_.front();  
+    scalars->SetNumberOfValues( res.number_of_results_ );
+    for (auto i = 0; i < res.number_of_results_; ++i) {
+	    auto [node_number, data] = res.get_one_result(i);
+	    //cout<<node_number << " " << typeid(data[0]).name()<<data[0]<<endl ;
+        scalars->SetValue(i,data[choice]);
+	}    
+    return scalars ; 
 }

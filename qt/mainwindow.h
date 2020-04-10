@@ -6,6 +6,7 @@
 #include <QString>
 #include <vtkSmartPointer.h>
 #include <vtkFloatArray.h>
+#include <vtkPoints.h>
 #include <QStringList>
 #include <QStringListModel>
 #include <vtkOrientationMarkerWidget.h>
@@ -25,11 +26,11 @@ public:
 public slots:
     void slotExit();
     void slotOpenFile();
+    void slotDisplacementXYZ();
 private : 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
-    vtkSmartPointer<vtkFloatArray> scalars;
+    //vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
-    void setScalars(const int &nb_points);
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
 };
 
