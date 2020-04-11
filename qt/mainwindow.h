@@ -11,6 +11,7 @@
 #include <QStringListModel>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkNamedColors.h>
+#include <QSignalMapper>
 
 #include "ui_mainwindow.h"
 #include "binary_data_class.hpp"
@@ -26,9 +27,10 @@ public:
 public slots:
     void slotExit();
     void slotOpenFile();
-    void slotDisplacementXYZ();
+    void slotDisplacementXYZ(int choice);
 private : 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
+    QSignalMapper* signalMapper ;
     //vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);

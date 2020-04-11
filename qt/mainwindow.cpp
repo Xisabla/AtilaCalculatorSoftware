@@ -65,9 +65,18 @@ MainWindow::MainWindow(char *c )
     this->setAxes(colors);
     renderer->ResetCamera();
 
+    this->signalMapper = new QSignalMapper (this) ; 
+
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
-    connect(this->actionDisplacement_X, SIGNAL(triggered()), this, SLOT(slotDisplacementXYZ()));
+    connect(this->actionDisplacement_X, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
+    connect(this->actionDisplacement_Y, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
+    connect(this->actionDisplacement_Z, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper -> setMapping (this->actionDisplacement_X, 0) ;
+    this->signalMapper -> setMapping (this->actionDisplacement_Y, 1) ;
+    this->signalMapper -> setMapping (this->actionDisplacement_Z, 2) ;
+    connect (this->signalMapper, SIGNAL(mapped(int)), this, SLOT(slotDisplacementXYZ(int )));
 }
 void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
@@ -106,7 +115,7 @@ void MainWindow::slotOpenFile(){
 
     //this->setScalars(nb_points);
    // this->scalars = ObjVtkfromGiD::setScalarsXYZ(this->binary,1); 
-    this->binary->setScalarXYZ(1);
+    this->binary->setScalarXYZ(0);
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
     auto lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
@@ -142,9 +151,9 @@ void MainWindow::slotOpenFile(){
 
   }
 }
-void MainWindow::slotDisplacementXYZ(){
+void MainWindow::slotDisplacementXYZ(int choice ){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-    this->binary->setScalarXYZ(0);
+    this->binary->setScalarXYZ(choice);
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
     auto lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
