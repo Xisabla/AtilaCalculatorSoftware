@@ -55,7 +55,13 @@ void Binary_data_class::setUpGiDtoVTK(){
 void Binary_data_class::setScalarXYZ(int choice ){
     if ( choice>= 0 && choice <= 2  ){
         this->scalars = vtkSmartPointer<vtkFloatArray>::New(); 
-        auto &res = this->results_.front();  
+        auto &res = this->results_.front(); 
+        if(this->strList.size()>4){
+            this->strList.removeLast();
+            this->strList.removeLast();
+        }
+        this->strList << (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
+                      <<(QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_));
         this->scalars->SetNumberOfValues( res.number_of_results_ );
         for (auto i = 0; i < res.number_of_results_; ++i) {
 	        auto [node_number, data] = res.get_one_result(i);

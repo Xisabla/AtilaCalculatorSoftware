@@ -34,6 +34,7 @@ private :
     //vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
+    void setVTK(int choice);
 };
 
 #endif // MAINWINDOW_H

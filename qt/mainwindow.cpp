@@ -108,61 +108,26 @@ void MainWindow::slotOpenFile(){
     //delete(this->binary);   
     //this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     this->binary = new Binary_data_class(fileName.toStdString());
-
-    this->model->setStringList(this->binary->getstrList());
-
-    this->listView->setModel(this->model); 
-
-    //this->setScalars(nb_points);
-   // this->scalars = ObjVtkfromGiD::setScalarsXYZ(this->binary,1); 
-    this->binary->setScalarXYZ(0);
-    double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
-    auto lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
-    lut->SetTableRange(range);
-    cout<<range[0] << " " <<range[1] <<endl; 
-    lut->Build();
-
-    auto polyData = vtkSmartPointer<vtkPolyData>::New();
-
-    polyData->SetPoints(this->binary->getvtkPoints());
-    polyData->SetPolys(this->binary->getvtkCellArray());
-    polyData->GetPointData()->SetScalars(this->binary->getScalars());
-
-    auto polyMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    polyMapper->SetInputData(polyData);
-    polyMapper->SetScalarRange(range);
-    polyMapper->SetLookupTable(lut);
-
-    auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-    scalarBar->SetLookupTable(polyMapper->GetLookupTable());
-    scalarBar->SetTitle("Displacement X");
-    scalarBar->UnconstrainedFontSizeOn ();
-    scalarBar->SetNumberOfLabels(5);
-    scalarBar->SetBarRatio(scalarBar->GetBarRatio()/2.0);
-
-    auto polyActor = vtkSmartPointer<vtkActor>::New();
-    polyActor->SetMapper(polyMapper);
-    //polyActor->GetProperty()->SetPointSize(2);
-
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
-
+    this->setVTK(0);
   }
 }
 void MainWindow::slotDisplacementXYZ(int choice ){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+    this->setVTK(choice);    
+  }
+void MainWindow::setVTK(int choice){
     this->binary->setScalarXYZ(choice);
+    this->model->setStringList(this->binary->getstrList());
+
+    this->listView->setModel(this->model); 
+
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
     auto lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
     lut->SetTableRange(range);
-    cout<<range[0] << " " <<range[1] <<endl; 
     lut->Build();
 
     auto polyData = vtkSmartPointer<vtkPolyData>::New();
-
     polyData->SetPoints(this->binary->getvtkPoints());
     polyData->SetPolys(this->binary->getvtkCellArray());
     polyData->GetPointData()->SetScalars(this->binary->getScalars());
@@ -174,7 +139,21 @@ void MainWindow::slotDisplacementXYZ(int choice ){
 
     auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
     scalarBar->SetLookupTable(polyMapper->GetLookupTable());
-    scalarBar->SetTitle("Displacement X");
+    switch (choice)
+    {
+    case 0:
+      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" X").c_str());
+      break;
+    case 1 : 
+      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" Y").c_str());
+      break;
+    case 2 : 
+      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" Z").c_str());
+      break;
+    default:
+      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" X").c_str());
+      break;
+    }
     scalarBar->UnconstrainedFontSizeOn ();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio()/2.0);
@@ -186,5 +165,4 @@ void MainWindow::slotDisplacementXYZ(int choice ){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
-    
-  }
+}
