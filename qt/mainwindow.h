@@ -27,8 +27,9 @@ public:
 public slots:
     void slotExit();
     void slotOpenFile();
-    void slotDisplacementXYZ(QString typeResult);
+    void slotResult(const QString& typeResult);
 private : 
+    QString objDirectory ; 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     QSignalMapper* signalMapper ;
     QStringListModel *model;

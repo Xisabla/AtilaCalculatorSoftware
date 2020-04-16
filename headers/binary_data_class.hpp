@@ -19,7 +19,6 @@ class Binary_data_class : public Str_binary_data_GiD{
         ~Binary_data_class();
         void setUpGiDtoVTK();
         void setScalarFromQT(const int& choice , const std::string& typeResult);
-        QList<QAction *> actionsResult;
         vtkSmartPointer<vtkFloatArray> getScalars()const;
         vtkSmartPointer<vtkPoints> getvtkPoints()const;
         vtkSmartPointer<vtkCellArray> getvtkCellArray()const;

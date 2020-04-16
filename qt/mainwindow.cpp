@@ -22,10 +22,8 @@
 MainWindow::MainWindow(char *c )
 {
     this->setupUi(this);
-
+    this->objDirectory = QString::fromUtf8(c);
    //this->binary = new Binary_data_class(string(c)+string("/RecHarmonicTest-3032b-GiD1201.flavia.res"));
-	  
-   // auto [points , triangles , nb_points] = this->createTrianglesFromMeshCoordinates(this->binary);
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
     this->qvtkWidget->setRenderWindow(renderWindow);
@@ -71,7 +69,10 @@ void MainWindow::slotExit()
 }
 void MainWindow::slotOpenFile(){
   cout<<"Opening of a file .."<<endl;
-  QString fileName = QFileDialog::getOpenFileName(this);
+  QString fileName = QFileDialog::getOpenFileName(this,
+                        "Select a .res file",
+                        this->objDirectory,
+                        "Res (*.res)");
   if (!fileName.isEmpty()){
     cout<<"File name is "<<fileName.toStdString()<<endl; 
     //delete(this->binary);   
@@ -79,30 +80,33 @@ void MainWindow::slotOpenFile(){
     this->binary = new Binary_data_class(fileName.toStdString());
     for (auto &&res : this->binary->results_)
     {
+      QMenu *menu = this->menuResults->addMenu(QString::fromStdString(res.analysis_));
       for (int i = 0 ; i<res.result_size_ ; i++){
-        QAction *a = this->menuResults->addAction(QString::fromStdString(res.analysis_)+QString::number(i));
+        QAction *a = menu->addAction(QString::number(i));
         connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-        this->signalMapper->setMapping(a,QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i));
+        const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i);
+        
+        this->signalMapper->setMapping(a,tokens);
       }
     }
-    connect (this->signalMapper, SIGNAL(mapped(QString)), this, SLOT(slotDisplacementXYZ(QString )));
+    connect (this->signalMapper, SIGNAL(mapped(const QString&)), this, SLOT(slotResult(const QString& )));
     this->setVTK(0,this->binary->results_.front().analysis_);
   }
 }
-void MainWindow::slotDisplacementXYZ(QString typeResult){
+void MainWindow::slotResult(const QString& typeResult){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     QStringList tokens = typeResult.split (";");
 
     if (tokens.count () == 2) {
-        string strTypeResult    = tokens.at(0).toStdString ();
+        string strTypeResult = tokens.at(0).toStdString ();
         int choice = tokens.at(1).toInt ();
         this->setVTK(choice,strTypeResult);  
     }
   }
 void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
     this->binary->setScalarFromQT(choice,typeResult);
-    this->model->setStringList(this->binary->getstrList());
 
+    this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model); 
 
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
@@ -123,21 +127,7 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
 
     auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
     scalarBar->SetLookupTable(polyMapper->GetLookupTable());
-    switch (choice)
-    {
-    case 0:
-      scalarBar->SetTitle(  string(typeResult+" X").c_str());
-      break;
-    case 1 : 
-      scalarBar->SetTitle(  string(typeResult+" Y").c_str());
-      break;
-    case 2 : 
-      scalarBar->SetTitle(  string(typeResult+" Z").c_str());
-      break;
-    default:
-      scalarBar->SetTitle(  string(typeResult+" X").c_str());
-      break;
-    }
+    scalarBar->SetTitle( string(typeResult + std::__cxx11::to_string(choice)).c_str()  );
     scalarBar->UnconstrainedFontSizeOn ();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio()/2.0);

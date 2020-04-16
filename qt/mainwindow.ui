@@ -93,7 +93,13 @@
     <property name="title">
      <string>Options</string>
     </property>
-    <addaction name="actionToogle_Informations"/>
+    <widget class="QMenu" name="menuToogle_Informations">
+     <property name="title">
+      <string>Toogle Informations</string>
+     </property>
+     <addaction name="actiontest"/>
+    </widget>
+    <addaction name="menuToogle_Informations"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuOpen_File">
@@ -139,9 +145,9 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionToogle_Informations">
+  <action name="actiontest">
    <property name="text">
-    <string>Toogle Informations</string>
+    <string>test</string>
    </property>
   </action>
  </widget>
