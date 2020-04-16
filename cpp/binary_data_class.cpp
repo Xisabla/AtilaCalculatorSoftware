@@ -12,7 +12,6 @@ Binary_data_class::Binary_data_class(string str):Str_binary_data_GiD(str),pathTo
 string Binary_data_class::getPath() const {
     return pathToFile;
 }
-
 Binary_data_class::~Binary_data_class(){
     
 }
@@ -44,7 +43,7 @@ void Binary_data_class::setUpGiDtoVTK(){
                 auto polygone = vtkSmartPointer<vtkPolygon>::New();
                 polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
                 for (auto i = 0 ; i < mesh.nnode_ ; i++){
-                    polygone->GetPointIds()->SetId ( i, element[i]--);
+                    polygone->GetPointIds()->SetId ( i, element[i]);
                 }
                 this->array->InsertNextCell( polygone );
             }
@@ -52,24 +51,26 @@ void Binary_data_class::setUpGiDtoVTK(){
         }
     } 
 }
-void Binary_data_class::setScalarXYZ(int choice ){
-    if ( choice>= 0 && choice <= 2  ){
-        this->scalars = vtkSmartPointer<vtkFloatArray>::New(); 
-        auto &res = this->results_.front(); 
-        if(this->strList.size()>4){
-            this->strList.removeLast();
-            this->strList.removeLast();
+void Binary_data_class::setScalarFromQT(const int& choice , const string& typeResult ){
+        this->scalars = vtkSmartPointer<vtkFloatArray>::New();
+        for (auto &&res : this->results_)
+        {
+            if (res.analysis_ == typeResult)
+            {
+                if(this->strList.size()>4){
+                    this->strList.removeLast();
+                    this->strList.removeLast();
+                }
+                this->strList<< (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
+                            << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_));
+                this->scalars->SetNumberOfValues( res.number_of_results_ );
+                for (auto i = 0; i < res.number_of_results_; ++i) {
+	                auto [node_number, data] = res.get_one_result(i);
+                    this->scalars->SetValue(i,data[choice]);
+                }
+                break;
+            }
         }
-        this->strList << (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
-                      <<(QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_));
-        this->scalars->SetNumberOfValues( res.number_of_results_ );
-        for (auto i = 0; i < res.number_of_results_; ++i) {
-	        auto [node_number, data] = res.get_one_result(i);
-	        //cout<<node_number << " " << typeid(data[0]).name()<<data[0]<<endl ;
-            this->scalars->SetValue(i,data[choice]);
-	}  
-    }else throw invalid_argument("choice");
-    
 }
 vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars()const{
     return this->scalars; 

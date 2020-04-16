@@ -33,31 +33,8 @@ MainWindow::MainWindow(char *c )
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
 
     this->model = new QStringListModel(this);
-
-   /* this->setScalars(nb_points);
-    auto lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->SetNumberOfTableValues(nb_points + 1 );
-    lut->Build();
-    
-    // Create a polydata object
-    auto polyData = vtkSmartPointer<vtkPolyData>::New();
-
-    polyData->SetPoints(points);
-    polyData->SetPolys(triangles);
-    polyData->GetPointData()->SetScalars(this->scalars);
-
-    auto polyMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    polyMapper->SetInputData(polyData);
-    polyMapper->SetLookupTable(lut);
-    
-    auto polyActor = vtkSmartPointer<vtkActor>::New();
-    polyActor->SetMapper(polyMapper);
-    polyActor->GetProperty()->SetPointSize(2);*/
-
-    // VTK Renderer
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
-    //renderer->AddActor(polyActor);
-
+    
     renderer->SetBackground(colors->GetColor3d("SteelBlue").GetData());
 
     this->qvtkWidget->renderWindow()->AddRenderer (renderer);
@@ -69,14 +46,6 @@ MainWindow::MainWindow(char *c )
 
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
-    connect(this->actionDisplacement_X, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-    connect(this->actionDisplacement_Y, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-    connect(this->actionDisplacement_Z, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-
-    this->signalMapper -> setMapping (this->actionDisplacement_X, 0) ;
-    this->signalMapper -> setMapping (this->actionDisplacement_Y, 1) ;
-    this->signalMapper -> setMapping (this->actionDisplacement_Z, 2) ;
-    connect (this->signalMapper, SIGNAL(mapped(int)), this, SLOT(slotDisplacementXYZ(int )));
 }
 void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
@@ -108,15 +77,30 @@ void MainWindow::slotOpenFile(){
     //delete(this->binary);   
     //this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     this->binary = new Binary_data_class(fileName.toStdString());
-    this->setVTK(0);
+    for (auto &&res : this->binary->results_)
+    {
+      for (int i = 0 ; i<res.result_size_ ; i++){
+        QAction *a = this->menuResults->addAction(QString::fromStdString(res.analysis_)+QString::number(i));
+        connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
+        this->signalMapper->setMapping(a,QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i));
+      }
+    }
+    connect (this->signalMapper, SIGNAL(mapped(QString)), this, SLOT(slotDisplacementXYZ(QString )));
+    this->setVTK(0,this->binary->results_.front().analysis_);
   }
 }
-void MainWindow::slotDisplacementXYZ(int choice ){
+void MainWindow::slotDisplacementXYZ(QString typeResult){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-    this->setVTK(choice);    
+    QStringList tokens = typeResult.split (";");
+
+    if (tokens.count () == 2) {
+        string strTypeResult    = tokens.at(0).toStdString ();
+        int choice = tokens.at(1).toInt ();
+        this->setVTK(choice,strTypeResult);  
+    }
   }
-void MainWindow::setVTK(int choice){
-    this->binary->setScalarXYZ(choice);
+void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
+    this->binary->setScalarFromQT(choice,typeResult);
     this->model->setStringList(this->binary->getstrList());
 
     this->listView->setModel(this->model); 
@@ -142,16 +126,16 @@ void MainWindow::setVTK(int choice){
     switch (choice)
     {
     case 0:
-      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" X").c_str());
+      scalarBar->SetTitle(  string(typeResult+" X").c_str());
       break;
     case 1 : 
-      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" Y").c_str());
+      scalarBar->SetTitle(  string(typeResult+" Y").c_str());
       break;
     case 2 : 
-      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" Z").c_str());
+      scalarBar->SetTitle(  string(typeResult+" Z").c_str());
       break;
     default:
-      scalarBar->SetTitle(  string(this->binary->results_.front().analysis_+" X").c_str());
+      scalarBar->SetTitle(  string(typeResult+" X").c_str());
       break;
     }
     scalarBar->UnconstrainedFontSizeOn ();

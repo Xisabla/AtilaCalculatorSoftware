@@ -27,14 +27,13 @@ public:
 public slots:
     void slotExit();
     void slotOpenFile();
-    void slotDisplacementXYZ(int choice);
+    void slotDisplacementXYZ(QString typeResult);
 private : 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     QSignalMapper* signalMapper ;
-    //vtkSmartPointer<vtkFloatArray> scalars;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
-    void setVTK(int choice);
+    void setVTK(const int& choice ,const std::string& typeResult);
 };
 
 #endif // MAINWINDOW_H

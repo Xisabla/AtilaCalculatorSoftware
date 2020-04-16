@@ -7,6 +7,8 @@
 #include <vtkCellArray.h>
 #include <vtkSmartPointer.h>
 #include <QStringList>
+#include <QAction>
+#include <QList>
 #include <vtkFloatArray.h>
 #include <string>
 #include "binary_data_GiD.hpp"
@@ -16,7 +18,8 @@ class Binary_data_class : public Str_binary_data_GiD{
         Binary_data_class(std::string str);
         ~Binary_data_class();
         void setUpGiDtoVTK();
-        void setScalarXYZ(int choice);
+        void setScalarFromQT(const int& choice , const std::string& typeResult);
+        QList<QAction *> actionsResult;
         vtkSmartPointer<vtkFloatArray> getScalars()const;
         vtkSmartPointer<vtkPoints> getvtkPoints()const;
         vtkSmartPointer<vtkCellArray> getvtkCellArray()const;
@@ -31,6 +34,4 @@ class Binary_data_class : public Str_binary_data_GiD{
 
     protected:
 };
-
-
 #endif 

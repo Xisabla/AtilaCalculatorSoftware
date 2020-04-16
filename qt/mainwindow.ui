@@ -106,9 +106,6 @@
     <property name="title">
      <string>Results</string>
     </property>
-    <addaction name="actionDisplacement_X"/>
-    <addaction name="actionDisplacement_Y"/>
-    <addaction name="actionDisplacement_Z"/>
    </widget>
    <addaction name="menuOpen_File"/>
    <addaction name="menuOptions"/>
@@ -145,21 +142,6 @@
   <action name="actionToogle_Informations">
    <property name="text">
     <string>Toogle Informations</string>
-   </property>
-  </action>
-  <action name="actionDisplacement_X">
-   <property name="text">
-    <string>Displacement X</string>
-   </property>
-  </action>
-  <action name="actionDisplacement_Y">
-   <property name="text">
-    <string>Displacement Y</string>
-   </property>
-  </action>
-  <action name="actionDisplacement_Z">
-   <property name="text">
-    <string>Displacement Z</string>
    </property>
   </action>
  </widget>
