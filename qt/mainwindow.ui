@@ -6,40 +6,45 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>945</width>
-    <height>674</height>
+    <width>953</width>
+    <height>707</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1920</width>
+    <height>1080</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>AtilaCalculatorSoftware</string>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Triangular</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
-   <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>0</y>
-      <width>781</width>
-      <height>681</height>
-     </rect>
-    </property>
-    <property name="mouseTracking">
-     <bool>true</bool>
-    </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
    <widget class="QListView" name="listView">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>171</width>
-      <height>661</height>
+      <x>9</x>
+      <y>33</y>
+      <width>71</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -47,8 +52,23 @@
       <family>Ubuntu Mono</family>
      </font>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="isWrapping" stdset="0">
      <bool>true</bool>
+    </property>
+    <property name="resizeMode">
+     <enum>QListView::Adjust</enum>
+    </property>
+    <property name="layoutMode">
+     <enum>QListView::SinglePass</enum>
+    </property>
+    <property name="spacing">
+     <number>2</number>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -57,14 +77,14 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>171</width>
-      <height>21</height>
+      <x>80</x>
+      <y>10</y>
+      <width>109</width>
+      <height>18</height>
      </rect>
     </property>
     <property name="autoFillBackground">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#aa0000;background-color : white;&quot;&gt;Informations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -76,53 +96,41 @@
      <bool>false</bool>
     </property>
    </widget>
+   <zorder>qvtkWidget</zorder>
+   <zorder>listView</zorder>
+   <zorder>label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>945</width>
+     <width>953</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="defaultUp">
     <bool>false</bool>
    </property>
-   <widget class="QMenu" name="menuOptions">
-    <property name="title">
-     <string>Options</string>
-    </property>
-    <widget class="QMenu" name="menuToogle_Informations">
-     <property name="title">
-      <string>Toogle Informations</string>
-     </property>
-     <addaction name="actiontest"/>
-    </widget>
-    <addaction name="menuToogle_Informations"/>
-    <addaction name="actionExit"/>
-   </widget>
-   <widget class="QMenu" name="menuOpen_File">
-    <property name="title">
-     <string>Open File</string>
-    </property>
-    <addaction name="actionOpenFile"/>
-   </widget>
    <widget class="QMenu" name="menuResults">
     <property name="title">
      <string>Results</string>
     </property>
    </widget>
-   <addaction name="menuOpen_File"/>
-   <addaction name="menuOptions"/>
+   <addaction name="actionOpenFile"/>
    <addaction name="menuResults"/>
+   <addaction name="actionToText"/>
+   <addaction name="actionExit"/>
   </widget>
   <action name="actionOpenFile">
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Open File...</string>
+    <string>Open File</string>
    </property>
   </action>
   <action name="actionExit">
@@ -145,9 +153,9 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actiontest">
+  <action name="actionToText">
    <property name="text">
-    <string>test</string>
+    <string>To Text</string>
    </property>
   </action>
  </widget>

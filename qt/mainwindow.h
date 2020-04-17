@@ -26,6 +26,7 @@ public:
     ~MainWindow();
 public slots:
     void slotExit();
+    void slotToText();
     void slotOpenFile();
     void slotResult(const QString& typeResult);
 private : 

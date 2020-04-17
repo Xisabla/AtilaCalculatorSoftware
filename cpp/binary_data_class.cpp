@@ -43,7 +43,7 @@ void Binary_data_class::setUpGiDtoVTK(){
                 auto polygone = vtkSmartPointer<vtkPolygon>::New();
                 polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
                 for (auto i = 0 ; i < mesh.nnode_ ; i++){
-                    polygone->GetPointIds()->SetId ( i, element[i]);
+                    polygone->GetPointIds()->SetId ( i, element[i]--);
                 }
                 this->array->InsertNextCell( polygone );
             }
@@ -74,4 +74,10 @@ void Binary_data_class::setScalarFromQT(const int& choice , const string& typeRe
 }
 vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars()const{
     return this->scalars; 
+}
+void Binary_data_class::toTextFile(){
+    GiD_PostInit();
+	GiD_OpenPostResultFile("test32.flavia.msh", GiD_PostAscii);
+	this->read_meshes();
+	this->write_meshes();
 }

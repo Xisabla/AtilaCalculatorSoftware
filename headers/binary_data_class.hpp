@@ -14,7 +14,9 @@
 #include "binary_data_GiD.hpp"
 
 class Binary_data_class : public Str_binary_data_GiD{
+
     public:
+
         Binary_data_class(std::string str);
         ~Binary_data_class();
         void setUpGiDtoVTK();
@@ -24,7 +26,10 @@ class Binary_data_class : public Str_binary_data_GiD{
         vtkSmartPointer<vtkCellArray> getvtkCellArray()const;
         QStringList getstrList()const ; 
         std::string getPath() const;
+        void toTextFile();
+
     private:
+
         std::string pathToFile ; 
         QStringList strList ; 
         vtkSmartPointer<vtkPoints> points;

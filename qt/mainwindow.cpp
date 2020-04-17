@@ -17,12 +17,13 @@
 #include <QString>
 #include <QtWidgets>
 
-#include "objVtkfromGiD.hpp"
 
 MainWindow::MainWindow(char *c )
 {
     this->setupUi(this);
     this->objDirectory = QString::fromUtf8(c);
+    this->label->setVisible(false);
+    this->listView->setVisible(false);
    //this->binary = new Binary_data_class(string(c)+string("/RecHarmonicTest-3032b-GiD1201.flavia.res"));
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
@@ -41,7 +42,8 @@ MainWindow::MainWindow(char *c )
     renderer->ResetCamera();
 
     this->signalMapper = new QSignalMapper (this) ; 
-
+    
+    connect(this->actionToText, SIGNAL(triggered()), this, SLOT(slotToText()));
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
 }
@@ -49,7 +51,7 @@ void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
     this->widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
     double rgba[4]{0.0, 0.0, 0.0, 0.0};
-    colors->GetColor("Carrot",rgba);
+    colors->GetColor("rgb",rgba);
     this->widget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
     this->widget->SetOrientationMarker( axes );
     this->widget->SetInteractor( this->qvtkWidget->interactor() );
@@ -65,6 +67,7 @@ MainWindow::~MainWindow()
 void MainWindow::slotExit()
 {
     cout<<"Out"<<endl;
+    this->close();
     qApp->exit(); 
 }
 void MainWindow::slotOpenFile(){
@@ -108,6 +111,9 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
 
     this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model); 
+    this->listView->adjustSize();
+    this->label->setVisible(true);
+    this->listView->setVisible(true);
 
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
     auto lut = vtkSmartPointer<vtkLookupTable>::New();
@@ -139,4 +145,7 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+}
+void MainWindow::slotToText(){
+  
 }
