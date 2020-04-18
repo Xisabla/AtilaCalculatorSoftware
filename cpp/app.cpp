@@ -13,7 +13,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include <filesystem>
 #include "mainwindow.h"
 #include <QApplication>
 #include <QSurfaceFormat>

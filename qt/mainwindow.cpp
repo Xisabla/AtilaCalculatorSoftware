@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <filesystem>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkNew.h>
@@ -43,7 +44,7 @@ MainWindow::MainWindow(char *c )
 
     this->signalMapper = new QSignalMapper (this) ; 
     
-    connect(this->actionToText, SIGNAL(triggered()), this, SLOT(slotToText()));
+   
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
 }
@@ -77,10 +78,11 @@ void MainWindow::slotOpenFile(){
                         this->objDirectory,
                         "Res (*.res)");
   if (!fileName.isEmpty()){
-    cout<<"File name is "<<fileName.toStdString()<<endl; 
     //delete(this->binary);   
     //this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     this->binary = new Binary_data_class(fileName.toStdString());
+    QAction *b = this->menuBar1->addAction("To Text");
+    connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
     for (auto &&res : this->binary->results_)
     {
       QMenu *menu = this->menuResults->addMenu(QString::fromStdString(res.analysis_));
@@ -147,5 +149,9 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
 }
 void MainWindow::slotToText(){
-  
+
+  this->binary->toTextFile();  
+  QMessageBox msgBox;
+  msgBox.setText("Done, saved in the current directory ");
+  msgBox.exec();
 }
