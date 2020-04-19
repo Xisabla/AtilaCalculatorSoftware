@@ -1,5 +1,5 @@
 #include "binary_data_class.hpp"
-
+#include  <fstream>
 using namespace std ;
 
 Binary_data_class::Binary_data_class(string str):Str_binary_data_GiD(str),pathToFile(str){
@@ -77,7 +77,28 @@ vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars()const{
 }
 void Binary_data_class::toTextFile(){
     GiD_PostInit();
-	GiD_OpenPostResultFile("test32.flavia.msh", GiD_PostAscii);
+	GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
 	this->read_meshes();
 	this->write_meshes();
+    ofstream SaveFile("test.flavia.res");
+    for (auto& res : binary_data.results_) {
+		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< std::endl;;
+		SaveFile << "Values";
+		//for (auto& comp : res.component_names_) {
+		//	SaveFile << comp << " ";
+		//}
+		SaveFile << std::endl;
+		for (auto i = 0; i < res.number_of_results_; ++i) {
+			auto [node_number, data] = res.get_one_result(i);
+			SaveFile << node_number << " ";
+			for (auto j = 0; j < res.result_size_; ++j) {
+				SaveFile << data[j] << " ";
+			}
+			SaveFile << std::endl;
+		}
+		SaveFile << "End Values" << std::endl;
+	}
+	SaveFile.close();
+	GiD_ClosePostResultFile();
+	GiD_PostDone();
 }
