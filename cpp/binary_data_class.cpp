@@ -81,7 +81,7 @@ void Binary_data_class::toTextFile(){
 	this->read_meshes();
 	this->write_meshes();
     ofstream SaveFile("test.flavia.res");
-    for (auto& res : binary_data.results_) {
+    for (auto& res : this->results_) {
 		SaveFile << "Result " << "\"" << res.analysis_ << "\"" << "  Result   " << res.results_ << "  Step  " << res.step_ << "  "<< std::endl;;
 		SaveFile << "Values";
 		//for (auto& comp : res.component_names_) {
