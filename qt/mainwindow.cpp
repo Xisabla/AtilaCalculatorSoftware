@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <filesystem>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkNew.h>
@@ -17,7 +16,7 @@
 #include <QVTKInteractor.h>
 #include <QString>
 #include <QtWidgets>
-
+#include <vtkInteractorStyleRubberBand3D.h>
 
 MainWindow::MainWindow(char *c )
 {
@@ -25,7 +24,6 @@ MainWindow::MainWindow(char *c )
     this->objDirectory = QString::fromUtf8(c);
     this->label->setVisible(false);
     this->listView->setVisible(false);
-   //this->binary = new Binary_data_class(string(c)+string("/RecHarmonicTest-3032b-GiD1201.flavia.res"));
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
     this->qvtkWidget->setRenderWindow(renderWindow);
@@ -34,16 +32,15 @@ MainWindow::MainWindow(char *c )
 
     this->model = new QStringListModel(this);
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
-    
+    auto style = vtkSmartPointer<vtkInteractorStyleRubberBand3D>::New();
     renderer->SetBackground(colors->GetColor3d("SteelBlue").GetData());
-
     this->qvtkWidget->renderWindow()->AddRenderer (renderer);
     this->qvtkWidget->renderWindow()->SetWindowName("AtilaSoftwareCalculator");
     this->setAxes(colors);
+    this->qvtkWidget->interactor()->SetInteractorStyle(style);
     renderer->ResetCamera();
 
     this->signalMapper = new QSignalMapper (this) ; 
-    
    
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
@@ -80,22 +77,28 @@ void MainWindow::slotOpenFile(){
   if (!fileName.isEmpty()){
     //delete(this->binary);   
     //this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-    this->binary = new Binary_data_class(fileName.toStdString());
-    QAction *b = this->menuBar1->addAction("To Text");
-    connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
-    for (auto &&res : this->binary->results_)
-    {
-      QMenu *menu = this->menuResults->addMenu(QString::fromStdString(res.analysis_));
-      for (int i = 0 ; i<res.result_size_ ; i++){
-        QAction *a = menu->addAction(QString::number(i));
-        connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-        const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i);
-        
-        this->signalMapper->setMapping(a,tokens);
+    if (this->binary == NULL){
+      this->binary = new Binary_data_class(fileName.toStdString());
+      QAction *b = this->menuBar1->addAction("To Text");
+      connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
+      for (auto &&res : this->binary->results_)
+      {
+        QMenu *menu = this->menuResults->addMenu(QString::fromStdString(res.analysis_));
+        for (int i = 0 ; i<res.result_size_ ; i++){
+          QAction *a = menu->addAction(QString::number(i));
+          connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
+          const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i);
+          this->signalMapper->setMapping(a,tokens);
+        }
       }
-    }
     connect (this->signalMapper, SIGNAL(mapped(const QString&)), this, SLOT(slotResult(const QString& )));
     this->setVTK(0,this->binary->results_.front().analysis_);
+    }else
+    {
+      delete this->binary;
+      this->binary = NULL;
+      this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+    }
   }
 }
 void MainWindow::slotResult(const QString& typeResult){

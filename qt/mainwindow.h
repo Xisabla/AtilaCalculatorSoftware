@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow , public Ui::MainWindow
 {
     Q_OBJECT
 public:
-    Binary_data_class *binary;
+    mutable Binary_data_class *binary = NULL;
     MainWindow(char *c);
     ~MainWindow();
 public slots:
