@@ -44,12 +44,15 @@ void Binary_data_class::setUpGiDtoVTK(){
             auto[id, element] = mesh.get_an_element(a);
             if(id == a+1){  
                 auto polygone = this->createVTKCell(mesh.element_name_,mesh.ndim_);
-                polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
-                for (auto i = 0; i<mesh.nnode_ ; i++){
-                    polygone->GetPointIds()->SetId ( i, element[i]-1);
+                if (polygone != NULL){
+                    polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
+                    for (auto i = 0; i<mesh.nnode_ ; i++){
+                        polygone->GetPointIds()->SetId ( i, element[i]-1);
+                    }
+                    this->array->InsertNextCell( polygone );
+                    this->uGrid->InsertNextCell( polygone->GetCellType(), polygone->GetPointIds() );
                 }
-                this->array->InsertNextCell( polygone );
-                this->uGrid->InsertNextCell( polygone->GetCellType(), polygone->GetPointIds() );
+                
             }
             else break;        
         }
@@ -117,6 +120,17 @@ vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const string& str,cons
             auto cell = vtkSmartPointer<vtkQuadraticTriangle>::New(); 
             return cell ; 
         }
+        else if ( str == "Pyramid")
+        {
+            auto cell = vtkSmartPointer<vtkQuadraticPyramid>::New();
+            return cell ; 
+        }
+        else if (str == "Quadrilateral")
+        {
+            auto cell = vtkSmartPointer<vtkQuad>::New();
+            return cell ;
+        }
+        
         else
         {
             auto cell = vtkSmartPointer<vtkPolygon>::New();
@@ -131,17 +145,36 @@ vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const string& str,cons
             auto cell = vtkSmartPointer<vtkHexahedron>::New(); 
             return cell ; 
         }
+        else if(str == "Pyramid" )
+        {
+            auto cell = vtkSmartPointer<vtkPyramid>::New(); 
+            return cell ; 
+        }
+        
         else
         {
-           // auto cell = vtkSmartPointer<vtkCell3D>::New(); 
-            return NULL ; 
+            auto cell = vtkSmartPointer<vtkPolyhedron>::New(); 
+            return cell ; 
         }
         
     }
     else
     {
-        //auto cell =  vtkSmartPointer<vtkCell>::New();
-        return NULL ;  
+        if (str == "Linear")
+        {
+            auto cell = vtkSmartPointer<vtkLine>::New();
+            return cell ; 
+        }
+        else if (str == "Point")
+        {
+            return NULL ; 
+        }
+        else
+        {
+            return NULL ; 
+        }
+        
+        
     }
     
     

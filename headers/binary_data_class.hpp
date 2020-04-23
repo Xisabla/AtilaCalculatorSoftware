@@ -11,10 +11,14 @@
 #include <QStringList>
 #include <QList>
 #include <vtkQuad.h>
+#include <vtkPolyhedron.h>
+#include <vtkPyramid.h>
 #include <vtkHexahedron.h>
 #include <vtkFloatArray.h>
 #include <vtkUnstructuredGrid.h>
 #include <string>
+#include <vtkLine.h>
+#include <vtkQuadraticPyramid.h>
 #include "binary_data_GiD.hpp"
 
 class Binary_data_class : public Str_binary_data_GiD{

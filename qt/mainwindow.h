@@ -28,6 +28,7 @@ public slots:
     void slotExit();
     void slotToText();
     void slotOpenFile();
+    void slotResetCamera(); 
     void slotResult(const QString& typeResult);
 private : 
     QString objDirectory ; 

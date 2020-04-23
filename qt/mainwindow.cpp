@@ -46,6 +46,7 @@ MainWindow::MainWindow(char *c )
    
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+    connect(this->actionResetCam, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
 }
 void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
@@ -155,4 +156,9 @@ void MainWindow::slotToText(){
   QMessageBox msgBox;
   msgBox.setText("Done, saved in the current directory ");
   msgBox.exec();
+}
+void MainWindow::slotResetCamera(){
+
+  this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+
 }
