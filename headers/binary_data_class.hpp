@@ -3,13 +3,17 @@
 #include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolygon.h>
+#include <vtkQuadraticTriangle.h>
 #include <QString>
+#include <vtkCell.h>
 #include <vtkCellArray.h>
 #include <vtkSmartPointer.h>
 #include <QStringList>
-#include <QAction>
 #include <QList>
+#include <vtkQuad.h>
+#include <vtkHexahedron.h>
 #include <vtkFloatArray.h>
+#include <vtkUnstructuredGrid.h>
 #include <string>
 #include "binary_data_GiD.hpp"
 
@@ -24,12 +28,14 @@ class Binary_data_class : public Str_binary_data_GiD{
         vtkSmartPointer<vtkFloatArray> getScalars()const;
         vtkSmartPointer<vtkPoints> getvtkPoints()const;
         vtkSmartPointer<vtkCellArray> getvtkCellArray()const;
+        vtkSmartPointer<vtkUnstructuredGrid> getUGrid()const;
         QStringList getstrList()const ; 
         std::string getPath() const;
         void toTextFile();
+        vtkSmartPointer<vtkCell> createVTKCell(const string& mesh_name_,const int& ndim_) ;
 
     private:
-
+        vtkSmartPointer<vtkUnstructuredGrid> uGrid;
         std::string pathToFile ; 
         QStringList strList ; 
         vtkSmartPointer<vtkPoints> points;

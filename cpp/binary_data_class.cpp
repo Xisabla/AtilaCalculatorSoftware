@@ -27,8 +27,10 @@ QStringList Binary_data_class::getstrList()const {
 void Binary_data_class::setUpGiDtoVTK(){
     this->points = vtkSmartPointer<vtkPoints>::New();
     this->array = vtkSmartPointer<vtkCellArray>::New();
+    this->uGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
     for (auto &&mesh : this->meshes_)
     {
+        cout << " Alllo "<<mesh.element_name_<<endl;
         this->strList<< (QString::fromStdString("Mesh Name : ").toUpper()+ QString::fromStdString(mesh.mesh_name_))
                     << (QString::fromStdString("Mesh Dimension : ").toUpper()+ QString::number(mesh.ndim_))
                     << (QString::fromStdString("Element Type : ").toUpper()+ QString::fromStdString(mesh.element_name_))
@@ -37,15 +39,17 @@ void Binary_data_class::setUpGiDtoVTK(){
         {
             this->points->InsertNextPoint(nodes.coord[0],nodes.coord[1],nodes.coord[2]);
         }
-        for(auto i= 0 ; i<mesh.nb_of_elements_;i++){
-            auto[id, element] = mesh.get_an_element(i);
-            if(id == i+1){
-                auto polygone = vtkSmartPointer<vtkPolygon>::New();
+        this->uGrid->SetPoints(this->points);
+        for(auto a= 0 ; a<mesh.nb_of_elements_;a++){
+            auto[id, element] = mesh.get_an_element(a);
+            if(id == a+1){  
+                auto polygone = this->createVTKCell(mesh.element_name_,mesh.ndim_);
                 polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
-                for (auto i = 0 ; i < mesh.nnode_ ; i++){
-                    polygone->GetPointIds()->SetId ( i, element[i]--);
+                for (auto i = 0; i<mesh.nnode_ ; i++){
+                    polygone->GetPointIds()->SetId ( i, element[i]-1);
                 }
                 this->array->InsertNextCell( polygone );
+                this->uGrid->InsertNextCell( polygone->GetCellType(), polygone->GetPointIds() );
             }
             else break;        
         }
@@ -101,4 +105,44 @@ void Binary_data_class::toTextFile(){
 	SaveFile.close();
 	GiD_ClosePostResultFile();
 	GiD_PostDone();
+}
+vtkSmartPointer<vtkUnstructuredGrid> Binary_data_class::getUGrid()const{
+    return uGrid ; 
+}
+vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const string& str,const int& ndim_) {
+    if (ndim_ == 2 )
+    {
+        if (str == "Triangle")
+        {
+            auto cell = vtkSmartPointer<vtkQuadraticTriangle>::New(); 
+            return cell ; 
+        }
+        else
+        {
+            auto cell = vtkSmartPointer<vtkPolygon>::New();
+            return cell ; 
+        }
+        
+    }
+    else if (ndim_ == 3 )
+    {
+        if (str == "Hexahedra")
+        {
+            auto cell = vtkSmartPointer<vtkHexahedron>::New(); 
+            return cell ; 
+        }
+        else
+        {
+           // auto cell = vtkSmartPointer<vtkCell3D>::New(); 
+            return NULL ; 
+        }
+        
+    }
+    else
+    {
+        //auto cell =  vtkSmartPointer<vtkCell>::New();
+        return NULL ;  
+    }
+    
+    
 }

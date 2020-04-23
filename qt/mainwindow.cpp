@@ -4,6 +4,7 @@
 #include <vtkNew.h>
 #include <vtkRendererCollection.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkDataSetMapper.h>
 #include <vtkProperty.h>
 #include <vtkPointData.h>
 #include <vtkCamera.h>
@@ -15,6 +16,7 @@
 #include <vtkScalarBarActor.h>
 #include <QVTKInteractor.h>
 #include <QString>
+#include <vtkDataSetMapper.h>
 #include <QtWidgets>
 #include <vtkInteractorStyleRubberBand3D.h>
 
@@ -125,26 +127,22 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
     lut->SetTableRange(range);
     lut->Build();
-
-    auto polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->SetPoints(this->binary->getvtkPoints());
-    polyData->SetPolys(this->binary->getvtkCellArray());
-    polyData->GetPointData()->SetScalars(this->binary->getScalars());
-
-    auto polyMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    polyMapper->SetInputData(polyData);
-    polyMapper->SetScalarRange(range);
-    polyMapper->SetLookupTable(lut);
+    
+    this->binary->getUGrid()->GetPointData()->SetScalars(this->binary->getScalars());
+    auto mapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    mapper->SetInputData(this->binary->getUGrid());
+    mapper->SetScalarRange(range);
+    mapper->SetLookupTable(lut);
 
     auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
-    scalarBar->SetLookupTable(polyMapper->GetLookupTable());
+    scalarBar->SetLookupTable(mapper->GetLookupTable());
     scalarBar->SetTitle( string(typeResult + std::__cxx11::to_string(choice)).c_str()  );
     scalarBar->UnconstrainedFontSizeOn ();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio()/2.0);
 
     auto polyActor = vtkSmartPointer<vtkActor>::New();
-    polyActor->SetMapper(polyMapper);
+    polyActor->SetMapper(mapper);
     //polyActor->GetProperty()->SetPointSize(2);
 
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
