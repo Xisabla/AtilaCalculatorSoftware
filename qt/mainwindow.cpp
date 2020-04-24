@@ -3,14 +3,12 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkNew.h>
 #include <vtkRendererCollection.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkDataSetMapper.h>
 #include <vtkProperty.h>
 #include <vtkPointData.h>
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
-#include <vtkPolyData.h>
 #include <vtkAxesActor.h>
 #include <vtkLookupTable.h>
 #include <vtkScalarBarActor.h>
@@ -19,6 +17,8 @@
 #include <vtkDataSetMapper.h>
 #include <QtWidgets>
 #include <vtkInteractorStyleRubberBand3D.h>
+#include <vector>
+#include <algorithm>
 
 MainWindow::MainWindow(char *c )
 {
@@ -84,9 +84,18 @@ void MainWindow::slotOpenFile(){
       this->binary = new Binary_data_class(fileName.toStdString());
       QAction *b = this->menuBar1->addAction("To Text");
       connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
+      std::vector<float> steps ; 
+      std::vector<QMenu*> menusSteps;
       for (auto &&res : this->binary->results_)
       {
-        QMenu *menu = this->menuResults->addMenu(QString::fromStdString(res.analysis_));
+        if ( !std::binary_search(steps.begin(), steps.end(), res.step_)){
+            steps.push_back(res.step_);
+            QMenu *menu1 = this->menuResults->addMenu(QString::number(res.step_));
+            menusSteps.push_back(menu1);
+        }
+        std::vector<float>::iterator it = std::find(steps.begin(),steps.end(), res.step_);
+        int index = std::distance(steps.begin(), it);
+        QMenu *menu = menusSteps.at(index)->addMenu( QString::fromStdString(res.analysis_)+QString::number(res.step_));
         for (int i = 0 ; i<res.result_size_ ; i++){
           QAction *a = menu->addAction(QString::number(i));
           connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
