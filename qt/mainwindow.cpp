@@ -19,6 +19,7 @@
 #include <vtkInteractorStyleRubberBand3D.h>
 #include <vector>
 #include <algorithm>
+#include <map> 
 
 MainWindow::MainWindow(char *c )
 {
@@ -85,17 +86,15 @@ void MainWindow::slotOpenFile(){
       QAction *b = this->menuBar1->addAction("To Text");
       connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
       std::vector<float> steps ; 
-      std::vector<QMenu*> menusSteps;
+      std::map<float,QMenu*>stepsXmenus;
       for (auto &&res : this->binary->results_)
       {
         if ( !std::binary_search(steps.begin(), steps.end(), res.step_)){
             steps.push_back(res.step_);
             QMenu *menu1 = this->menuResults->addMenu(QString::number(res.step_));
-            menusSteps.push_back(menu1);
+            stepsXmenus.insert(std::pair<float, QMenu*>(res.step_, menu1));
         }
-        std::vector<float>::iterator it = std::find(steps.begin(),steps.end(), res.step_);
-        int index = std::distance(steps.begin(), it);
-        QMenu *menu = menusSteps.at(index)->addMenu( QString::fromStdString(res.analysis_)+QString::number(res.step_));
+        QMenu *menu = stepsXmenus[res.step_]->addMenu( QString::fromStdString(res.analysis_)+QString::number(res.step_));
         for (int i = 0 ; i<res.result_size_ ; i++){
           QAction *a = menu->addAction(QString::number(i));
           connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
