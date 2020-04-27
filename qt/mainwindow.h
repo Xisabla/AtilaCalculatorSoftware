@@ -36,7 +36,7 @@ private :
     QSignalMapper* signalMapper ;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
-    void setVTK(const int& choice ,const std::string& typeResult);
+    void setVTK(const int& choice ,const std::string& typeResult, const float& step);
 };
 
 #endif // MAINWINDOW_H

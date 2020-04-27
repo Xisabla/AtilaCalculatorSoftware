@@ -30,7 +30,6 @@ void Binary_data_class::setUpGiDtoVTK(){
     this->uGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
     for (auto &&mesh : this->meshes_)
     {
-        cout << " Alllo "<<mesh.element_name_<<endl;
         this->strList<< (QString::fromStdString("Mesh Name : ").toUpper()+ QString::fromStdString(mesh.mesh_name_))
                     << (QString::fromStdString("Mesh Dimension : ").toUpper()+ QString::number(mesh.ndim_))
                     << (QString::fromStdString("Element Type : ").toUpper()+ QString::fromStdString(mesh.element_name_))
@@ -58,18 +57,20 @@ void Binary_data_class::setUpGiDtoVTK(){
         }
     } 
 }
-void Binary_data_class::setScalarFromQT(const int& choice , const string& typeResult ){
+void Binary_data_class::setScalarFromQT(const int& choice , const string& typeResult , const float& step){
         this->scalars = vtkSmartPointer<vtkFloatArray>::New();
         for (auto &&res : this->results_)
         {
-            if (res.analysis_ == typeResult)
+            if (res.analysis_ == typeResult && res.step_ == step)
             {
                 if(this->strList.size()>4){
                     this->strList.removeLast();
                     this->strList.removeLast();
+                    this->strList.removeLast();
                 }
                 this->strList<< (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
-                            << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_));
+                            << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_))
+                            <<(QString::fromStdString("Step ").toUpper()+ QString::number(res.step_));
                 this->scalars->SetNumberOfValues( res.number_of_results_ );
                 for (auto i = 0; i < res.number_of_results_; ++i) {
 	                auto [node_number, data] = res.get_one_result(i);
