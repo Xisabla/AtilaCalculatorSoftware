@@ -11,9 +11,7 @@ class MyRubberBand3D : public vtkInteractorStyleRubberBand3D
     {
       // Forward events
       vtkInteractorStyleRubberBand3D::OnLeftButtonUp();
- 
       std::cout << "Start position: " << this->StartPosition[0] << " " << this->StartPosition[1] << std::endl;
       std::cout << "End position: " << this->EndPosition[0] << " " << this->EndPosition[1] << std::endl;
     }
- 
 };

@@ -79,6 +79,27 @@ void Binary_data_class::setScalarFromQT(const int& choice , const string& typeRe
             }
         }
 }
+void Binary_data_class::setScalarFromQT2(Str_Result res ){
+        this->scalars = vtkSmartPointer<vtkFloatArray>::New();
+        for (auto &&res : this->results_)
+        {
+            if (res.analysis_ == typeResult)
+            {
+                if(this->strList.size()>4){
+                    this->strList.removeLast();
+                    this->strList.removeLast();
+                }
+                this->strList<< (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
+                            << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_));
+                this->scalars->SetNumberOfValues( res.number_of_results_ );
+                for (auto i = 0; i < res.number_of_results_; ++i) {
+	                auto [node_number, data] = res.get_one_result(i);
+                    this->scalars->SetValue(i,data[choice]);
+                }
+                break;
+            }
+        }
+}
 vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars()const{
     return this->scalars; 
 }
