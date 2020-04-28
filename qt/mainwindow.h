@@ -29,14 +29,14 @@ public slots:
     void slotToText();
     void slotOpenFile();
     void slotResetCamera(); 
-    void slotResult(const QString& typeResult);
+    void slotResult(Str_Result& res,const int& choice );
 private : 
     QString objDirectory ; 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
     QSignalMapper* signalMapper ;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
-    void setVTK(const int& choice ,const std::string& typeResult, const float& step);
+    void setVTK( Str_Result &res,const int& choice );
 };
 
 #endif // MAINWINDOW_H

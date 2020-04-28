@@ -97,13 +97,13 @@ void MainWindow::slotOpenFile(){
         QMenu *menu = stepsXmenus[res.step_]->addMenu( QString::fromStdString(res.analysis_)+QString::number(res.step_));
         for (int i = 0 ; i<res.result_size_ ; i++){
           QAction *a = menu->addAction(QString::number(i));
-          connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-          const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i)+QString::fromStdString(";")+QString::number(res.step_);
-          this->signalMapper->setMapping(a,tokens);
+          connect(a, &QAction::triggered, [this,&res,i]()
+          {
+              this->slotResult(res,i);
+          });
         }
       }
-    connect (this->signalMapper, SIGNAL(mapped(const QString&)), this, SLOT(slotResult(const QString& )));
-    this->setVTK(0,this->binary->results_.front().analysis_,this->binary->results_.front().step_);
+    this->setVTK(this->binary->results_.front(),0);
     }else
     {
       delete this->binary;
@@ -112,19 +112,12 @@ void MainWindow::slotOpenFile(){
     }
   }
 }
-void MainWindow::slotResult(const QString& typeResult){
+void MainWindow::slotResult(Str_Result& res , const int& choice ){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-    QStringList tokens = typeResult.split (";");
-
-    if (tokens.count () == 3) {
-        string strTypeResult = tokens.at(0).toStdString ();
-        int choice = tokens.at(1).toInt ();
-        float step = tokens.at(2).toFloat();
-        this->setVTK(choice,strTypeResult,step);  
-    }
+    this->setVTK(res,choice); 
   }
-void MainWindow::setVTK(const int& choice ,const std::string& typeResult, const float& step){
-    this->binary->setScalarFromQT(choice,typeResult,step);
+void MainWindow::setVTK(Str_Result &res, const int& choice ){
+    this->binary->setScalarFromQT2(res,choice); 
 
     this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model); 
@@ -146,14 +139,13 @@ void MainWindow::setVTK(const int& choice ,const std::string& typeResult, const 
 
     auto scalarBar = vtkSmartPointer<vtkScalarBarActor>::New();
     scalarBar->SetLookupTable(mapper->GetLookupTable());
-    scalarBar->SetTitle( string(typeResult + std::__cxx11::to_string(choice)).c_str()  );
+    scalarBar->SetTitle( string(res.analysis_ + std::__cxx11::to_string(choice)).c_str()  );
     scalarBar->UnconstrainedFontSizeOn ();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio()/2.0);
 
     auto polyActor = vtkSmartPointer<vtkActor>::New();
     polyActor->SetMapper(mapper);
-    //polyActor->GetProperty()->SetPointSize(2);
 
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
