@@ -59,12 +59,11 @@ void Binary_data_class::setUpGiDtoVTK(){
 }
 void Binary_data_class::setScalarFromQT2(Str_Result& res,const int& choice ){
         this->scalars = vtkSmartPointer<vtkFloatArray>::New();
-        if(this->strList.size()>4){
-            this->strList.removeLast();
-            this->strList.removeLast();
-            this->strList.removeLast();
+        while (this->strList.size()>4)
+        {
             this->strList.removeLast();
         }
+        
         this->strList<< (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
                     << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_))
                     <<(QString::fromStdString("Step ").toUpper()+ QString::number(res.step_))
