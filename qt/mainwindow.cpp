@@ -98,12 +98,12 @@ void MainWindow::slotOpenFile(){
         for (int i = 0 ; i<res.result_size_ ; i++){
           QAction *a = menu->addAction(QString::number(i));
           connect(a, SIGNAL(triggered()), this->signalMapper, SLOT(map()));
-          const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i);
+          const QString tokens =  QString::fromStdString(res.analysis_)+QString::fromStdString(";")+QString::number(i)+QString::fromStdString(";")+QString::number(res.step_);
           this->signalMapper->setMapping(a,tokens);
         }
       }
     connect (this->signalMapper, SIGNAL(mapped(const QString&)), this, SLOT(slotResult(const QString& )));
-    this->setVTK(0,this->binary->results_.front().analysis_);
+    this->setVTK(0,this->binary->results_.front().analysis_,this->binary->results_.front().step_);
     }else
     {
       delete this->binary;
@@ -116,14 +116,15 @@ void MainWindow::slotResult(const QString& typeResult){
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     QStringList tokens = typeResult.split (";");
 
-    if (tokens.count () == 2) {
+    if (tokens.count () == 3) {
         string strTypeResult = tokens.at(0).toStdString ();
         int choice = tokens.at(1).toInt ();
-        this->setVTK(choice,strTypeResult);  
+        float step = tokens.at(2).toFloat();
+        this->setVTK(choice,strTypeResult,step);  
     }
   }
-void MainWindow::setVTK(const int& choice ,const std::string& typeResult){
-    this->binary->setScalarFromQT(choice,typeResult);
+void MainWindow::setVTK(const int& choice ,const std::string& typeResult, const float& step){
+    this->binary->setScalarFromQT(choice,typeResult,step);
 
     this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model); 
