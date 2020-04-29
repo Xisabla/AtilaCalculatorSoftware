@@ -9,7 +9,6 @@
 #include <vtkCellArray.h>
 #include <vtkSmartPointer.h>
 #include <QStringList>
-#include <QList>
 #include <vtkQuad.h>
 #include <vtkPolyhedron.h>
 #include <vtkPyramid.h>

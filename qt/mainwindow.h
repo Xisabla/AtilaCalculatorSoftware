@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <tuple>
 #include <QMainWindow>
 #include <QString>
 #include <vtkSmartPointer.h>
@@ -11,8 +10,6 @@
 #include <QStringListModel>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkNamedColors.h>
-#include <QSignalMapper>
-
 #include "ui_mainwindow.h"
 #include "binary_data_class.hpp"
 
@@ -33,7 +30,6 @@ public slots:
 private : 
     QString objDirectory ; 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;
-    QSignalMapper* signalMapper ;
     QStringListModel *model;
     void setAxes(vtkSmartPointer<vtkNamedColors> &colors);
     void setVTK( Str_Result &res,const int& choice );

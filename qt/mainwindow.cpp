@@ -16,7 +16,6 @@
 #include <QString>
 #include <vtkDataSetMapper.h>
 #include <QtWidgets>
-#include <vtkInteractorStyleRubberBand3D.h>
 #include <vector>
 #include <algorithm>
 #include <map> 
@@ -35,16 +34,12 @@ MainWindow::MainWindow(char *c )
 
     this->model = new QStringListModel(this);
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
-    auto style = vtkSmartPointer<vtkInteractorStyleRubberBand3D>::New();
     renderer->SetBackground(colors->GetColor3d("SteelBlue").GetData());
     this->qvtkWidget->renderWindow()->AddRenderer (renderer);
     this->qvtkWidget->renderWindow()->SetWindowName("AtilaSoftwareCalculator");
     this->setAxes(colors);
-    this->qvtkWidget->interactor()->SetInteractorStyle(style);
     renderer->ResetCamera();
 
-    this->signalMapper = new QSignalMapper (this) ; 
-   
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->actionResetCam, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
