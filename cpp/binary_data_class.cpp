@@ -63,7 +63,6 @@ void Binary_data_class::setScalarFromQT2(Str_Result& res,const int& choice ){
         {
             this->strList.removeLast();
         }
-        
         this->strList<< (QString::fromStdString("Result analysis ").toUpper()+ QString::fromStdString(res.analysis_))
                     << (QString::fromStdString("Result ").toUpper()+ QString::fromStdString(res.results_))
                     <<(QString::fromStdString("Step ").toUpper()+ QString::number(res.step_))

@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkInteractorStyleRubberBandZoom.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkNew.h>
 #include <vtkRendererCollection.h>
@@ -42,7 +44,7 @@ MainWindow::MainWindow(char *c )
 
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
-    connect(this->actionResetCam, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
+    
 }
 void MainWindow::setAxes(vtkSmartPointer<vtkNamedColors> &colors){
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
@@ -79,7 +81,13 @@ void MainWindow::slotOpenFile(){
     if (this->binary == NULL){
       this->binary = new Binary_data_class(fileName.toStdString());
       QAction *b = this->menuBar1->addAction("To Text");
+      QAction *c = this->menuBar1->addAction("Zoom on Area");
+      QAction *d = this->menuBar1->addAction("Interact with object");
+      QAction *e = this->menuBar1->addAction("Reset Camera");
       connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
+      connect(c, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
+      connect(d, SIGNAL(triggered()), this, SLOT(slotInteractObj()));
+      connect(e, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
       std::vector<float> steps ; 
       std::map<float,QMenu*>stepsXmenus;
       for (auto &&res : this->binary->results_)
@@ -89,9 +97,15 @@ void MainWindow::slotOpenFile(){
             QMenu *menu1 = this->menuResults->addMenu(QString::number(res.step_));
             stepsXmenus.insert(std::pair<float, QMenu*>(res.step_, menu1));
         }
-        QMenu *menu = stepsXmenus[res.step_]->addMenu( QString::fromStdString(res.analysis_)+QString::number(res.step_));
+        QMenu *menu = stepsXmenus[res.step_]->addMenu( QString::fromStdString(res.analysis_));
         for (int i = 0 ; i<res.result_size_ ; i++){
-          QAction *a = menu->addAction(QString::number(i));
+          QAction *a;
+          if (res.component_names_.size()>0 )
+          {
+            a = menu->addAction(QString::fromStdString(res.component_names_.at(i)));
+          }else{
+            a = menu->addAction(QString::number(i));
+          }
           connect(a, &QAction::triggered, [this,&res,i]()
           {
               this->slotResult(res,i);
@@ -157,4 +171,12 @@ void MainWindow::slotResetCamera(){
 
   this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
 
+}
+void MainWindow::slotZoomArea(){
+  auto style = vtkSmartPointer<vtkInteractorStyleRubberBandZoom>::New();
+  this->qvtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
+}
+void MainWindow::slotInteractObj(){
+  auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+  this->qvtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
 }

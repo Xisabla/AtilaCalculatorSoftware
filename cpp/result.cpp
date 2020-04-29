@@ -22,7 +22,7 @@ Str_Result::Str_Result(gzFile file_msh, char fields[10][40], const int result_si
 		}
 		local_size = get_fields(file_msh, dummy_char, fields);
 	}
-	/*else {
+	else {
 		if (result_size == 1){
 			strcpy(fields[0],"X");
 			this->component_names_.emplace_back(fields[0]);
@@ -37,7 +37,7 @@ Str_Result::Str_Result(gzFile file_msh, char fields[10][40], const int result_si
 			}
 		}
 	}
-	*/
+	
 
 	local_size = gzread(file_msh, &node_number, sizeof(int));
 	int shift_nodes = 0;

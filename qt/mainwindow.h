@@ -10,9 +10,9 @@
 #include <QStringListModel>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkNamedColors.h>
+
 #include "ui_mainwindow.h"
 #include "binary_data_class.hpp"
-
 
 class MainWindow : public QMainWindow , public Ui::MainWindow
 {
@@ -27,6 +27,8 @@ public slots:
     void slotOpenFile();
     void slotResetCamera(); 
     void slotResult(Str_Result& res,const int& choice );
+    void slotZoomArea(); 
+    void slotInteractObj();
 private : 
     QString objDirectory ; 
     vtkSmartPointer<vtkOrientationMarkerWidget> widget;

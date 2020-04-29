@@ -123,7 +123,6 @@
    <addaction name="actionOpenFile"/>
    <addaction name="menuResults"/>
    <addaction name="actionExit"/>
-   <addaction name="actionResetCam"/>
   </widget>
   <action name="actionOpenFile">
    <property name="enabled">
@@ -136,11 +135,6 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionResetCam">
-   <property name="text">
-    <string>Reset Camera</string>
    </property>
   </action>
  </widget>
