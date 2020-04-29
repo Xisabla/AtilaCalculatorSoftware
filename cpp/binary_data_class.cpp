@@ -46,6 +46,9 @@ void Binary_data_class::setUpGiDtoVTK(){
                 if (polygone != NULL){
                     polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
                     for (auto i = 0; i<mesh.nnode_ ; i++){
+                        //crée une forme en fonction de l'id des points donnée par les elements
+                        //Il y a un décalage de car lors de l'insertion des points dans le vtkPoints, le point avec l'id 1 devient le point 0 
+                        //Donc le point id 1 et a la position 0 dans le tableau 
                         polygone->GetPointIds()->SetId ( i, element[i]-1);
                     }
                     this->array->InsertNextCell( polygone );

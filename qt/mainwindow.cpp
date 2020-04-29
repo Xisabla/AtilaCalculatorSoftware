@@ -80,6 +80,7 @@ void MainWindow::slotOpenFile(){
     //this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
     if (this->binary == NULL){
       this->binary = new Binary_data_class(fileName.toStdString());
+
       QAction *b = this->menuBar1->addAction("To Text");
       QAction *c = this->menuBar1->addAction("Zoom on Area");
       QAction *d = this->menuBar1->addAction("Interact with object");
@@ -88,15 +89,18 @@ void MainWindow::slotOpenFile(){
       connect(c, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
       connect(d, SIGNAL(triggered()), this, SLOT(slotInteractObj()));
       connect(e, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
-      std::vector<float> steps ; 
+
+      std::vector<float> steps;
       std::map<float,QMenu*>stepsXmenus;
       for (auto &&res : this->binary->results_)
       {
+        //Permet de savoir si le menu a déjà été crée 
         if ( !std::binary_search(steps.begin(), steps.end(), res.step_)){
             steps.push_back(res.step_);
             QMenu *menu1 = this->menuResults->addMenu(QString::number(res.step_));
             stepsXmenus.insert(std::pair<float, QMenu*>(res.step_, menu1));
         }
+        //Crée un menu de resultat dans le menu dans le menu correspondant au step du resultat 
         QMenu *menu = stepsXmenus[res.step_]->addMenu( QString::fromStdString(res.analysis_));
         for (int i = 0 ; i<res.result_size_ ; i++){
           QAction *a;
@@ -133,7 +137,8 @@ void MainWindow::setVTK(Str_Result &res, const int& choice ){
     this->listView->adjustSize();
     this->label->setVisible(true);
     this->listView->setVisible(true);
-
+    
+    //Crée une table de couleur par rapport au valeur du scalar  
     double range[2]= {this->binary->getScalars()->GetRange()[0],this->binary->getScalars()->GetRange()[1]};
     auto lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1 );
