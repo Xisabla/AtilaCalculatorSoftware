@@ -1,55 +1,112 @@
-cmake_minimum_required(VERSION 3.10)
+# cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+
+# project(CylinderExample)
+
+# find_package(VTK COMPONENTS 
+#   vtkCommonColor
+#   vtkCommonCore
+#   vtkFiltersSources
+#   vtkInteractionStyle
+#   vtkRenderingContextOpenGL2
+#   vtkRenderingCore
+#   vtkRenderingFreeType
+#   vtkRenderingGL2PSOpenGL2
+#   vtkRenderingOpenGL2 QUIET)
+
+# if (NOT VTK_FOUND)
+#   message("Skipping CylinderExample: ${VTK_NOT_FOUND_MESSAGE}")
+#   return ()
+# endif()
+
+# message (STATUS "VTK_VERSION: ${VTK_VERSION}")
+
+# if (VTK_VERSION VERSION_LESS "8.90.0")
+#   # old system
+#   include(${VTK_USE_FILE})
+#   add_executable(CylinderExample MACOSX_BUNDLE CylinderExample.cxx )
+#   target_link_libraries(CylinderExample PRIVATE ${VTK_LIBRARIES})
+# else ()
+#   # include all components
+#   add_executable(CylinderExample MACOSX_BUNDLE CylinderExample.cxx )
+#   target_link_libraries(CylinderExample PRIVATE ${VTK_LIBRARIES})
+#   # vtk_module_autoinit is needed
+#   vtk_module_autoinit(
+#     TARGETS CylinderExample
+#     MODULES ${VTK_LIBRARIES}
+#     )
+# endif ()
+cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 
 if(POLICY CMP0020)
-    cmake_policy(SET CMP0020 NEW)
-    cmake_policy(SET CMP0071 NEW)
+  cmake_policy(SET CMP0020 NEW)
+  cmake_policy(SET CMP0071 NEW)
 endif()
 
-include_directories(headers)
-include_directories(qt)
-# set the project name
-project(AtilaCalculatorSoftware)
+PROJECT(BorderWidgetQt)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(VTK COMPONENTS
-    CommonColor
-    CommonCore
-    FiltersSources
-    InteractionStyle
-    RenderingAnnotation
-    RenderingContextOpenGL2
-    RenderingCore
-    RenderingFreeType
-    RenderingGL2PSOpenGL2
-    RenderingOpenGL2
-    GUISupportQt
-    QUIET
+
+  vtkCommonColor
+  vtkCommonCore
+  vtkFiltersSources
+  vtkInteractionStyle
+  vtkInteractionWidgets
+  vtkRenderingContextOpenGL2
+  vtkRenderingCore
+  vtkRenderingFreeType
+  vtkRenderingGL2PSOpenGL2
+  vtkRenderingOpenGL2
+  vtkGUISupportQt
+  QUIET
 )
 
-#However, the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "cpp/*.cpp")
+if (NOT VTK_FOUND)
+  message("Skipping BorderWidgetQt: ${VTK_NOT_FOUND_MESSAGE}")
+  return ()
+endif()
+message (STATUS "VTK_VERSION: ${VTK_VERSION}")
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+if(vtkGUISupportQt_LOADED OR TARGET VTK::GUISupportQt)
+  if (VTK_VERSION VERSION_LESS "8.90.0")
+    # Instruct CMake to run moc automatically when needed.
+    set(CMAKE_AUTOMOC ON)
+  else()
+     # Instruct CMake to run moc automatically when needed.
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTOUIC ON)
+  endif()
+  # We have ui files, this will bring in the macro: qt5_wrap_ui
+  find_package(Qt5Widgets REQUIRED QUIET)
+else()
+  message(STATUS "GuiSupportQt not found.")
+  return()
+endif()
 
-# add the executable
-add_executable(app 
-qt/mainwindow.ui
-qt/mainwindow.cpp
-${SOURCES}
-)
-qt5_use_modules(app Core Gui)
-target_link_libraries(app ${VTK_LIBRARIES})
-target_compile_options (app PRIVATE -std=c++17)
-target_link_libraries (app -lgidpost)
-target_link_libraries (app -lz)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-vtk_module_autoinit(
-    TARGETS app
+file(GLOB UI_FILES *.ui)
+file(GLOB QT_WRAP *.h)
+file(GLOB CXX_FILES *.cpp)
+
+qt5_wrap_ui(UISrcs ${UI_FILES})
+
+if (VTK_VERSION VERSION_LESS "8.90.0")
+  # old system
+  include(${VTK_USE_FILE})
+  # CMAKE_AUTOMOC in ON so the MOC headers will be automatically wrapped.
+  add_executable(BorderWidgetQt MACOSX_BUNDLE
+    ${CXX_FILES} ${UISrcs} ${QT_WRAP})
+  qt5_use_modules(BorderWidgetQt Core Gui)
+  target_link_libraries(BorderWidgetQt ${VTK_LIBRARIES})
+else()
+  # CMAKE_AUTOMOC in ON so the MOC headers will be automatically wrapped.
+  add_executable(BorderWidgetQt MACOSX_BUNDLE
+    ${CXX_FILES} ${UISrcs} ${QT_WRAP})
+  qt5_use_modules(BorderWidgetQt Core Gui)
+  target_link_libraries(BorderWidgetQt ${VTK_LIBRARIES})
+  # vtk_module_autoinit is needed
+  vtk_module_autoinit(
+    TARGETS BorderWidgetQt
     MODULES ${VTK_LIBRARIES}
-)
+  )
+endif()

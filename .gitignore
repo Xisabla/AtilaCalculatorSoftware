@@ -145,7 +145,7 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
+#Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -185,7 +185,7 @@ qrc_*.cpp
 ui_*.h
 *.qmlc
 *.jsc
-Makefile*
+#Makefile*
 *build-*
 *.qm
 *.prl
@@ -242,5 +242,10 @@ CMakeLists.txt.user*
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,cmake,qt,qtcreator,clion,code
 
-# Added by hand part
+## Added by hand part
+# Build dir
 build/
+
+# Log files
+logs/
+*.log
