@@ -14,7 +14,7 @@
    <string>BorderWidgetQt</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Icons/icons.qrc">
+   <iconset>
     <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
   </property>
   <property name="iconSize">
@@ -24,66 +24,37 @@
    </size>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>511</width>
-      <height>541</height>
+      <x>0</x>
+      <y>0</y>
+      <width>571</width>
+      <height>591</height>
      </rect>
     </property>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>Tab 1</string>
+     </attribute>
+     <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>541</width>
+        <height>521</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>Tab 2</string>
+     </attribute>
+    </widget>
    </widget>
   </widget>
-  <action name="actionOpenFile">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
-   </property>
-   <property name="text">
-    <string>Open File...</string>
-   </property>
-  </action>
-  <action name="actionExit">
-   <property name="icon">
-    <iconset>
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionPrint">
-   <property name="icon">
-    <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/print.png</normaloff>:/Icons/print.png</iconset>
-   </property>
-   <property name="text">
-    <string>Print</string>
-   </property>
-  </action>
-  <action name="actionHelp">
-   <property name="icon">
-    <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
-   </property>
-   <property name="text">
-    <string>Help</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="icon">
-    <iconset resource="Icons/icons.qrc">
-     <normaloff>:/Icons/filesave.png</normaloff>:/Icons/filesave.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

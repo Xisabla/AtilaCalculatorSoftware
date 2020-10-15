@@ -1,24 +1,22 @@
 #ifndef BorderWidgetQt_H
 #define BorderWidgetQt_H
 
-#include <vtkSmartPointer.h>
 #include <QMainWindow>
+#include <vtkSmartPointer.h>
 
 class vtkBorderWidget;
 
 #include "ui_BorderWidgetQt.h"
 
-class BorderWidgetQt : public QMainWindow, private Ui::BorderWidgetQt
-{
-  Q_OBJECT
-public:
+class BorderWidgetQt : public QMainWindow, private Ui::BorderWidgetQt {
+    Q_OBJECT
+  public:
+    // Constructor/Destructor
+    BorderWidgetQt();
+    ~BorderWidgetQt() { }
 
-  // Constructor/Destructor
-  BorderWidgetQt();
-  ~BorderWidgetQt() {}
-
-private:
-  vtkSmartPointer<vtkBorderWidget> BorderWidget;
+  private:
+    vtkSmartPointer<vtkBorderWidget> BorderWidget;
 };
 
 #endif
