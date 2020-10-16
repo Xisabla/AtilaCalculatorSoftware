@@ -14,6 +14,8 @@
 #endif
 
 //  --------------------------------------------------------------------------------------
+//  PUBLIC METHODS
+//  --------------------------------------------------------------------------------------
 MainWindow::MainWindow(char* dataDirectory) {
 
     this->objectDirectory = QString::fromUtf8(dataDirectory);
@@ -45,9 +47,19 @@ MainWindow::MainWindow(char* dataDirectory) {
     renderer->ResetCamera();
 
     // Actions
-    // TODO - Bind MenuBar actions
+    connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 }
 
+//  --------------------------------------------------------------------------------------
+//  ACTION SLOTS
+//  --------------------------------------------------------------------------------------
+void MainWindow::slotExit() {
+    this->close();
+    qApp->exit(0);
+}
+
+//  --------------------------------------------------------------------------------------
+//  PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
 void MainWindow::initAxes() {
     vtkNew<vtkNamedColors> colors;
@@ -56,17 +68,17 @@ void MainWindow::initAxes() {
     colors->GetColor("rgb", rgba);
 
     vtkNew<vtkAxesActor> axes;
-    vtkNew<vtkOrientationMarkerWidget> widget;
+    vtkNew<vtkOrientationMarkerWidget> axesWidget;
 
-    widget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
-    widget->SetOrientationMarker(axes);
+    axesWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    axesWidget->SetOrientationMarker(axes);
 #if VTK890
-    widget->SetInteractor(this->qvtkWidget->interactor());
+    axesWidget->SetInteractor(this->qvtkWidget->interactor());
 #else
-    widget->SetInteractor(this->qvtkWidget->GetInteractor());
+    axesWidget->SetInteractor(this->qvtkWidget->GetInteractor());
 #endif
-    widget->SetViewport(.0, .0, .2, .2);
-    widget->SetEnabled(1);
+    axesWidget->SetViewport(.0, .0, .2, .2);
+    axesWidget->SetEnabled(1);
 
-    this->widget = widget;
+    this->axesWidget = axesWidget;
 }

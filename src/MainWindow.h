@@ -38,10 +38,22 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @param dataDirectory The path to the objects directory
      */
     MainWindow(char* dataDirectory);
+  public slots:
+    /**
+     * Stop the application
+     */
+    void slotExit();
 
   private:
+    /**
+     * Path to directory that stores the objects to open
+     */
     QString objectDirectory;
-    vtkSmartPointer<vtkOrientationMarkerWidget> widget;
+
+    /**
+     *
+     */
+    vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget;
     QStringListModel* model;
 
     /**
