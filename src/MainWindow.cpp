@@ -13,6 +13,7 @@
 #define VTK890 1
 #endif
 
+//  --------------------------------------------------------------------------------------
 MainWindow::MainWindow(char* dataDirectory) {
 
     this->objectDirectory = QString::fromUtf8(dataDirectory);
@@ -44,8 +45,10 @@ MainWindow::MainWindow(char* dataDirectory) {
     renderer->ResetCamera();
 
     // Actions
+    // TODO - Bind MenuBar actions
 }
 
+//  --------------------------------------------------------------------------------------
 void MainWindow::initAxes() {
     vtkNew<vtkNamedColors> colors;
 

@@ -4,7 +4,7 @@ Based on [BorderWidgetQt example](https://lorensen.github.io/VTKExamples/site/Cx
 
 ## Dependencies
 
-- [VKT](https://vtk.org/), tested with versions:
+- [VTK](https://vtk.org/), tested with versions:
   - 9.0.1
   - 9.0.0
   - 8.2.0
