@@ -112,20 +112,20 @@
     <addaction name="separator"/>
     <addaction name="actionReset_Camera"/>
    </widget>
-   <widget class="QMenu" name="menuReults">
+   <widget class="QMenu" name="menuResults">
     <property name="title">
      <string>Results</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuInterract_With_Object">
+   <widget class="QMenu" name="menuInteract_With_Object">
     <property name="title">
-     <string>Interract with object</string>
+     <string>Interact with object</string>
     </property>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
-   <addaction name="menuReults"/>
-   <addaction name="menuInterract_With_Object"/>
+   <addaction name="menuResults"/>
+   <addaction name="menuInteract_With_Object"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="statusTip">
