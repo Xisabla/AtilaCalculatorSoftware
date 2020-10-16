@@ -7,8 +7,8 @@
   All rights reserved.
 
 =========================================================================*/
-#ifndef BorderWidgetQt_H
-#define BorderWidgetQt_H
+#ifndef ATILACALCULATORSOFTWARE_MAINWINDOW_H
+#define ATILACALCULATORSOFTWARE_MAINWINDOW_H
 
 #include <QMainWindow>
 #include <QStringListModel>
