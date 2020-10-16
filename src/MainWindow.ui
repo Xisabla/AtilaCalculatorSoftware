@@ -6,55 +6,162 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>572</width>
-    <height>583</height>
+    <width>1600</width>
+    <height>1200</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
-  </property>
-  <property name="iconSize">
-   <size>
-    <width>22</width>
-    <height>22</height>
-   </size>
-  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true"/>
+    </item>
+   </layout>
+   <!--
+   <widget class="QListView" name="listView">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>571</width>
-      <height>591</height>
+      <x>9</x>
+      <y>33</y>
+      <width>71</width>
+      <height>51</height>
      </rect>
     </property>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Tab 1</string>
-     </attribute>
-     <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>541</width>
-        <height>521</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>Tab 2</string>
-     </attribute>
-    </widget>
+    <property name="font">
+     <font>
+      <family>Ubuntu Mono</family>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="isWrapping" stdset="0">
+     <bool>true</bool>
+    </property>
+    <property name="resizeMode">
+     <enum>QListView::Adjust</enum>
+    </property>
+    <property name="layoutMode">
+     <enum>QListView::SinglePass</enum>
+    </property>
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
    </widget>
+   -->
+   <!--
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>109</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#aa0000;background-color : white;&quot;&gt;Informations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   -->
+   <zorder>qvtkWidget</zorder>
+   <!-- <zorder>listView</zorder> -->
+   <!-- <zorder>label</zorder> -->
   </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1600</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_File"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport_To_Text"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionZoom_on_Area"/>
+    <addaction name="separator"/>
+    <addaction name="actionReset_Camera"/>
+   </widget>
+   <widget class="QMenu" name="menuReults">
+    <property name="title">
+     <string>Results</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuInterract_With_Object">
+    <property name="title">
+     <string>Interract with object</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuReults"/>
+   <addaction name="menuInterract_With_Object"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="statusTip">
+    <string>Status: Nothing</string>
+   </property>
+  </widget>
+  <action name="actionOpen_File">
+   <property name="text">
+    <string>Open File (.res)</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionExport_To_Text">
+   <property name="text">
+    <string>Export (.msh)</string>
+   </property>
+  </action>
+  <action name="actionResults">
+   <property name="text">
+    <string>Results</string>
+   </property>
+  </action>
+  <action name="actionReset_Camera">
+   <property name="text">
+    <string>Reset Camera</string>
+   </property>
+  </action>
+  <action name="actionZoom_on_Area">
+   <property name="text">
+    <string>Zoom on Area</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -63,8 +170,6 @@
    <header>QVTKOpenGLNativeWidget.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="Icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
