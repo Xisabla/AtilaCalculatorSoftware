@@ -7,6 +7,7 @@ endif()
 
 PROJECT(AtilaCalculatorSoftware)
 
+# find VKT
 find_package(VTK COMPONENTS
   vtkCommonColor
   vtkCommonCore
@@ -19,8 +20,7 @@ find_package(VTK COMPONENTS
   vtkRenderingGL2PSOpenGL2
   vtkRenderingOpenGL2
   vtkGUISupportQt
-  QUIET
-)
+  QUIET)
 
 if (NOT VTK_FOUND)
   message("Skipping AtilaCalculatorSoftware: ${VTK_NOT_FOUND_MESSAGE}")
@@ -29,6 +29,15 @@ endif()
 
 message (STATUS "VTK_VERSION: ${VTK_VERSION}")
 
+# find hdf5
+find_package (HDF5 COMPONENTS CXX QUIET)
+
+if (NOT HDF5_FOUND)
+  message("Skipping AtilaCalculatorSoftware: HDF5 not found")
+  return ()
+endif()
+
+# automoc & autouic for qt
 if(vtkGUISupportQt_LOADED OR TARGET VTK::GUISupportQt)
   if (VTK_VERSION VERSION_LESS "8.90.0")
     # Instruct CMake to run moc automatically when needed.
@@ -45,6 +54,7 @@ else()
   return()
 endif()
 
+# source files & directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 file(GLOB UI_FILES src/*.ui)
@@ -53,6 +63,7 @@ file(GLOB CXX_FILES src/*.cpp)
 
 qt5_wrap_ui(UISrcs ${UI_FILES})
 
+# link vtk
 if (VTK_VERSION VERSION_LESS "8.90.0")
   # old system
   include(${VTK_USE_FILE})
@@ -73,3 +84,8 @@ else()
     MODULES ${VTK_LIBRARIES}
   )
 endif()
+
+# link other libs (gidpost, zlib, hdf5)
+target_link_libraries(AtilaCalculatorSoftware -lgidpost)
+target_link_libraries(AtilaCalculatorSoftware -lz)
+target_link_libraries(AtilaCalculatorSoftware ${HDF5_LIBRARIES})
