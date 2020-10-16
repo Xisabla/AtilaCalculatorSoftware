@@ -1,4 +1,4 @@
-# [Work In Progress] AtilaCalculatorSfotware v2
+# [Work In Progress] AtilaCalculatorSoftware v2
 
 Based on [BorderWidgetQt example](https://lorensen.github.io/VTKExamples/site/Cxx/Qt/BorderWidgetQt/)
 
