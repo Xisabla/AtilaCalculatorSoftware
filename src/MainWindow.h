@@ -10,6 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_MAINWINDOW_H
 #define ATILACALCULATORSOFTWARE_MAINWINDOW_H
 
+#include <QFileDialog>
 #include <QMainWindow>
 #include <QStringListModel>
 #include <vtkAxesActor.h>
@@ -44,6 +45,11 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     void slotExit();
 
+    /**
+     * Open and read object file, then render it
+     */
+    void slotOpenFile();
+
   private:
     /**
      * Path to directory that stores the objects to open
@@ -51,10 +57,11 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     QString objectDirectory;
 
     /**
-     *
+     * Movable widget that shows the axes
      */
     vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget;
-    QStringListModel* model;
+
+    // QStringListModel* model;
 
     /**
      * Initialize axes view

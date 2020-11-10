@@ -48,6 +48,7 @@ MainWindow::MainWindow(char* dataDirectory) {
 
     // Actions
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
+    connect(this->actionOpen_File, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
 }
 
 //  --------------------------------------------------------------------------------------
@@ -56,6 +57,11 @@ MainWindow::MainWindow(char* dataDirectory) {
 void MainWindow::slotExit() {
     this->close();
     qApp->exit(0);
+}
+
+void MainWindow::slotOpenFile() {
+    QString filename =
+    QFileDialog::getOpenFileName(this, "Select a .res file", this->objectDirectory, "Res (*.res)");
 }
 
 //  --------------------------------------------------------------------------------------

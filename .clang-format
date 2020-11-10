@@ -1,11 +1,13 @@
+AlignAfterOpenBracket: Align
 AlignEscapedNewlinesLeft: true
 AlignTrailingComments: true
-AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
+BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: false
 BreakBeforeBraces: Attach
@@ -16,6 +18,7 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 0
 ContinuationIndentWidth: 0
 Cpp11BracedListStyle: false
+ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: true
 IndentCaseLabels: true
 IndentWidth: 4

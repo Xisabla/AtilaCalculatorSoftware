@@ -4,6 +4,9 @@ Based on [BorderWidgetQt example](https://lorensen.github.io/VTKExamples/site/Cx
 
 ## Dependencies
 
+- [GiDPost](https://www.gidhome.com/) 2.7
+- [zlib](https://zlib.net/)
+- [HDF5 Library](https://portal.hdfgroup.org/pages/viewpage.action?pageId=50073884)
 - [VTK](https://vtk.org/), tested with versions:
   - 9.0.1
   - 9.0.0
