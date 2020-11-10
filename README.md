@@ -1,6 +1,4 @@
-# [Work In Progress] AtilaCalculatorSoftware v2
-
-Based on [BorderWidgetQt example](https://lorensen.github.io/VTKExamples/site/Cxx/Qt/BorderWidgetQt/)
+# [WIP] AtilaCalculatorSoftware v2
 
 ## Dependencies
 
@@ -32,3 +30,28 @@ cmake ../
 ```bash
 make run
 ```
+
+### TODO
+
+- [ ] Refactoring: Better structure, code comprehension and documentation/comments
+  - [ ] Transform all structures into class
+  - [ ] Merge all related files together (to finally have BinaryData, Mesh, Result)
+  - [ ] Rebuild global structure of the different current files/class/structs
+    - [ ] binary_data
+    - [ ] binary_data_class
+    - [ ] binary_data_GiD 
+    - [ ] mesh
+    - [ ] mesh_GiD
+    - [ ] result
+    - [ ] result_GiD
+  - [ ] Doxygen doc everywhere
+  - [ ] Comment for big spots
+  - [ ] Review and refactor (split) all big methods or macro methods
+- [ ] Debugging/Logging: Add a way to print important data, logging the different actions
+  - [ ] Log macro/method to write information into a log vector, log file or log window (or all of this)
+  - [ ] Use the log macro/method in any suitable/useful situation
+  - [ ] Intern/friend methods in any class & structure to show it's content in a readable way in the console
+  - [ ] Debug mode (from cli, eg: `./AtilaCalculatorSoftware --verbose` or `./AtilaCalculatorSoftware --debug=true`)
+  - [ ] Log window for the user to be able to see logs
+- [ ] New features
+  - [ ] Mesh visualisation
