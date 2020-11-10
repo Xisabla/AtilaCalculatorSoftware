@@ -26,7 +26,7 @@ find_package(VTK COMPONENTS
   QUIET)
 
 if (NOT VTK_FOUND)
-  message("Skipping AtilaCalculatorSoftware: ${VTK_NOT_FOUND_MESSAGE}")
+  message("Skipping AtilaCalculatorSoftware: VTK is not installed (${VTK_NOT_FOUND_MESSAGE})")
   return ()
 endif()
 
