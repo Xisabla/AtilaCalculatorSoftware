@@ -51,13 +51,15 @@ MainWindow::MainWindow(char* dataDirectory) {
 
     // Actions
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
-    connect(this->actionOpen_File, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
-    connect(this->actionZoom_on_Area, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
-    connect(this->actionReset_Camera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
+    connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+    connect(this->actionZoomOnArea, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
+    connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
+    connect(this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
     // Disable view action by default
-    this->actionZoom_on_Area->setDisabled(true);
-    this->actionReset_Camera->setDisabled(true);
+    this->actionZoomOnArea->setDisabled(true);
+    this->actionResetCamera->setDisabled(true);
+    this->actionInteractWithObject->setDisabled(true);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -81,50 +83,42 @@ void MainWindow::slotOpenFile() {
         this->binary = new Binary_data_class(filename.toStdString());
 
         // Enable view actions
-        this->actionZoom_on_Area->setEnabled(true);
-        this->actionReset_Camera->setEnabled(true);
+        this->actionZoomOnArea->setEnabled(true);
+        this->actionResetCamera->setEnabled(true);
+        this->actionInteractWithObject->setEnabled(true);
 
-        /*
-        QAction *b = this->menubar->addAction("To Text");
-        QAction *b = this->menuBar1->addAction("To Text");
-        QAction *d = this->menuBar1->addAction("Interact with object");
-        connect(b, SIGNAL(triggered()), this, SLOT(slotToText()));
-        connect(d, SIGNAL(triggered()), this, SLOT(slotInteractObj()));
-         */
-
-        /*
+        // Set result actions
         std::vector<float> steps;
-        std::map<float, QMenu*>stepsXmenus;
-
+        std::map<float, QMenu*> stepMenus;
 
         for (auto &&res: this->binary->results_) {
             if(!std::binary_search(steps.begin(), steps.end(), res.step_)) {
                 steps.push_back(res.step_);
-                QMenu *menu1 = this->menuResults->addMenu(QString::number(res.step_));
-                stepsXmenus.insert(std::pair<float, QMenu*>(res.step_, menu1));
+                QMenu * stepMenuItem = this->menuResults->addMenu(QString::number(res.step_));
+                stepMenus.insert(std::pair<float, QMenu*>(res.step_, stepMenuItem));
             }
 
-            QMenu *menu = stepsXmenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
+            QMenu *menu = stepMenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
 
             for(int i = 0; i < res.result_size_; i++) {
-                QAction *a;
+                QAction * resultItemAction;
 
                 if(res.component_names_.size() > 0) {
-                    a = menu->addAction(QString::fromStdString(res.component_names_.at(i)));
+                    resultItemAction = menu->addAction(QString::fromStdString(res.component_names_.at(i)));
                 } else {
-                    a = menu->addAction(QString::number(i));
+                    resultItemAction = menu->addAction(QString::number(i));
                 }
 
-                //connect(a, &QAction::trigger, [this, &res, i]() {
-                //  this->slotResult(res, i);
-                // })
+                connect(resultItemAction, &QAction::triggered, [this, &res, i]() {
+                    this->slotResult(res, i);
+                });
             }
-        }*/
+        }
 
         // Set the view
         this->setVTK(this->binary->results_.front(), 0);
     } else {
-        // NOTE: Crashes
+        // NOTE: Crashes when trying to load twice another .res file
         delete this->binary;
         this->binary = NULL;
 #if VTK890
@@ -155,13 +149,22 @@ void MainWindow::slotZoomArea() {
 #endif
 }
 
-void MainWindow::slotInteractObj() {
+void MainWindow::slotInteractWithObject() {
     vtkNew<vtkInteractorStyleTrackballCamera> style;
 #if VTK890
     this->qvtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
 #else
     this->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
 #endif
+}
+
+void MainWindow::slotResult(Str_Result& res, const int& choice) {
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#endif
+    this->setVTK(res, choice);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -189,19 +192,18 @@ void MainWindow::initAxes() {
 
     this->axesWidget = axesWidget;
 }
+
 void MainWindow::setVTK(Str_Result& res, const int& choice) {
     this->binary->setScalarFromQT2(res, choice);
 
     this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model);
     this->listView->adjustSize();
-    this->label->setVisible(true);
     this->listView->setVisible(true);
 
     double range[2] = { this->binary->getScalars()->GetRange()[0],
                         this->binary->getScalars()->GetRange()[1] };
 
-    // auto lut = vtkSmartPointer<vtkLookupTable>::New();
     vtkNew<vtkLookupTable> lut;
 
     lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1);

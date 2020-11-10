@@ -68,9 +68,16 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     void slotZoomArea();
 
     /**
-     *
+     * Reset the interactor to allow object interaction after zoomArea
      */
-    void slotInteractObj();
+    void slotInteractWithObject();
+
+    /**
+     * Select the result to visualise
+     * @param res Result to visualise
+     * @param choice Choice for setVTK method
+     */
+    void slotResult(Str_Result &res, const int& choice);
 
   private:
     /**
@@ -95,6 +102,11 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     void initAxes();
 
+    /**
+     * Load the VKT result and show it
+     * @param res Result read by the binary data
+     * @param choice
+     */
     void setVTK(Str_Result& res, const int& choice);
 };
 
