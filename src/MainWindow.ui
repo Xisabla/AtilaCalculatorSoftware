@@ -19,7 +19,6 @@
      <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true"/>
     </item>
    </layout>
-   <!--
    <widget class="QListView" name="listView">
     <property name="geometry">
      <rect>
@@ -56,8 +55,6 @@
      <bool>true</bool>
     </property>
    </widget>
-   -->
-   <!--
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -67,11 +64,19 @@
       <height>18</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Mono</family>
+     </font>
+    </property>
     <property name="autoFillBackground">
      <bool>true</bool>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#aa0000;background-color : white;&quot;&gt;Informations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>Information</string>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -80,10 +85,9 @@
      <bool>false</bool>
     </property>
    </widget>
-   -->
    <zorder>qvtkWidget</zorder>
-   <!-- <zorder>listView</zorder> -->
-   <!-- <zorder>label</zorder> -->
+   <zorder>listView</zorder>
+   <zorder>label</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

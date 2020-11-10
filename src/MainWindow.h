@@ -14,7 +14,11 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <vtkAxesActor.h>
+#include <vtkDataSetMapper.h>
 #include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkInteractorStyleRubberBandZoom.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkLookupTable.h>
 #include <vtkNamedColors.h>
 #include <vtkNew.h>
 #include <vtkOrientationMarkerWidget.h>
@@ -22,15 +26,18 @@
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
+#include <vtkScalarBarActor.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkVersion.h>
 
+#include "binary_data_class.hpp"
 #include "ui_MainWindow.h"
 
 /**
- * @class   MainWindow
- * @brief   Qt main window
+ * @class MainWindow
+ * @brief Qt main window
  */
 class MainWindow : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
@@ -50,6 +57,21 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     void slotOpenFile();
 
+    /**
+     * Reset the camera view as default
+     */
+    void slotResetCamera();
+
+    /**
+     * Allow the user to select an area to zoom on
+     */
+    void slotZoomArea();
+
+    /**
+     *
+     */
+    void slotInteractObj();
+
   private:
     /**
      * Path to directory that stores the objects to open
@@ -61,13 +83,19 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget;
 
-    // QStringListModel* model;
+    QStringListModel* model;
+
+    /**
+     * Data imported from the current .res file
+     */
+    Binary_data_class* binary = NULL;
 
     /**
      * Initialize axes view
      */
     void initAxes();
-    // void setVTK(Str_Result &res, const in& choice);
+
+    void setVTK(Str_Result& res, const int& choice);
 };
 
 #endif

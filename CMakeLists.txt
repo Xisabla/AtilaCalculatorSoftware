@@ -7,6 +7,9 @@ endif()
 
 PROJECT(AtilaCalculatorSoftware)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # find VKT
 find_package(VTK COMPONENTS
   vtkCommonColor
