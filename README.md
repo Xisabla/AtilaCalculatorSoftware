@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- [GiDPost](https://www.gidhome.com/) 2.7
+- [GiDPost](https://www.gidhome.com/gid-plus/tools/476/gidpost/) 2.7
 - [zlib](https://zlib.net/)
 - [HDF5 Library](https://portal.hdfgroup.org/pages/viewpage.action?pageId=50073884)
 - [VTK](https://vtk.org/), tested with versions:
