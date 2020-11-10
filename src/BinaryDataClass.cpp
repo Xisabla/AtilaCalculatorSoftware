@@ -1,15 +1,24 @@
-#include "binary_data_class.hpp"
-#include <fstream>
+/*=========================================================================
+
+  Project:   AtilaCalculatorSoftware
+  File:      BinaryDataClass.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "BinaryDataClass.h"
+
 using namespace std;
 
-Binary_data_class::Binary_data_class(string str): Str_binary_data_GiD(str), pathToFile(str) {
+Binary_data_class::Binary_data_class(std::string str): Str_binary_data_GiD(str), pathToFile(str) {
     this->read_meshes();
     while (auto one_result = read_one_result()) {
         results_.emplace_back(move(*one_result));
     }
     this->setUpGiDtoVTK();
 }
-string Binary_data_class::getPath() const { return pathToFile; }
+std::string Binary_data_class::getPath() const { return pathToFile; }
 Binary_data_class::~Binary_data_class() { }
 vtkSmartPointer<vtkPoints> Binary_data_class::getvtkPoints() const { return this->points; }
 vtkSmartPointer<vtkCellArray> Binary_data_class::getvtkCellArray() const { return this->array; }
@@ -102,7 +111,8 @@ void Binary_data_class::toTextFile() {
     GiD_PostDone();
 }
 vtkSmartPointer<vtkUnstructuredGrid> Binary_data_class::getUGrid() const { return uGrid; }
-vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const string& str, const int& ndim_) {
+vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const std::string& str,
+                                                          const int& ndim_) {
     if (ndim_ == 2) {
         if (str == "Triangle") {
             auto cell = vtkSmartPointer<vtkQuadraticTriangle>::New();

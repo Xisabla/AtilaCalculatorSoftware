@@ -20,6 +20,7 @@ ContinuationIndentWidth: 0
 Cpp11BracedListStyle: false
 ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: true
+IncludeBlocks: Regroup
 IndentCaseLabels: true
 IndentWidth: 4
 Language: Cpp

@@ -10,6 +10,9 @@
 #ifndef ATILACALCULATORSOFTWARE_MAINWINDOW_H
 #define ATILACALCULATORSOFTWARE_MAINWINDOW_H
 
+#include "BinaryDataClass.h"
+#include "ui_MainWindow.h"
+
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QStringListModel>
@@ -31,9 +34,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkVersion.h>
-
-#include "binary_data_class.hpp"
-#include "ui_MainWindow.h"
 
 /**
  * @class MainWindow

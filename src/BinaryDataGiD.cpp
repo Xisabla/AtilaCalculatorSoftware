@@ -1,6 +1,13 @@
-#include <math.h>
+/*=========================================================================
 
-#include "binary_data_GiD.hpp"
+  Project:   AtilaCalculatorSoftware
+  File:      BinaryDataGiD.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "BinaryDataGiD.h"
 
 Str_binary_data_GiD::Str_binary_data_GiD(std::string file): Str_binary_data(file) { }
 
@@ -21,7 +28,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                 if ((std::string::npos == my_imag->results_.find("Imag")) ||
                     (my_real->result_size_ != my_imag->result_size_) ||
                     (my_real->number_of_results_ != my_imag->number_of_results_)) {
-                    throw string("Cannot read binary file (Result) !");
+                    throw std::string("Cannot read binary file (Result) !");
                 }
                 switch (my_real->result_size_) {
                     case 1: {
@@ -42,7 +49,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                 auto [node_number_real, data_real] = my_real->get_one_result(j);
                                 auto [node_number_imag, data_imag] = my_imag->get_one_result(j);
                                 if (node_number_real != node_number_imag) {
-                                    throw string("Cannot read binary file (Result)");
+                                    throw std::string("Cannot read binary file (Result)");
                                 }
                                 if (*data_real != GP_UNKNOWN) {
                                     auto square_dispx =
@@ -81,7 +88,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                 auto [node_number_real, data_real] = my_real->get_one_result(j);
                                 auto [node_number_imag, data_imag] = my_imag->get_one_result(j);
                                 if (node_number_real != node_number_imag) {
-                                    throw string("Cannot read binary file (Result) !");
+                                    throw std::string("Cannot read binary file (Result) !");
                                 }
 
                                 if (*data_real != GP_UNKNOWN) {

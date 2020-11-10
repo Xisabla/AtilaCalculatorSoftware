@@ -1,4 +1,14 @@
-#include "mesh.hpp"
+/*=========================================================================
+
+  Project:   AtilaCalculatorSoftware
+  File:      Mesh.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "Mesh.h"
+
 
 Str_Mesh::Str_Mesh(gzFile file_msh, dataFields fields)
 : mesh_name_(fields[1]), ndim_(std::atoi(fields[3])), element_name_(fields[5]),

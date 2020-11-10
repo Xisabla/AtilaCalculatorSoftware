@@ -221,7 +221,7 @@ void MainWindow::setVTK(Str_Result& res, const int& choice) {
 
     vtkNew<vtkScalarBarActor> scalarBar;
     scalarBar->SetLookupTable(mapper->GetLookupTable());
-    scalarBar->SetTitle(string(res.analysis_ + std::to_string(choice)).c_str());
+    scalarBar->SetTitle(std::string(res.analysis_ + std::to_string(choice)).c_str());
     scalarBar->UnconstrainedFontSizeOn();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio() / 2.0);

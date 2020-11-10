@@ -55,7 +55,7 @@ Str_binary_data::~Str_binary_data() {
     std::cout << "clearing ... " << std::endl;
 }
 
-Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), "r1")) {
+Str_binary_data::Str_binary_data(std::string file): file_msh_(gzopen((file).c_str(), "r1")) {
 
     char buffer[GZ_BUFFER_SIZE];
     int size;
@@ -69,19 +69,19 @@ Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), 
     int ret = gzread(file_msh_, &size, sizeof(ByteOrderCheck));
 
     if (ret && ByteOrderCheck != size) {
-        throw string("Cannot read binary file (Mesh)");
+        throw std::string("Cannot read binary file (Mesh)");
     }
 
     ret = gzread(file_msh_, &size, sizeof(int));
     if (ret == 0) {
-        throw string("Cannot read binary file (Mesh)");
+        throw std::string("Cannot read binary file (Mesh)");
     }
 
     size *= sizeof(char);
 
     ret = gzread(file_msh_, buffer, size);
     if (ret == 0) {
-        throw string("Cannot read binary file (Mesh)");
+        throw std::string("Cannot read binary file (Mesh)");
     }
 
     /*
@@ -127,7 +127,7 @@ bool Str_binary_data::read_meshes() {
         size = getFields(file_msh_, buffer, fields);
     }
     if (gzseek(file_msh_, current_position, SEEK_SET) == -1) {
-        throw string("Cannot read binary file (Mesh)");
+        throw std::string("Cannot read binary file (Mesh)");
     }
 
     result_position_ = current_position;

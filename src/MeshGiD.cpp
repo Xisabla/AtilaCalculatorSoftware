@@ -1,7 +1,14 @@
-#include "mesh_GiD.hpp"
-#include "gidpost.h"
-#include <algorithm> // std::max
-#include <iostream>  // std::max
+/*=========================================================================
+
+  Project:   AtilaCalculatorSoftware
+  File:      MeshGiD.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "MeshGiD.h"
+
 /*
     elementType = giveTheTypeOfElementForGiD(elementName);
     GiD_BeginMesh(meshName, ndim == 3 ? GiD_3D : GiD_2D, elementType, nnode);

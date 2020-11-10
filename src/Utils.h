@@ -11,7 +11,10 @@
 #define ATILACALCULATORSOFTWARE_UTILS_H
 
 #include "zlib.h"
+
 #include <ostream>
+#include <stdexcept>
+#include <string>
 
 //  --------------------------------------------------------------------------------------
 //  DEFINES
@@ -36,6 +39,7 @@
  */
 #define __THROW__(x) throw std::runtime_error(std::string("[" + __HERE__ + "] " + x));
 
+// TODO: LOG and DEBUG macros
 // #define __LOG__(x)
 // #define __DEBUG__(x)
 
@@ -52,7 +56,6 @@
 //  STRUCTURES AND TYPEs
 //  --------------------------------------------------------------------------------------
 
-// using dataFields = char[10][40];
 typedef char dataFields[10][40];
 
 #endif // ATILACALCULATORSOFTWARE_UTILS_H

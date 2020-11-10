@@ -1,4 +1,13 @@
-#include "result.hpp"
+/*=========================================================================
+
+  Project:   AtilaCalculatorSoftware
+  File:      Result.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "Result.h"
 
 Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size)
 : analysis_(fields[1]), results_(fields[2]), step_(static_cast<float>(std::atof(fields[3]))),
@@ -41,13 +50,13 @@ Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size
         node_numbers[shift_nodes++] = node_number;
         shift_results += result_size;
         if (local_size == 0) {
-            throw string("Cannot read binary file (Result)");
+            throw std::string("Cannot read binary file (Result)");
         }
 
         //		result.add_result(node_number - 1, float_fields);
         local_size = gzread(file_msh, &node_number, sizeof(int));
         if (local_size == 0) {
-            throw string("Cannot read binary file (Result)");
+            throw std::string("Cannot read binary file (Result)");
         }
     }
     local_size = gzread(file_msh, &node_number, sizeof(int));
