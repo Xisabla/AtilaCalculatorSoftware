@@ -1,24 +1,25 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include "binary_data.hpp"
-#include "gidpost.h"
-#include <iostream>
-#include <math.h>
-#include <string>
-#include <vector>
-#include <zlib.h>
+/*=========================================================================
+
+  Project:   AtilaCalculatorSoftware
+  File:      BinaryData.cpp
+
+  Copyright (c) 2020
+  All rights reserved.
+
+=========================================================================*/
+#include "BinaryData.h"
 
 static int ByteOrderCheck = 0x91d;
 
-
-int get_fields(gzFile file_msh, char dummy_char[SIZE], My_fields fields) {
+int getFields(gzFile file, char* buffer, dataFields fields) {
     unsigned int size = 0;
-    MYGZREAD(file_msh, &size, 1);
-    MYGZREAD(file_msh, dummy_char, size);
-    char* ptr = strtok(dummy_char, " ");
+    GZ_READ_CHECK(file, &size, 1);
+    GZ_READ_CHECK(file, buffer, size);
+    char* ptr = strtok(buffer, " ");
     while ((ptr[0] == '#' || !strcmp(ptr, "Unit") || size == 1) && size != 0) {
-        MYGZREAD(file_msh, &size, 1);
-        MYGZREAD(file_msh, dummy_char, size);
-        ptr = strtok(dummy_char, " ");
+        GZ_READ_CHECK(file, &size, 1);
+        GZ_READ_CHECK(file, buffer, size);
+        ptr = strtok(buffer, " ");
     }
     if (!size) {
         throw result_exception { "No more data" };
@@ -56,12 +57,12 @@ Str_binary_data::~Str_binary_data() {
 
 Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), "r1")) {
 
-    char dummy_char[SIZE];
+    char buffer[GZ_BUFFER_SIZE];
     int size;
 
     //	gzFile file_msh = gzopen((file).c_str(), "r1");
     if (!file_msh_) {
-        printf("Can't read msh file %s\n", dummy_char);
+        printf("Can't read msh file %s\n", buffer);
         exit(1);
     }
 
@@ -78,7 +79,7 @@ Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), 
 
     size *= sizeof(char);
 
-    ret = gzread(file_msh_, dummy_char, size);
+    ret = gzread(file_msh_, buffer, size);
     if (ret == 0) {
         throw string("Cannot read binary file (Mesh)");
     }
@@ -86,7 +87,7 @@ Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), 
     /*
     My_fields fields;
 
-    size = get_fields(file_msh, dummy_char, fields);
+    size = get_fields(file_msh, buffer, fields);
     while (size > 0) {
         if (!strcmp(fields[0], "MESH")) {
             meshes.emplace_back(file_msh, fields);
@@ -107,23 +108,23 @@ Str_binary_data::Str_binary_data(string file): file_msh_(gzopen((file).c_str(), 
                 }
             }
         }
-        size = get_fields(file_msh, dummy_char, fields);
+        size = getFields(file_msh, buffer, fields);
     }
      */
 }
 
 bool Str_binary_data::read_meshes() {
-    char dummy_char[SIZE];
+    char buffer[GZ_BUFFER_SIZE];
     int size;
 
-    My_fields fields;
+    dataFields fields;
     z_off_t current_position = gztell(file_msh_);
-    size = get_fields(file_msh_, dummy_char, fields);
+    size = getFields(file_msh_, buffer, fields);
     while (size > 0 && !strcmp(fields[0], "MESH")) {
         meshes_.emplace_back(file_msh_, fields);
         meshes_read_ = true;
         current_position = gztell(file_msh_);
-        size = get_fields(file_msh_, dummy_char, fields);
+        size = getFields(file_msh_, buffer, fields);
     }
     if (gzseek(file_msh_, current_position, SEEK_SET) == -1) {
         throw string("Cannot read binary file (Mesh)");
@@ -135,9 +136,9 @@ bool Str_binary_data::read_meshes() {
 
 std::optional<Str_Result> Str_binary_data::read_one_result() {
     if (Str_Mesh::number_of_nodes_max_ > 0) {
-        char dummy_char[SIZE];
-        My_fields fields;
-        if (get_fields(file_msh_, dummy_char, fields)) {
+        char buffer[GZ_BUFFER_SIZE];
+        dataFields fields;
+        if (getFields(file_msh_, buffer, fields)) {
             if (!strcmp(fields[0], "Result")) {
                 if (!strcmp(fields[4], "Vector")) {
                     return Str_Result(file_msh_, fields, 4);

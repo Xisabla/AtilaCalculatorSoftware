@@ -1,63 +1,59 @@
 #include "mesh.hpp"
-#include <algorithm> // std::max
 
-Str_Mesh::Str_Mesh(gzFile file_msh, char fields[10][40])
+Str_Mesh::Str_Mesh(gzFile file_msh, dataFields fields)
 : mesh_name_(fields[1]), ndim_(std::atoi(fields[3])), element_name_(fields[5]),
   nnode_(std::atoi(fields[7])) {
-
-    if (strcmp("dimension", fields[2])) {
-        throw string("Cannot read binary file (Mesh)");
-    }
-
-    if (strcmp("ElemType", fields[4])) {
-        throw string("Cannot read binary file (Mesh)");
-    }
-
-    if (strcmp("Nnode", fields[6])) {
-        throw string("Cannot read binary file (Mesh)");
-    }
+    // Fields assertions
+    if (strcmp("dimension", fields[2]))
+        __THROW__("Cannot read binary file: fields[2], expected \"dimensions\", got \"" +
+                  fields[2] + "\"");
+    if (strcmp("ElemType", fields[4]))
+        __THROW__("Cannot read binary file: fields[4], expected \"ElemType\", got \"" + fields[4] +
+                  "\"");
+    if (strcmp("Nnode", fields[6]))
+        __THROW__("Cannot read binary file: fields[6], expected \"Nnode\", got \"" + fields[6] +
+                  "\"");
 
     float coord[3];
-    char dummy_char[SIZE];
+    char buffer[GZ_BUFFER_SIZE];
     int node_number = 1;
     int element_number = 1;
     int count = 0;
     int status;
 
-    if (get_fields(file_msh, dummy_char, fields) == 0) {
-        throw string("Cannot read binary file (Mesh)");
-    }
+    if (getFields(file_msh, buffer, fields) == 0)
+        __THROW__("Cannot read binary file: read size is not the expected size");
+
     if (!strcmp(fields[0], "Coordinates")) {
         count = node_number;
         while (count) {
             status = gzread(file_msh, &node_number, sizeof(int));
-            if (status == 0) {
-                throw string("Cannot read binary file (Mesh)");
-            }
+            if (status == 0)
+                __THROW__("Cannot read binary file: an error has occurred while reading the node "
+                          "coordinates");
 
             if (node_number != count) {
-                status = gzread(file_msh, dummy_char, node_number);
-                if (status == 0) {
-                    throw string("Cannot read binary file (Mesh)");
-                }
-                if (!strcmp(dummy_char, "End Coordinates")) {
+                status = gzread(file_msh, buffer, node_number);
+                if (status == 0)
+                    __THROW__("Cannot read binary file: an error has occurred while reading the "
+                              "node coordinates");
+                if (!strcmp(buffer, "End Coordinates")) {
                     node_number = count;
                     break;
                 }
             }
             ++count;
             status = gzread(file_msh, &coord, sizeof(coord));
-            if (status == 0) {
-                throw string("Cannot read binary file (Mesh)");
-            }
+            if (status == 0)
+                __THROW__("Cannot read binary file: an error has occurred while reading the node "
+                          "coordinates");
             tab_of_nodes_.emplace_back(node_number, coord);
         }
         number_of_nodes_max_ = std::max(number_of_nodes_max_, tab_of_nodes_.size());
     }
 
-    if (get_fields(file_msh, dummy_char, fields) == 0) {
-        throw string("Cannot read binary file");
-    }
+    if (getFields(file_msh, buffer, fields) == 0)
+        __THROW__("Cannot read binary file: an error has occurred while reading the fields");
     if (!strcmp(fields[0], "Elements")) {
         const int nb_nodes = nnode_ + 1;
         //		const int nb_nodes = nnode_;
@@ -69,12 +65,12 @@ Str_Mesh::Str_Mesh(gzFile file_msh, char fields[10][40])
         static int count = 1;
         while (count) {
             status = gzread(file_msh, &element_number, sizeof(int));
-            if (status == 0) {
-                throw string("Cannot read binary file (Mesh)");
-            }
+            if (status == 0)
+                __THROW__(
+                "Cannot read binary file: an error has occurred while reading the elements");
             if (element_number != count) {
-                status = gzread(file_msh, dummy_char, element_number);
-                if (!strcmp(dummy_char, "End Elements")) {
+                status = gzread(file_msh, buffer, element_number);
+                if (!strcmp(buffer, "End Elements")) {
                     element_number = count;
                     break;
                 }
@@ -84,9 +80,9 @@ Str_Mesh::Str_Mesh(gzFile file_msh, char fields[10][40])
             status = gzread(file_msh, &elements[shift_elements], size_of_an_element);
             shift_elements += nb_nodes;
             //			elements.emplace_back(element_number, node_numbers);
-            if (status == 0) {
-                throw string("Cannot read binary file (Mesh)");
-            }
+            if (status == 0)
+                __THROW__(
+                "Cannot read binary file: an error has occurred while reading the elements");
         }
 
         this->element_numbers_ = std::make_unique<int[]>(shift_nodes);

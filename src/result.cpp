@@ -1,12 +1,9 @@
 #include "result.hpp"
-#include "mesh.hpp"
-#include <cstring>
 
-
-Str_Result::Str_Result(gzFile file_msh, char fields[10][40], const int result_size)
+Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size)
 : analysis_(fields[1]), results_(fields[2]), step_(static_cast<float>(std::atof(fields[3]))),
   result_size_(result_size) {
-    char dummy_char[SIZE];
+    char buffer[GZ_BUFFER_SIZE];
     int node_number = 0;
 
     int size_to_read = result_size * sizeof(float);
@@ -14,12 +11,12 @@ Str_Result::Str_Result(gzFile file_msh, char fields[10][40], const int result_si
     auto node_numbers = std::make_unique<int[]>(Str_Mesh::number_of_nodes_max_);
     auto results = std::make_unique<float[]>(result_size * Str_Mesh::number_of_nodes_max_);
 
-    auto local_size = get_fields(file_msh, dummy_char, fields);
+    auto local_size = getFields(file_msh, buffer, fields);
     if (!strncmp(fields[0], "ComponentNames", 14)) {
         for (auto i = 0; i < result_size; ++i) {
             this->component_names_.emplace_back(fields[i]);
         }
-        local_size = get_fields(file_msh, dummy_char, fields);
+        local_size = getFields(file_msh, buffer, fields);
     } else {
         if (result_size == 1) {
             strcpy(fields[0], "X");
@@ -54,8 +51,8 @@ Str_Result::Str_Result(gzFile file_msh, char fields[10][40], const int result_si
         }
     }
     local_size = gzread(file_msh, &node_number, sizeof(int));
-    local_size = gzread(file_msh, dummy_char, node_number);
-    if (strcmp(dummy_char, "End Values")) {
+    local_size = gzread(file_msh, buffer, node_number);
+    if (strcmp(buffer, "End Values")) {
         throw result_exception { "No more result" };
     }
 

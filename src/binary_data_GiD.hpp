@@ -1,12 +1,12 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <memory>
-#include <optional>
+#include "BinaryData.h"
 #include "gidpost.h"
 #include "mesh_GiD.hpp"
 #include "result_GiD.hpp"
-#include "binary_data.hpp"
+#include <memory>
+#include <optional>
+#include <string>
+#include <vector>
 
 struct Str_binary_data_GiD : Str_binary_data{
 //	std::vector<Str_Mesh_GiD> meshes_;

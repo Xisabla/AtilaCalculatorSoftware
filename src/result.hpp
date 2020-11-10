@@ -7,6 +7,8 @@
 #include <memory>
 #include <exception> // for std::exception
 #include <tuple>
+#include "mesh.hpp"
+#include <cstring>
 
 #include "zlib.h"
 
@@ -42,7 +44,7 @@ struct Str_Result {
 	std::unique_ptr<int[]> node_numbers_;
 	std::unique_ptr<float[]> data_;
 
-	Str_Result(gzFile file_msh, char names[10][40], const int result_size);
+	Str_Result(gzFile file_msh, dataFields names, const int result_size);
 
 	std::tuple<int&, float*> const get_one_result(const int &ind);
 	/*
