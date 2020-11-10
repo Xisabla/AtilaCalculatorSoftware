@@ -77,7 +77,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @param res Result to visualise
      * @param choice Choice for setVTK method
      */
-    void slotResult(Str_Result &res, const int& choice);
+    void slotResult(Str_Result& res, const int& choice);
 
   private:
     /**

@@ -54,7 +54,8 @@ MainWindow::MainWindow(char* dataDirectory) {
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->actionZoomOnArea, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
     connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
-    connect(this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
+    connect(
+    this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
     // Disable view action by default
     this->actionZoomOnArea->setDisabled(true);
@@ -91,20 +92,21 @@ void MainWindow::slotOpenFile() {
         std::vector<float> steps;
         std::map<float, QMenu*> stepMenus;
 
-        for (auto &&res: this->binary->results_) {
-            if(!std::binary_search(steps.begin(), steps.end(), res.step_)) {
+        for (auto&& res: this->binary->results_) {
+            if (!std::binary_search(steps.begin(), steps.end(), res.step_)) {
                 steps.push_back(res.step_);
-                QMenu * stepMenuItem = this->menuResults->addMenu(QString::number(res.step_));
+                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(res.step_));
                 stepMenus.insert(std::pair<float, QMenu*>(res.step_, stepMenuItem));
             }
 
-            QMenu *menu = stepMenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
+            QMenu* menu = stepMenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
 
-            for(int i = 0; i < res.result_size_; i++) {
-                QAction * resultItemAction;
+            for (int i = 0; i < res.result_size_; i++) {
+                QAction* resultItemAction;
 
-                if(res.component_names_.size() > 0) {
-                    resultItemAction = menu->addAction(QString::fromStdString(res.component_names_.at(i)));
+                if (res.component_names_.size() > 0) {
+                    resultItemAction =
+                    menu->addAction(QString::fromStdString(res.component_names_.at(i)));
                 } else {
                     resultItemAction = menu->addAction(QString::number(i));
                 }
