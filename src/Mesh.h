@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cstring>
 #include <gidpost.h>
+#include <map>
 #include <math.h>
 #include <memory>
 #include <string>
@@ -22,7 +23,13 @@
 #include <vector>
 #include <zlib.h>
 
+#define DIM(x) x == 3 ? GiD_3D : GiD_2D
+
 namespace Mesh {
+
+//  --------------------------------------------------------------------------------------
+//  NODE
+//  --------------------------------------------------------------------------------------
 
 /**
  * @class Node
@@ -82,6 +89,10 @@ class Node {
     float coord[3];
 };
 
+//  --------------------------------------------------------------------------------------
+//  MESH
+//  --------------------------------------------------------------------------------------
+
 /**
  * @class Mesh
  * @brief Representation of a mesh, all of its nodes and elements
@@ -136,9 +147,28 @@ class Mesh {
     const std::tuple<int&, int*> getElement(const int& id);
 
     /**
+     * @brief Write the mesh into a PostResultFile
+     * @return The state of the GiD Post Mesh closure
+     */
+    const int toPostGid();
+
+    /**
+     * @brief Get the GiD_ElementType of a string encoded GiDElementType
+     * @param element string encoded GiD_ElementType
+     * @return The according GiD_ElementType, GiD_NoElement by default
+     * @throw runtime_error if the encoded GiD_ElementType is not recognized
+     */
+    const static GiD_ElementType getGiDElementType(const char* element);
+
+    /**
      * @brief Biggest number of node encountered in the mesh
      */
     static size_t maxNodeCount;
+
+    /**
+     * @brief Map of all recognized GiD_ElementType according to their string encoded value
+     */
+    const static std::map<std::string, GiD_ElementType> GiD_ElementTypeEncoding;
 
   private:
     /**
@@ -200,6 +230,10 @@ class Mesh {
      */
     std::unique_ptr<int[]> elementsConnectivity;
 };
+
+//  --------------------------------------------------------------------------------------
+//  METHODS
+//  --------------------------------------------------------------------------------------
 
 const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
 

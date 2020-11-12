@@ -76,6 +76,20 @@ Mesh::Mesh::Mesh(gzFile file, dataFields(fields)) {
 
 size_t Mesh::Mesh::maxNodeCount = 0;
 
+const std::map<std::string, GiD_ElementType> Mesh::Mesh::GiD_ElementTypeEncoding = {
+    { "", GiD_NoElement },
+    { "Point", GiD_NoElement },
+    { "Linear", GiD_NoElement },
+    { "Triangle", GiD_Triangle },
+    { "Quadrilateral", GiD_Quadrilateral },
+    { "Tetrahedra", GiD_Tetrahedra },
+    { "Hexahedra", GiD_Hexahedra },
+    { "Prism", GiD_Prism },
+    { "Pyramid", GiD_NoElement },
+    { "Sphere", GiD_NoElement },
+    { "Circle", GiD_NoElement }
+};
+
 //  --------------------------------------------------------------------------------------
 //  MESH > MESH > GETTERS
 //  --------------------------------------------------------------------------------------
@@ -96,6 +110,34 @@ std::vector<Mesh::Node> Mesh::Mesh::getNodes() { return this->nodes; }
 
 const std::tuple<int&, int*> Mesh::Mesh::getElement(const int& id) {
     return std::make_tuple(std::ref(elementsConnectivity[id]), &elements[id * (nodeCount + 1)]);
+}
+
+const int Mesh::Mesh::toPostGid() {
+    GiD_BeginMesh(name.c_str(), DIM(dimCount), elementType, nodeCount);
+
+    // Write Coordinates
+    GiD_BeginCoordinates();
+    for(Node &node: nodes) GiD_WriteCoordinates(node.getId(), node.getX(), node.getY(), node.getZ());
+    GiD_EndCoordinates();
+
+    // Write Elements
+    GiD_BeginElements();
+    for(unsigned int i = 0; i < elementCount; i++) {
+        auto [id, nid] = getElement(i);
+        GiD_WriteElement(id, nid);
+    }
+    GiD_EndElements();
+
+    return GiD_EndMesh();
+}
+
+const GiD_ElementType Mesh::Mesh::getGiDElementType(const char* element) {
+    std::string elementString(element);
+    auto it = GiD_ElementTypeEncoding.find(elementString);
+
+    if(it != GiD_ElementTypeEncoding.end()) return GiD_ElementTypeEncoding.at(elementString);
+
+    __THROW__("Cannot find the type of the given element: " + element);
 }
 
 //  --------------------------------------------------------------------------------------

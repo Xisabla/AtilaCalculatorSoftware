@@ -201,7 +201,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
 
 void Str_binary_data_GiD::write_meshes() {
     for (auto& mesh: meshes_) {
-        write_to_post_gid_file(mesh);
+        mesh.toPostGid();
     }
 }
 
