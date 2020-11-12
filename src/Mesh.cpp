@@ -117,12 +117,13 @@ const int Mesh::Mesh::toPostGid() {
 
     // Write Coordinates
     GiD_BeginCoordinates();
-    for(Node &node: nodes) GiD_WriteCoordinates(node.getId(), node.getX(), node.getY(), node.getZ());
+    for (Node& node: nodes)
+        GiD_WriteCoordinates(node.getId(), node.getX(), node.getY(), node.getZ());
     GiD_EndCoordinates();
 
     // Write Elements
     GiD_BeginElements();
-    for(unsigned int i = 0; i < elementCount; i++) {
+    for (unsigned int i = 0; i < elementCount; i++) {
         auto [id, nid] = getElement(i);
         GiD_WriteElement(id, nid);
     }
@@ -135,7 +136,7 @@ const GiD_ElementType Mesh::Mesh::getGiDElementType(const char* element) {
     std::string elementString(element);
     auto it = GiD_ElementTypeEncoding.find(elementString);
 
-    if(it != GiD_ElementTypeEncoding.end()) return GiD_ElementTypeEncoding.at(elementString);
+    if (it != GiD_ElementTypeEncoding.end()) return GiD_ElementTypeEncoding.at(elementString);
 
     __THROW__("Cannot find the type of the given element: " + element);
 }
