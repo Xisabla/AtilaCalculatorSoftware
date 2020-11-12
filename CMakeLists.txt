@@ -88,6 +88,8 @@ else()
   )
 endif()
 
+add_compile_definitions(DEBUG)
+
 # link other libs (gidpost, zlib, hdf5)
 target_link_libraries(AtilaCalculatorSoftware -lgidpost)
 target_link_libraries(AtilaCalculatorSoftware -lz)

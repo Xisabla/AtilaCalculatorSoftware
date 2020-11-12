@@ -154,13 +154,11 @@ void Mesh::Mesh::readCoordinates(gzFile& file, char* buffer) {
     while (count) {
         // Read nodeId
         if (gzread(file, &nodeId, sizeof(int)) == 0)
-            __THROW__(
-            "Cannot read binary file: an error has occurred while reading the node coordinates");
+            __THROW__("Cannot read binary file: an error has occurred while reading node id");
 
         if (nodeId != count) {
             if (gzread(file, buffer, nodeId) == 0)
-                __THROW__("Cannot read binary file: an error has occurred while reading the node "
-                          "coordinates");
+                __THROW__("Cannot read binary file: an error has occurred while reading the nodes");
 
             // Reached end of coordinates reading
             if (!strcmp(buffer, "End Coordinates")) {

@@ -10,11 +10,10 @@
 #ifndef ATILACALCULATORSOFTWARE_UTILS_H
 #define ATILACALCULATORSOFTWARE_UTILS_H
 
-#include "zlib.h"
-
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <zlib.h>
 
 //  --------------------------------------------------------------------------------------
 //  DEFINES
@@ -39,9 +38,22 @@
  */
 #define __THROW__(x) throw std::runtime_error(std::string("[" + __HERE__ + "] " + x));
 
-// TODO: LOG and DEBUG macros
-// #define __LOG__(x)
-// #define __DEBUG__(x)
+#ifdef DEBUG
+#define __DEBUG__(x) std::cout << "[" << __HERE__ << "]" << x << std::endl;
+#define __DEBUG_FIELDS__(x)                                                          \
+    __DEBUG__(std::string("Fields: ") + std::string(fields[0]) + std::string(", ") + \
+              std::string(fields[1]) + std::string(", ") + std::string(fields[2]) +  \
+              std::string(", ") + std::string(fields[3]) + std::string(", ") +       \
+              std::string(fields[4]) + std::string(", ") + std::string(fields[5]) +  \
+              std::string(", ") + std::string(fields[6]) + std::string(", ") +       \
+              std::string(fields[7]) + std::string(", ") + std::string(fields[8]) +  \
+              std::string(", ") + std::string(fields[9]));
+#else
+#define __DEBUG__(x) \
+    { }
+#define __DEBUG_FIELDS__(x) \
+    { }
+#endif
 
 /**
  * @brief Macro to read a compressed file using gzread (zlib) that returns -1 if the read size is
