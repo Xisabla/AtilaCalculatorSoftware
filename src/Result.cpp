@@ -17,15 +17,15 @@ Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size
 
     int size_to_read = result_size * sizeof(float);
 
-    auto node_numbers = std::make_unique<int[]>(Str_Mesh::number_of_nodes_max_);
-    auto results = std::make_unique<float[]>(result_size * Str_Mesh::number_of_nodes_max_);
+    auto node_numbers = std::make_unique<int[]>(Mesh::Mesh::maxNodeCount);
+    auto results = std::make_unique<float[]>(result_size * Mesh::Mesh::maxNodeCount);
 
-    auto local_size = getFields(file_msh, buffer, fields);
+    auto local_size = Mesh::getFields(file_msh, buffer, fields);
     if (!strncmp(fields[0], "ComponentNames", 14)) {
         for (auto i = 0; i < result_size; ++i) {
             this->component_names_.emplace_back(fields[i]);
         }
-        local_size = getFields(file_msh, buffer, fields);
+        local_size = Mesh::getFields(file_msh, buffer, fields);
     } else {
         if (result_size == 1) {
             strcpy(fields[0], "X");

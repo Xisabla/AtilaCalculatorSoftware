@@ -21,7 +21,7 @@
 #define _USE_MATH_DEFINES
 #endif
 
-void write_to_post_gid_file(Str_Mesh& pmesh);
+void write_to_post_gid_file(Mesh::Mesh& pmesh);
 
 /*
 struct Str_Mesh_GiD : Str_Mesh {

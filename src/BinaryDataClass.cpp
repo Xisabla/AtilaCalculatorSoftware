@@ -29,24 +29,24 @@ void Binary_data_class::setUpGiDtoVTK() {
     this->uGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
     for (auto&& mesh: this->meshes_) {
         this->strList << (QString::fromStdString("Mesh Name : ").toUpper() +
-                          QString::fromStdString(mesh.mesh_name_))
+                          QString::fromStdString(mesh.getName()))
                       << (QString::fromStdString("Mesh Dimension : ").toUpper() +
-                          QString::number(mesh.ndim_))
+                          QString::number(mesh.getDimCount()))
                       << (QString::fromStdString("Element Type : ").toUpper() +
-                          QString::fromStdString(mesh.element_name_))
+                          QString::fromStdString(mesh.getElementName()))
                       << (QString::fromStdString("Number of nodes : ").toUpper() +
-                          QString::number(mesh.nnode_));
-        for (auto&& nodes: mesh.tab_of_nodes_) {
-            this->points->InsertNextPoint(nodes.coord[0], nodes.coord[1], nodes.coord[2]);
+                          QString::number(mesh.getNodeCount()));
+        for (auto&& nodes: mesh.getNodes()) {
+            this->points->InsertNextPoint(nodes.getX(), nodes.getY(), nodes.getZ());
         }
         this->uGrid->SetPoints(this->points);
-        for (auto a = 0; a < mesh.nb_of_elements_; a++) {
-            auto [id, element] = mesh.get_an_element(a);
+        for (auto a = 0; a < mesh.getElementCount(); a++) {
+            auto [id, element] = mesh.getElement(a);
             if (id == a + 1) {
-                auto polygone = this->createVTKCell(mesh.element_name_, mesh.ndim_);
+                auto polygone = this->createVTKCell(mesh.getElementName(), mesh.getDimCount());
                 if (polygone != NULL) {
-                    polygone->GetPointIds()->SetNumberOfIds(mesh.nnode_);
-                    for (auto i = 0; i < mesh.nnode_; i++) {
+                    polygone->GetPointIds()->SetNumberOfIds(mesh.getNodeCount());
+                    for (auto i = 0; i < mesh.getNodeCount(); i++) {
                         // crée une forme en fonction de l'id des points donnée par les elements
                         // Il y a un décalage de car lors de l'insertion des points dans le
                         // vtkPoints, le point avec l'id 1 devient le point 0 Donc le point id 1 et

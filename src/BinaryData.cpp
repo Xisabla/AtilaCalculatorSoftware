@@ -11,43 +11,6 @@
 
 static int ByteOrderCheck = 0x91d;
 
-int getFields(gzFile file, char* buffer, dataFields fields) {
-    unsigned int size = 0;
-    GZ_READ_CHECK(file, &size, 1);
-    GZ_READ_CHECK(file, buffer, size);
-    char* ptr = strtok(buffer, " ");
-    while ((ptr[0] == '#' || !strcmp(ptr, "Unit") || size == 1) && size != 0) {
-        GZ_READ_CHECK(file, &size, 1);
-        GZ_READ_CHECK(file, buffer, size);
-        ptr = strtok(buffer, " ");
-    }
-    if (!size) {
-        throw result_exception { "No more data" };
-
-        return 0;
-    }
-    size = 0;
-    while (ptr != NULL) {
-        if (ptr[0] == '"') {
-            strcpy(fields[size], ptr);
-            while (ptr[strlen(ptr) - 1] != '"') {
-                ptr = strtok(NULL, " ");
-                strcat(fields[size], ptr);
-            }
-            auto len = strlen(fields[size]);
-            for (size_t i = 0; i < len - 2; ++i) {
-                fields[size][i] = fields[size][i + 1];
-            }
-            fields[size][len - 2] = '\0';
-            ++size;
-        } else {
-            strcpy(fields[size++], ptr);
-        }
-        ptr = strtok(NULL, " ");
-    }
-    return size;
-}
-
 Str_binary_data::~Str_binary_data() {
     gzclose(file_msh_);
     meshes_.clear();
@@ -108,7 +71,7 @@ Str_binary_data::Str_binary_data(std::string file): file_msh_(gzopen((file).c_st
                 }
             }
         }
-        size = getFields(file_msh, buffer, fields);
+        size = Mesh::getFields(file_msh, buffer, fields);
     }
      */
 }
@@ -119,12 +82,16 @@ bool Str_binary_data::read_meshes() {
 
     dataFields fields;
     z_off_t current_position = gztell(file_msh_);
-    size = getFields(file_msh_, buffer, fields);
+    size = Mesh::getFields(file_msh_, buffer, fields);
     while (size > 0 && !strcmp(fields[0], "MESH")) {
-        meshes_.emplace_back(file_msh_, fields);
+        /**
+         * @deprecated
+         */
+        // meshes_.emplace_back(file_msh_, fields);
+        meshes_.push_back(Mesh::Mesh(file_msh_, fields));
         meshes_read_ = true;
         current_position = gztell(file_msh_);
-        size = getFields(file_msh_, buffer, fields);
+        size = Mesh::getFields(file_msh_, buffer, fields);
     }
     if (gzseek(file_msh_, current_position, SEEK_SET) == -1) {
         throw std::string("Cannot read binary file (Mesh)");
@@ -135,10 +102,10 @@ bool Str_binary_data::read_meshes() {
 }
 
 std::optional<Str_Result> Str_binary_data::read_one_result() {
-    if (Str_Mesh::number_of_nodes_max_ > 0) {
+    if (Mesh::Mesh::maxNodeCount > 0) {
         char buffer[GZ_BUFFER_SIZE];
         dataFields fields;
-        if (getFields(file_msh_, buffer, fields)) {
+        if (Mesh::getFields(file_msh_, buffer, fields)) {
             if (!strcmp(fields[0], "Result")) {
                 if (!strcmp(fields[4], "Vector")) {
                     return Str_Result(file_msh_, fields, 4);

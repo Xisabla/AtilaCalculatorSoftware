@@ -12,7 +12,7 @@
 
 #include "zlib.h"
 
-#include <ostream>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 

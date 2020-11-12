@@ -43,21 +43,21 @@ GiD_ElementType giveTheTypeOfElementForGiD(const char* elementName) {
 }
 
 
-void write_to_post_gid_file(Str_Mesh& pmesh) {
-    GiD_BeginMesh(pmesh.mesh_name_.c_str(),
-                  pmesh.ndim_ == 3 ? GiD_3D : GiD_2D,
-                  giveTheTypeOfElementForGiD(pmesh.element_name_.c_str()),
-                  pmesh.nnode_);
+void write_to_post_gid_file(Mesh::Mesh& pmesh) {
+    GiD_BeginMesh(pmesh.getName().c_str(),
+                  pmesh.getDimCount() == 3 ? GiD_3D : GiD_2D,
+                  giveTheTypeOfElementForGiD(pmesh.getElementName().c_str()),
+                  pmesh.getNodeCount());
     GiD_BeginCoordinates();
 
-    for (const auto& coord: pmesh.tab_of_nodes_) {
-        GiD_WriteCoordinates(coord.number, coord.coord[0], coord.coord[1], coord.coord[2]);
+    for (Mesh::Node& coord: pmesh.getNodes()) {
+        GiD_WriteCoordinates(coord.getId(), coord.getX(), coord.getY(), coord.getZ());
         //        std::cout<<coord.number<<std::endl;
     }
     GiD_EndCoordinates();
     GiD_BeginElements();
-    for (auto i = 0; i < pmesh.nb_of_elements_; ++i) {
-        auto [element_number, element] = pmesh.get_an_element(i);
+    for (auto i = 0; i < pmesh.getElementCount(); ++i) {
+        auto [element_number, element] = pmesh.getElement(i);
         GiD_WriteElementMat(element_number, element);
         /*
         std::cout<<element_number;

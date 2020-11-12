@@ -22,36 +22,6 @@
 #include <vector>
 #include <zlib.h>
 
-struct Str_node {
-    int number;
-    float coord[3];
-    static const size_t size_coord = 3 * sizeof(float);
-    Str_node(int number, float coord[3]) {
-        this->number = number;
-        std::memcpy(this->coord, coord, size_coord);
-    }
-};
-
-
-struct Str_Mesh {
-    /*const*/ std::string mesh_name_;
-    /*const*/ int ndim_;
-    /*const*/ std::string element_name_;
-    /*const*/ int nnode_;
-    static size_t number_of_nodes_max_;
-
-    int nb_of_elements_ = 0;
-    std::vector<Str_node> tab_of_nodes_;
-    std::unique_ptr<int[]> elements_;
-    std::unique_ptr<int[]> element_numbers_;
-    Str_Mesh(gzFile file_msh, dataFields fields);
-    std::tuple<int&, int*> const get_an_element(const int& ind);
-};
-
-int getFields(gzFile file, char* buffer, dataFields fields);
-
-// - Work In Progress ------------------------------------------------------------------------------
-
 namespace Mesh {
 
 /**
@@ -78,7 +48,7 @@ class Node {
     /**
      * @return The ID of the node
      */
-    const int getId();
+    const unsigned int getId();
 
     /**
      * @return The pointer of the space coordinates of the node
@@ -110,11 +80,6 @@ class Node {
      * @brief Space coordinates of the node
      */
     float coord[3];
-
-    /**
-     * @brief Memory size of the space coordinates of the node
-     */
-    static const size_t coordSize = 3 * sizeof(float);
 };
 
 /**
@@ -129,19 +94,40 @@ class Mesh {
      */
     Mesh(gzFile file, dataFields fields);
 
+    /**
+     * @return The name of the name
+     */
     const std::string getName();
+
+    /**
+     * @return The string encoded element type of the mesh
+     */
     const std::string getElementName();
+
+    /**
+     * @return The Element type of the mesh
+     */
     const GiD_ElementType getElementType();
 
-    const int getDimCount();
-    const int getNodeCount();
-    const int getElementCount();
+    /**
+     * @return The number of dimension of the mesh (2 or 3)
+     */
+    const unsigned int getDimCount();
 
-    std::vector<Str_node> getNodes();
+    /**
+     * @return The number of nodes that constitutes the mesh
+     */
+    const unsigned int getNodeCount();
 
-    // NOTE: Temporarily:
-    void moveElementsPtr(std::unique_ptr<int[]>& ptr);
-    void moveElementsConnectivityPtr(std::unique_ptr<int[]>& ptr);
+    /**
+     * @return The number of elements in the mesh
+     */
+    const unsigned int getElementCount();
+
+    /**
+     * @return The nodes that constitutes the mesh
+     */
+    std::vector<Node> getNodes();
 
     /**
      * @param id ID of the element
@@ -155,6 +141,20 @@ class Mesh {
     static size_t maxNodeCount;
 
   private:
+    /**
+     * Read the nodes coordinates from the mesh file
+     * @param file File that contains the mesh information
+     * @param buffer The zlib reading buffer from previous gzread
+     */
+    void readCoordinates(gzFile& file, char buffer[GZ_BUFFER_SIZE]);
+
+    /**
+     * Read the elements from the mesh file
+     * @param file File that contains the mesh information
+     * @param buffer The zlib reading buffer from previous gzread
+     */
+    void readElements(gzFile& file, char buffer[GZ_BUFFER_SIZE]);
+
     /**
      * @brief Name of the mesh
      */
@@ -173,22 +173,22 @@ class Mesh {
     /**
      * @brief Number of dimensions of the object (2 or 3)
      */
-    int dimCount;
+    unsigned int dimCount;
 
     /**
      * @brief Number of nodes which constitutes the mesh
      */
-    int nodeCount;
+    unsigned int nodeCount;
 
     /**
      * @brief Number of elements in the mesh
      */
-    int elementCount;
+    unsigned int elementCount;
 
     /**
      * @brief Nodes that constitutes the mesh
      */
-    std::vector<Str_node> nodes;
+    std::vector<Node> nodes;
 
     /**
      * @brief Elements of the mesh
@@ -200,6 +200,8 @@ class Mesh {
      */
     std::unique_ptr<int[]> elementsConnectivity;
 };
+
+const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
 
 } // namespace Mesh
 

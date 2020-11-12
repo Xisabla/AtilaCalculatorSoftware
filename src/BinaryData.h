@@ -28,7 +28,7 @@ struct Str_binary_data {
     bool meshes_read_ = false;
     z_off_t result_position_ = 0L;
 
-    std::vector<Str_Mesh> meshes_;
+    std::vector<Mesh::Mesh> meshes_;
     std::vector<Str_Result> results_;
 
     //	Str_binary_data();

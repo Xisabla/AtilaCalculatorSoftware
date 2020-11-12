@@ -40,7 +40,7 @@ make run
     - [ ] binary_data
     - [ ] binary_data_class
     - [ ] binary_data_GiD 
-    - [ ] mesh
+    - [x] mesh
     - [ ] mesh_GiD
     - [ ] result
     - [ ] result_GiD
