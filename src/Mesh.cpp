@@ -209,6 +209,7 @@ const unsigned int Mesh::getFields(gzFile file, char* buffer, dataFields fields)
     size = 0;
     while (ptr != NULL) {
         if (ptr[0] == '"') {
+            // Set current field
             strcpy(fields[size], ptr);
 
             while (ptr[strlen(ptr) - 1] != '"') {
@@ -216,15 +217,18 @@ const unsigned int Mesh::getFields(gzFile file, char* buffer, dataFields fields)
                 strcat(fields[size], ptr);
             }
 
-            auto len = strlen(fields[size]);
+            size_t len = strlen(fields[size]);
 
+            // Shift fields
             for (size_t i = 0; i < len - 2; ++i) {
                 fields[size][i] = fields[size][i + 1];
             }
 
+            // Close field
             fields[size][len - 2] = '\0';
             ++size;
         } else {
+            // Set next field
             strcpy(fields[size++], ptr);
         }
 
