@@ -14,7 +14,7 @@
 #endif
 
 //  --------------------------------------------------------------------------------------
-//  PUBLIC METHODS
+//  MAIN WINDOW > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
 MainWindow::MainWindow(char* dataDirectory) {
@@ -64,7 +64,7 @@ MainWindow::MainWindow(char* dataDirectory) {
 }
 
 //  --------------------------------------------------------------------------------------
-//  ACTION SLOTS
+//  MAIN WINDOW > ACTION SLOTS
 //  --------------------------------------------------------------------------------------
 
 void MainWindow::slotExit() {
@@ -92,6 +92,7 @@ void MainWindow::slotOpenFile() {
         std::vector<float> steps;
         std::map<float, QMenu*> stepMenus;
 
+        // Add results menus
         for (auto&& res: this->binary->results_) {
             if (!std::binary_search(steps.begin(), steps.end(), res.step_)) {
                 steps.push_back(res.step_);
@@ -101,7 +102,8 @@ void MainWindow::slotOpenFile() {
 
             QMenu* menu = stepMenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
 
-            for (int i = 0; i < res.result_size_; i++) {
+            // Add results menu action
+            for (unsigned int i = 0; i < res.result_size_; i++) {
                 QAction* resultItemAction;
 
                 if (res.component_names_.size() > 0) {
@@ -120,6 +122,7 @@ void MainWindow::slotOpenFile() {
         // Set the view
         this->setVTK(this->binary->results_.front(), 0);
     } else {
+        // TODO: Change this
         // NOTE: Crashes when trying to load twice another .res file
         delete this->binary;
         this->binary = NULL;
@@ -170,7 +173,7 @@ void MainWindow::slotResult(Str_Result& res, const int& choice) {
 }
 
 //  --------------------------------------------------------------------------------------
-//  PRIVATE METHODS
+//  MAIN WINDOW > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
 
 void MainWindow::initAxes() {
@@ -198,6 +201,7 @@ void MainWindow::initAxes() {
 void MainWindow::setVTK(Str_Result& res, const int& choice) {
     this->binary->setScalarFromQT2(res, choice);
 
+    // Update information list
     this->model->setStringList(this->binary->getstrList());
     this->listView->setModel(this->model);
     this->listView->adjustSize();
@@ -206,19 +210,21 @@ void MainWindow::setVTK(Str_Result& res, const int& choice) {
     double range[2] = { this->binary->getScalars()->GetRange()[0],
                         this->binary->getScalars()->GetRange()[1] };
 
-    vtkNew<vtkLookupTable> lut;
-
-    lut->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1);
-    lut->SetTableRange(range);
-    lut->Build();
+    // Lookup table
+    vtkNew<vtkLookupTable> lookupTable;
+    lookupTable->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1);
+    lookupTable->SetTableRange(range);
+    lookupTable->Build();
 
     this->binary->getUGrid()->GetPointData()->SetScalars(this->binary->getScalars());
-    vtkNew<vtkDataSetMapper> mapper;
 
+    // Mapper
+    vtkNew<vtkDataSetMapper> mapper;
     mapper->SetInputData(this->binary->getUGrid());
     mapper->SetScalarRange(range);
-    mapper->SetLookupTable(lut);
+    mapper->SetLookupTable(lookupTable);
 
+    // Side scalar bar
     vtkNew<vtkScalarBarActor> scalarBar;
     scalarBar->SetLookupTable(mapper->GetLookupTable());
     scalarBar->SetTitle(std::string(res.analysis_ + std::to_string(choice)).c_str());
@@ -226,9 +232,11 @@ void MainWindow::setVTK(Str_Result& res, const int& choice) {
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio() / 2.0);
 
+    // Poly actor (3D Object)
     vtkNew<vtkActor> polyActor;
     polyActor->SetMapper(mapper);
 
+    // Add actors and reset camera
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
