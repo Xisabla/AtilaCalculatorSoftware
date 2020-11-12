@@ -20,7 +20,6 @@
 MainWindow::MainWindow(char* dataDirectory) {
 
     this->objectDirectory = QString::fromUtf8(dataDirectory);
-
     this->setupUi(this);
     this->model = new QStringListModel(this);
 
@@ -44,10 +43,11 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
     this->qvtkWidget->GetRenderWindow()->SetWindowName("AtilaSoftwareCalculator");
 #endif
-
     this->listView->setVisible(false);
     this->initAxes();
     renderer->ResetCamera();
+
+    this->setWindowTitle(QString::fromStdString("AtilaSoftwareCalculator"));
 
     // Actions
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
