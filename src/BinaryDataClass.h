@@ -32,6 +32,10 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 
+// TODO:
+// - Merge Binary_data & Binary_data_GiD into a single class BinaryData
+// - Rework and rename Binary_data_class into VTKResource/ResourceWrapper/BinaryDataWrapper
+
 // Class qui transforme l'objet binaire en objets vtk
 class Binary_data_class : public Str_binary_data_GiD {
 
