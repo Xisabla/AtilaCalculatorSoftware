@@ -48,12 +48,16 @@
               std::string(", ") + std::string(fields[6]) + std::string(", ") +       \
               std::string(fields[7]) + std::string(", ") + std::string(fields[8]) +  \
               std::string(", ") + std::string(fields[9]));
+#define __PDEBUG__(x, y) std::cout << "[" << __HERE__ << "]" << x << ": " << y << std::endl;
 #else
 #define __DEBUG__(x) \
     { }
 #define __DEBUG_FIELDS__(x) \
     { }
+#define __PDEBUG__(x, y) \
+    { }
 #endif
+
 
 /**
  * @brief Macro to read a compressed file using gzread (zlib) that returns -1 if the read size is
