@@ -37,7 +37,7 @@ make run
   - [ ] Transform all structures into class
   - [ ] Merge all related files together (to finally have BinaryData, Mesh, Result)
   - [ ] Rebuild global structure of the different current files/class/structs
-    - [ ] binary_data
+    - [x] binary_data
     - [ ] binary_data_class
     - [ ] binary_data_GiD 
     - [x] mesh
@@ -55,4 +55,5 @@ make run
   - [ ] Stringify methods for all objects
 - [ ] New features
   - [ ] Mesh visualisation
+  - [ ] Write to GiD file
   - [ ] Shortcuts (Ctrl+O to open file, ...)
