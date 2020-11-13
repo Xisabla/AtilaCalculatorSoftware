@@ -21,13 +21,13 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
     }
 
     for (auto result = results_.begin(); result != results_.end(); ++result) {
-        if (std::string::npos != result->getResults().find("Harmonic")) {
-            if (std::string::npos != result->getResults().find("Real")) {
+        if (std::string::npos != result->getResultType().find("Harmonic")) {
+            if (std::string::npos != result->getResultType().find("Real")) {
                 auto& my_real = result;
                 auto& my_imag = ++result;
-                if ((std::string::npos == my_imag->getResults().find("Imag")) ||
+                if ((std::string::npos == my_imag->getResultType().find("Imag")) ||
                     (my_real->getComponentCount() != my_imag->getComponentCount()) ||
-                    (my_real->getResultCount() != my_imag->getResultCount())) {
+                    (my_real->getValuesCount() != my_imag->getValuesCount())) {
                     throw std::string("Cannot read binary file (Result) !");
                 }
                 switch (my_real->getComponentCount()) {
@@ -45,7 +45,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                             NULL,
                                             0,
                                             NULL /*&component_names*/);
-                            for (auto j = 0; j < my_real->getResultCount(); ++j) {
+                            for (auto j = 0; j < my_real->getValuesCount(); ++j) {
                                 auto [node_number_real, data_real] = my_real->getResult(j);
                                 auto [node_number_imag, data_imag] = my_imag->getResult(j);
                                 if (node_number_real != node_number_imag) {
@@ -84,7 +84,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                             NULL,
                                             0,
                                             NULL /*component_names*/);
-                            for (auto j = 0; j < my_real->getResultCount(); ++j) {
+                            for (auto j = 0; j < my_real->getValuesCount(); ++j) {
                                 auto [node_number_real, data_real] = my_real->getResult(j);
                                 auto [node_number_imag, data_imag] = my_imag->getResult(j);
                                 if (node_number_real != node_number_imag) {
@@ -121,7 +121,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                     } break;
                 }
             } else {
-                if (std::string::npos == result->getResults().find("Magn")) {
+                if (std::string::npos == result->getResultType().find("Magn")) {
                     switch (result->getComponentCount()) {
                         case 1: {
                             //				const char *component_names =
@@ -139,7 +139,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                 NULL,
                                                 0,
                                                 NULL /* 1, &component_names*/);
-                                for (auto j = 0; j < result->getResultCount(); ++j) {
+                                for (auto j = 0; j < result->getValuesCount(); ++j) {
                                     auto [node_number_real, data_real] = result->getResult(j);
                                     if (*data_real != GP_UNKNOWN) {
                                         GiD_WriteScalar(node_number_real, *data_real * stheta);
@@ -169,7 +169,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                 NULL,
                                                 0,
                                                 NULL /*component_names*/);
-                                for (auto j = 0; j < result->getResultCount(); ++j) {
+                                for (auto j = 0; j < result->getValuesCount(); ++j) {
                                     auto [node_number_real, data_real] = result->getResult(j);
                                     if (*data_real != GP_UNKNOWN) {
                                         auto results1_r = data_real[0];

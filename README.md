@@ -42,16 +42,17 @@ make run
     - [ ] binary_data_GiD 
     - [x] mesh
     - [x] mesh_GiD
-    - [ ] result
-    - [ ] result_GiD
+    - [x] result
+    - [x] <s>result_GiD</s>
   - [ ] Doxygen doc everywhere
   - [ ] Comment for big spots
   - [ ] Review and refactor (split) all big methods or macro methods
 - [ ] Debugging/Logging: Add a way to print important data, logging the different actions
-  - [ ] Log macro/method to write information into a log vector, log file or log window (or all of this)
-  - [ ] Use the log macro/method in any suitable/useful situation
-  - [ ] Intern/friend methods in any class & structure to show it's content in a readable way in the console
-  - [ ] Debug mode (from cli, eg: `./AtilaCalculatorSoftware --verbose` or `./AtilaCalculatorSoftware --debug=true`)
-  - [ ] Log window for the user to be able to see logs
+  - [x] Debug macros
+  - [ ] Logger object to keep all logs and manage I/O
+  - [ ] Logger logs to console with cli arg eg: `./AtilaCalculatorSoftware --verbose`)
+  - [ ] Log window bind to the Logger for the user to be able to see logs
+  - [ ] Stringify methods for all objects
 - [ ] New features
   - [ ] Mesh visualisation
+  - [ ] Shortcuts (Ctrl+O to open file, ...)

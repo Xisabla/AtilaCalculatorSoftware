@@ -16,7 +16,7 @@
 Result::Result(gzFile file, char (*fields)[40], const int componentCount) {
     // Import header data
     this->analysis = fields[1];
-    this->results = fields[2];
+    this->result = fields[2];
     this->step = static_cast<float>(std::atof(fields[3]));
     this->componentCount = componentCount;
 
@@ -33,10 +33,10 @@ Result::Result(gzFile file, char (*fields)[40], const int componentCount) {
 //  --------------------------------------------------------------------------------------
 
 const std::string Result::getAnalysis() { return this->analysis; }
-const std::string Result::getResults() { return this->results; }
+const std::string Result::getResultType() { return this->result; }
 const float Result::getStep() { return this->step; }
 const unsigned int Result::getComponentCount() { return this->componentCount; }
-const unsigned int Result::getResultCount() { return this->resultCount; }
+const unsigned int Result::getValuesCount() { return this->valuesCount; }
 const std::vector<std::string> Result::getComponents() { return this->components; }
 
 //  --------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ const std::tuple<int&, float*> Result::getResult(const int& id) {
     return std::make_tuple(std::ref(nodeIDs[id]), &values[id * componentCount]);
 }
 
-//const int Result::toPostGid() {
+// const int Result::toPostGid() {
 //
 //}
 
@@ -116,5 +116,5 @@ void Result::readResults(gzFile file, char* buffer) {
     this->values = std::make_unique<float[]>(shiftResults);
     std::memcpy(this->nodeIDs.get(), nodes.get(), shiftNodes * sizeof(int));
     std::memcpy(this->values.get(), results.get(), shiftResults * sizeof(int));
-    this->resultCount = shiftNodes;
+    this->valuesCount = shiftNodes;
 }

@@ -20,12 +20,6 @@
 #include <vector>
 #include <zlib.h>
 
-// - Work In Progress ------------------------------------------------------------------------------
-
-// TODO:
-// - Import structure/methods from "ResultGiD"
-// - End with doxygen blocks
-
 /**
  * @class Result
  * @brief Representation of all the results and their components read from a res file
@@ -34,11 +28,34 @@ class Result {
   public:
     Result(gzFile file, dataFields fields, const int componentCount);
 
+    /**
+     * @return The type of analysis of the result
+     */
     const std::string getAnalysis();
-    const std::string getResults();
+
+    /**
+     * @return The type of result
+     */
+    const std::string getResultType();
+
+    /**
+     * @return Step of the result
+     */
     const float getStep();
+
+    /**
+     * @return The number component of the result (1 or 4)
+     */
     const unsigned int getComponentCount();
-    const unsigned int getResultCount();
+
+    /**
+     * @return The number of values of the result
+     */
+    const unsigned int getValuesCount();
+
+    /**
+     * @return The components of the result (X, Y, Z, M)
+     */
     const std::vector<std::string> getComponents();
 
     /**
@@ -47,11 +64,11 @@ class Result {
      */
     const std::tuple<int&, float*> getResult(const int& id);
 
-//    /**
-//     * @brief Write the result into a currently open PostResultFile
-//     * @return The state of the GiD Post Result closure
-//     */
-//    const int toPostGid();
+    //    /**
+    //     * @brief Write the result into a currently open PostResultFile
+    //     * @return The state of the GiD Post Result closure
+    //     */
+    //    const int toPostGid();
 
   private:
     /**
@@ -77,7 +94,7 @@ class Result {
     /**
      * @brief Type of results
      */
-    std::string results;
+    std::string result;
 
     /**
      * @brief Time step inside the analysis
@@ -90,9 +107,9 @@ class Result {
     unsigned int componentCount;
 
     /**
-     * @brief Number of results read
+     * @brief Number of values read
      */
-    unsigned int resultCount;
+    unsigned int valuesCount;
 
     /**
      * @brief Components of the result (size = componentCount)

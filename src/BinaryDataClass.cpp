@@ -70,11 +70,11 @@ void Binary_data_class::setScalarFromQT2(Result& res, const int& choice) {
     this->strList << (QString::fromStdString("Result analysis ").toUpper() +
                       QString::fromStdString(res.getAnalysis()))
                   << (QString::fromStdString("Result ").toUpper() +
-                      QString::fromStdString(res.getResults()))
+                      QString::fromStdString(res.getResultType()))
                   << (QString::fromStdString("Step ").toUpper() + QString::number(res.getStep()))
                   << (QString::fromStdString("Choice ").toUpper() + QString::number(choice));
-    this->scalars->SetNumberOfValues(res.getResultCount());
-    for (auto i = 0; i < res.getResultCount(); ++i) {
+    this->scalars->SetNumberOfValues(res.getValuesCount());
+    for (auto i = 0; i < res.getValuesCount(); ++i) {
         auto [node_number, data] = res.getResult(i);
         this->scalars->SetValue(i, data[choice]);
     }
@@ -89,7 +89,7 @@ void Binary_data_class::toTextFile() {
     for (auto& res: this->results_) {
         SaveFile << "Result "
                  << "\"" << res.getAnalysis() << "\""
-                 << "  Result   " << res.getResults() << "  Step  " << res.getStep() << "  "
+                 << "  Result   " << res.getResultType() << "  Step  " << res.getStep() << "  "
                  << std::endl;
         ;
         SaveFile << "Values";
@@ -97,7 +97,7 @@ void Binary_data_class::toTextFile() {
         //	SaveFile << comp << " ";
         //}
         SaveFile << std::endl;
-        for (auto i = 0; i < res.getResultCount(); ++i) {
+        for (auto i = 0; i < res.getValuesCount(); ++i) {
             auto [node_number, data] = res.getResult(i);
             SaveFile << node_number << " ";
             for (auto j = 0; j < res.getComponentCount(); ++j) {
