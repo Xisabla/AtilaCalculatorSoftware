@@ -9,23 +9,6 @@
 =========================================================================*/
 #include "Result.h"
 
-Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size) {
-    Result r(file_msh, fields, result_size);
-
-    this->analysis_ = r.getAnalysis();
-    this->results_ = r.getResults();
-    this->step_ = r.getStep();
-    this->result_size_ = r.getComponentCount();
-    this->number_of_results_ = r.getResultCount();
-    this->component_names_ = r.getComponents();
-    r.moveNodeCounts(&(this->node_numbers_));
-    r.moveValues(&(this->data_));
-}
-
-const std::tuple<int&, float*> Str_Result::get_one_result(const int& ind) {
-    return std::make_tuple(std::ref(node_numbers_[ind]), &data_[ind * result_size_]);
-}
-
 //  --------------------------------------------------------------------------------------
 //  RESULT
 //  --------------------------------------------------------------------------------------
@@ -55,8 +38,6 @@ const float Result::getStep() { return this->step; }
 const unsigned int Result::getComponentCount() { return this->componentCount; }
 const unsigned int Result::getResultCount() { return this->resultCount; }
 const std::vector<std::string> Result::getComponents() { return this->components; }
-void Result::moveNodeCounts(std::unique_ptr<int[]>* ptr) { *ptr = std::move(nodeIDs); }
-void Result::moveValues(std::unique_ptr<float[]>* ptr) { *ptr = std::move(values); }
 
 //  --------------------------------------------------------------------------------------
 //  RESULT > PUBLIC METHODS

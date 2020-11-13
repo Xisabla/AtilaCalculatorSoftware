@@ -9,4 +9,6 @@
 =========================================================================*/
 #include "ResultGiD.h"
 
+/*
 void Str_Result_GiD::write_to_post_gid_file() { }
+*/

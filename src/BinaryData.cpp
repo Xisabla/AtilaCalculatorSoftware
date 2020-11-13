@@ -101,20 +101,20 @@ bool Str_binary_data::read_meshes() {
     return meshes_read_;
 }
 
-std::optional<Str_Result> Str_binary_data::read_one_result() {
+std::optional<Result> Str_binary_data::read_one_result() {
     if (Mesh::Mesh::maxNodeCount > 0) {
         char buffer[GZ_BUFFER_SIZE];
         dataFields fields;
         if (Mesh::getFields(file_msh_, buffer, fields)) {
             if (!strcmp(fields[0], "Result")) {
                 if (!strcmp(fields[4], "Vector")) {
-                    return Str_Result(file_msh_, fields, 4);
+                    return Result(file_msh_, fields, 4);
                 } else {
                     if (!strcmp(fields[4], "Scalar")) {
-                        return Str_Result(file_msh_, fields, 1);
+                        return Result(file_msh_, fields, 1);
                     } else {
                         if (!strcmp(fields[4], "Matrix")) {
-                            return Str_Result(file_msh_, fields, 6);
+                            return Result(file_msh_, fields, 6);
                         }
                     }
                 }

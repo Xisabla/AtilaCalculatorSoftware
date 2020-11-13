@@ -29,7 +29,7 @@ struct Str_binary_data {
     z_off_t result_position_ = 0L;
 
     std::vector<Mesh::Mesh> meshes_;
-    std::vector<Str_Result> results_;
+    std::vector<Result> results_;
 
     //	Str_binary_data();
     Str_binary_data(std::string file);
@@ -37,7 +37,7 @@ struct Str_binary_data {
 
     bool read_meshes();
     bool read_all_results();
-    std::optional<Str_Result> read_one_result();
+    std::optional<Result> read_one_result();
 };
 
 

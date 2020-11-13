@@ -94,21 +94,22 @@ void MainWindow::slotOpenFile() {
 
         // Add results menus
         for (auto&& res: this->binary->results_) {
-            if (!std::binary_search(steps.begin(), steps.end(), res.step_)) {
-                steps.push_back(res.step_);
-                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(res.step_));
-                stepMenus.insert(std::pair<float, QMenu*>(res.step_, stepMenuItem));
+            if (!std::binary_search(steps.begin(), steps.end(), res.getStep())) {
+                steps.push_back(res.getStep());
+                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(res.getStep()));
+                stepMenus.insert(std::pair<float, QMenu*>(res.getStep(), stepMenuItem));
             }
 
-            QMenu* menu = stepMenus[res.step_]->addMenu(QString::fromStdString(res.analysis_));
+            QMenu* menu =
+            stepMenus[res.getStep()]->addMenu(QString::fromStdString(res.getAnalysis()));
 
             // Add results menu action
-            for (unsigned int i = 0; i < res.result_size_; i++) {
+            for (unsigned int i = 0; i < res.getComponentCount(); i++) {
                 QAction* resultItemAction;
 
-                if (res.component_names_.size() > 0) {
+                if (res.getComponents().size() > 0) {
                     resultItemAction =
-                    menu->addAction(QString::fromStdString(res.component_names_.at(i)));
+                    menu->addAction(QString::fromStdString(res.getComponents().at(i)));
                 } else {
                     resultItemAction = menu->addAction(QString::number(i));
                 }
@@ -163,7 +164,7 @@ void MainWindow::slotInteractWithObject() {
 #endif
 }
 
-void MainWindow::slotResult(Str_Result& res, const int& choice) {
+void MainWindow::slotResult(Result& res, const int& choice) {
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
@@ -198,7 +199,7 @@ void MainWindow::initAxes() {
     this->axesWidget = axesWidget;
 }
 
-void MainWindow::setVTK(Str_Result& res, const int& choice) {
+void MainWindow::setVTK(Result& res, const int& choice) {
     this->binary->setScalarFromQT2(res, choice);
 
     // Update information list
@@ -227,7 +228,7 @@ void MainWindow::setVTK(Str_Result& res, const int& choice) {
     // Side scalar bar
     vtkNew<vtkScalarBarActor> scalarBar;
     scalarBar->SetLookupTable(mapper->GetLookupTable());
-    scalarBar->SetTitle(std::string(res.analysis_ + std::to_string(choice)).c_str());
+    scalarBar->SetTitle(std::string(res.getAnalysis() + std::to_string(choice)).c_str());
     scalarBar->UnconstrainedFontSizeOn();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio() / 2.0);

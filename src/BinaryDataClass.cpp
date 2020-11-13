@@ -62,20 +62,20 @@ void Binary_data_class::setUpGiDtoVTK() {
         }
     }
 }
-void Binary_data_class::setScalarFromQT2(Str_Result& res, const int& choice) {
+void Binary_data_class::setScalarFromQT2(Result& res, const int& choice) {
     this->scalars = vtkSmartPointer<vtkFloatArray>::New();
     while (this->strList.size() > 4) {
         this->strList.removeLast();
     }
     this->strList << (QString::fromStdString("Result analysis ").toUpper() +
-                      QString::fromStdString(res.analysis_))
+                      QString::fromStdString(res.getAnalysis()))
                   << (QString::fromStdString("Result ").toUpper() +
-                      QString::fromStdString(res.results_))
-                  << (QString::fromStdString("Step ").toUpper() + QString::number(res.step_))
+                      QString::fromStdString(res.getResults()))
+                  << (QString::fromStdString("Step ").toUpper() + QString::number(res.getStep()))
                   << (QString::fromStdString("Choice ").toUpper() + QString::number(choice));
-    this->scalars->SetNumberOfValues(res.number_of_results_);
-    for (auto i = 0; i < res.number_of_results_; ++i) {
-        auto [node_number, data] = res.get_one_result(i);
+    this->scalars->SetNumberOfValues(res.getResultCount());
+    for (auto i = 0; i < res.getResultCount(); ++i) {
+        auto [node_number, data] = res.getResult(i);
         this->scalars->SetValue(i, data[choice]);
     }
 }
@@ -88,18 +88,19 @@ void Binary_data_class::toTextFile() {
     ofstream SaveFile("test.flavia.res");
     for (auto& res: this->results_) {
         SaveFile << "Result "
-                 << "\"" << res.analysis_ << "\""
-                 << "  Result   " << res.results_ << "  Step  " << res.step_ << "  " << std::endl;
+                 << "\"" << res.getAnalysis() << "\""
+                 << "  Result   " << res.getResults() << "  Step  " << res.getStep() << "  "
+                 << std::endl;
         ;
         SaveFile << "Values";
         // for (auto& comp : res.component_names_) {
         //	SaveFile << comp << " ";
         //}
         SaveFile << std::endl;
-        for (auto i = 0; i < res.number_of_results_; ++i) {
-            auto [node_number, data] = res.get_one_result(i);
+        for (auto i = 0; i < res.getResultCount(); ++i) {
+            auto [node_number, data] = res.getResult(i);
             SaveFile << node_number << " ";
-            for (auto j = 0; j < res.result_size_; ++j) {
+            for (auto j = 0; j < res.getComponentCount(); ++j) {
                 SaveFile << data[j] << " ";
             }
             SaveFile << std::endl;

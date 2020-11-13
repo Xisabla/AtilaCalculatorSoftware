@@ -77,7 +77,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @param res Result to visualise
      * @param choice Choice for setVTK method
      */
-    void slotResult(Str_Result& res, const int& choice);
+    void slotResult(Result& res, const int& choice);
 
   private:
     /**
@@ -107,7 +107,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @param res Result read by the binary data
      * @param choice
      */
-    void setVTK(Str_Result& res, const int& choice);
+    void setVTK(Result& res, const int& choice);
 };
 
 #endif

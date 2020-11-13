@@ -51,7 +51,7 @@ class Binary_data_class : public Str_binary_data_GiD {
 
     // Fonction qui attribue les valeur a chaque point de l'objet en fonction du choix de résultat
     // par l'utilisateur
-    void setScalarFromQT2(Str_Result& res, const int& choice);
+    void setScalarFromQT2(Result& res, const int& choice);
 
     // Retourne le tableau contenant la valeur de chaque point
     vtkSmartPointer<vtkFloatArray> getScalars() const;

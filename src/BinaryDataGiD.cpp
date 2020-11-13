@@ -15,28 +15,28 @@ Str_binary_data_GiD::Str_binary_data_GiD(std::string file): Str_binary_data(file
 void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                           const int& number_frame) {
     while (auto one_result = read_one_result()) {
-        if (fabs(one_result->step_ - step) / fabs(one_result->step_ + step) < 1.e-4) {
+        if (fabs(one_result->getStep() - step) / fabs(one_result->getStep() + step) < 1.e-4) {
             results_.emplace_back(std::move(*one_result));
         }
     }
 
     for (auto result = results_.begin(); result != results_.end(); ++result) {
-        if (std::string::npos != result->results_.find("Harmonic")) {
-            if (std::string::npos != result->results_.find("Real")) {
+        if (std::string::npos != result->getResults().find("Harmonic")) {
+            if (std::string::npos != result->getResults().find("Real")) {
                 auto& my_real = result;
                 auto& my_imag = ++result;
-                if ((std::string::npos == my_imag->results_.find("Imag")) ||
-                    (my_real->result_size_ != my_imag->result_size_) ||
-                    (my_real->number_of_results_ != my_imag->number_of_results_)) {
+                if ((std::string::npos == my_imag->getResults().find("Imag")) ||
+                    (my_real->getComponentCount() != my_imag->getComponentCount()) ||
+                    (my_real->getResultCount() != my_imag->getResultCount())) {
                     throw std::string("Cannot read binary file (Result) !");
                 }
-                switch (my_real->result_size_) {
+                switch (my_real->getComponentCount()) {
                     case 1: {
                         //	const char *component_names = my_real->component_names_[0].c_str();
                         auto number_frame = 20;
                         for (auto i = 0; i < number_frame; ++i) {
                             auto theta = -2.0 * M_PI * (double) i / (double) (number_frame);
-                            GiD_BeginResult(my_real->analysis_.c_str(),
+                            GiD_BeginResult(my_real->getAnalysis().c_str(),
                                             "Animate",
                                             i + 1,
                                             GiD_Scalar,
@@ -45,9 +45,9 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                             NULL,
                                             0,
                                             NULL /*&component_names*/);
-                            for (auto j = 0; j < my_real->number_of_results_; ++j) {
-                                auto [node_number_real, data_real] = my_real->get_one_result(j);
-                                auto [node_number_imag, data_imag] = my_imag->get_one_result(j);
+                            for (auto j = 0; j < my_real->getResultCount(); ++j) {
+                                auto [node_number_real, data_real] = my_real->getResult(j);
+                                auto [node_number_imag, data_imag] = my_imag->getResult(j);
                                 if (node_number_real != node_number_imag) {
                                     throw std::string("Cannot read binary file (Result)");
                                 }
@@ -75,7 +75,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                         auto number_frame = 20;
                         for (auto i = 0; i < number_frame; ++i) {
                             auto theta = -2.0 * M_PI * (double) i / (double) (number_frame);
-                            GiD_BeginResult(my_real->analysis_.c_str(),
+                            GiD_BeginResult(my_real->getAnalysis().c_str(),
                                             "Animate",
                                             i + 1,
                                             GiD_Vector,
@@ -84,9 +84,9 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                             NULL,
                                             0,
                                             NULL /*component_names*/);
-                            for (auto j = 0; j < my_real->number_of_results_; ++j) {
-                                auto [node_number_real, data_real] = my_real->get_one_result(j);
-                                auto [node_number_imag, data_imag] = my_imag->get_one_result(j);
+                            for (auto j = 0; j < my_real->getResultCount(); ++j) {
+                                auto [node_number_real, data_real] = my_real->getResult(j);
+                                auto [node_number_imag, data_imag] = my_imag->getResult(j);
                                 if (node_number_real != node_number_imag) {
                                     throw std::string("Cannot read binary file (Result) !");
                                 }
@@ -121,8 +121,8 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                     } break;
                 }
             } else {
-                if (std::string::npos == result->results_.find("Magn")) {
-                    switch (result->result_size_) {
+                if (std::string::npos == result->getResults().find("Magn")) {
+                    switch (result->getComponentCount()) {
                         case 1: {
                             //				const char *component_names =
                             // result->component_names_[0].c_str();
@@ -130,7 +130,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                             for (auto i = 0; i < number_frame; ++i) {
                                 auto theta = -2.0 * M_PI * (double) i / (double) (number_frame);
                                 auto stheta = sin(theta);
-                                GiD_BeginResult(result->analysis_.c_str(),
+                                GiD_BeginResult(result->getAnalysis().c_str(),
                                                 "Animate",
                                                 i + 1,
                                                 GiD_Scalar,
@@ -139,8 +139,8 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                 NULL,
                                                 0,
                                                 NULL /* 1, &component_names*/);
-                                for (auto j = 0; j < result->number_of_results_; ++j) {
-                                    auto [node_number_real, data_real] = result->get_one_result(j);
+                                for (auto j = 0; j < result->getResultCount(); ++j) {
+                                    auto [node_number_real, data_real] = result->getResult(j);
                                     if (*data_real != GP_UNKNOWN) {
                                         GiD_WriteScalar(node_number_real, *data_real * stheta);
                                     } else {
@@ -160,7 +160,7 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                             for (auto i = 0; i < number_frame; ++i) {
                                 auto theta = -2.0 * M_PI * (double) i / (double) (number_frame);
                                 auto stheta = sin(theta);
-                                GiD_BeginResult(result->analysis_.c_str(),
+                                GiD_BeginResult(result->getAnalysis().c_str(),
                                                 "Animate",
                                                 i + 1,
                                                 GiD_Vector,
@@ -169,8 +169,8 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                 NULL,
                                                 0,
                                                 NULL /*component_names*/);
-                                for (auto j = 0; j < result->number_of_results_; ++j) {
-                                    auto [node_number_real, data_real] = result->get_one_result(j);
+                                for (auto j = 0; j < result->getResultCount(); ++j) {
+                                    auto [node_number_real, data_real] = result->getResult(j);
                                     if (*data_real != GP_UNKNOWN) {
                                         auto results1_r = data_real[0];
                                         auto results2_r = data_real[1];
