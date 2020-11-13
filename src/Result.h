@@ -47,6 +47,12 @@ class Result {
      */
     const std::tuple<int&, float*> getResult(const int& id);
 
+//    /**
+//     * @brief Write the result into a currently open PostResultFile
+//     * @return The state of the GiD Post Result closure
+//     */
+//    const int toPostGid();
+
   private:
     /**
      * Read the result components from the mesh file

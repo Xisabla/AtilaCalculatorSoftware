@@ -11,7 +11,6 @@
 #define ATILACALCULATORSOFTWARE_BINARYDATAGID_H
 
 #include "BinaryData.h"
-#include "ResultGiD.h"
 
 #include <gidpost.h>
 #include <math.h>

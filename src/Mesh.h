@@ -147,7 +147,7 @@ class Mesh {
     const std::tuple<int&, int*> getElement(const int& id);
 
     /**
-     * @brief Write the mesh into a PostResultFile
+     * @brief Write the mesh into a currently open PostResultFile
      * @return The state of the GiD Post Mesh closure
      */
     const int toPostGid();

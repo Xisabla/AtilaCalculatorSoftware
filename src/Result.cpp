@@ -47,6 +47,10 @@ const std::tuple<int&, float*> Result::getResult(const int& id) {
     return std::make_tuple(std::ref(nodeIDs[id]), &values[id * componentCount]);
 }
 
+//const int Result::toPostGid() {
+//
+//}
+
 //  --------------------------------------------------------------------------------------
 //  RESULT > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
