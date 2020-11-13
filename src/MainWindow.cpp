@@ -93,29 +93,29 @@ void MainWindow::slotOpenFile() {
         std::map<float, QMenu*> stepMenus;
 
         // Add results menus
-        for (auto&& res: this->binary->getResults()) {
-            if (!std::binary_search(steps.begin(), steps.end(), res.getStep())) {
-                steps.push_back(res.getStep());
-                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(res.getStep()));
-                stepMenus.insert(std::pair<float, QMenu*>(res.getStep(), stepMenuItem));
+        for (auto&& result: this->binary->getResults()) {
+            if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
+                steps.push_back(result.getStep());
+                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
+                stepMenus.insert(std::pair<float, QMenu*>(result.getStep(), stepMenuItem));
             }
 
             QMenu* menu =
-            stepMenus[res.getStep()]->addMenu(QString::fromStdString(res.getAnalysis()));
+            stepMenus[result.getStep()]->addMenu(QString::fromStdString(result.getAnalysis()));
 
             // Add results menu action
-            for (unsigned int i = 0; i < res.getComponentCount(); i++) {
+            for (unsigned int i = 0; i < result.getComponentCount(); i++) {
                 QAction* resultItemAction;
 
-                if (res.getComponents().size() > 0) {
+                if (result.getComponents().size() > 0) {
                     resultItemAction =
-                    menu->addAction(QString::fromStdString(res.getComponents().at(i)));
+                    menu->addAction(QString::fromStdString(result.getComponents().at(i)));
                 } else {
                     resultItemAction = menu->addAction(QString::number(i));
                 }
 
-                connect(resultItemAction, &QAction::triggered, [this, &res, i]() {
-                    this->slotResult(res, i);
+                connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
+                    this->slotResult(result, i);
                 });
             }
         }

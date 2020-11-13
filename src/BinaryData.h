@@ -23,8 +23,6 @@
 #include <vector>
 #include <zlib.h>
 
-// - Work In Progress ------------------------------------------------------------------------------
-
 /**
  * @class BinaryData
  * @brief Load the resources file and allow to read meshes and results from it
@@ -95,26 +93,11 @@ class BinaryData {
      */
     std::vector<Result> results;
 
+    /**
+     * @brief Constant value for reading check
+     */
     const static int byteOrderCheck = 0x91d;
-};
 
-// - Work In Progress ------------------------------------------------------------------------------
-struct Str_binary_data {
-    BinaryData bd;
-    gzFile file_msh_ = nullptr;
-    bool meshes_read_ = false;
-    z_off_t result_position_ = 0L;
-
-    std::vector<Mesh::Mesh> meshes_;
-    std::vector<Result> results_;
-
-    //	Str_binary_data();
-    Str_binary_data(std::string file);
-    ~Str_binary_data();
-
-    bool read_meshes();
-    bool read_all_results();
-    std::optional<Result> read_one_result();
 };
 
 #endif // ATILACALCULATORSOFTWARE_BINARYDATA_H
