@@ -126,6 +126,7 @@ class Result {
      */
     int* nodeIDs;
 
+
     /**
      * @brief Values of the result
      */

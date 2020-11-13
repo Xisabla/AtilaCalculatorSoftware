@@ -12,9 +12,9 @@
 using namespace std;
 
 Binary_data_class::Binary_data_class(std::string str): Str_binary_data_GiD(str), pathToFile(str) {
-    this->read_meshes();
-    while (auto one_result = read_one_result()) {
-        results_.emplace_back(move(*one_result));
+    this->readMeshes();
+    while (auto one_result = readResult()) {
+        results.emplace_back(move(*one_result));
     }
     this->setUpGiDtoVTK();
 }
@@ -27,7 +27,7 @@ void Binary_data_class::setUpGiDtoVTK() {
     this->points = vtkSmartPointer<vtkPoints>::New();
     this->array = vtkSmartPointer<vtkCellArray>::New();
     this->uGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    for (auto&& mesh: this->meshes_) {
+    for (auto&& mesh: this->meshes) {
         this->strList << (QString::fromStdString("Mesh Name : ").toUpper() +
                           QString::fromStdString(mesh.getName()))
                       << (QString::fromStdString("Mesh Dimension : ").toUpper() +
@@ -83,10 +83,10 @@ vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars() const { return th
 void Binary_data_class::toTextFile() {
     GiD_PostInit();
     GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-    this->read_meshes();
+    this->readMeshes();
     this->write_meshes();
     ofstream SaveFile("test.flavia.res");
-    for (auto& res: this->results_) {
+    for (auto& res: this->results) {
         SaveFile << "Result "
                  << "\"" << res.getAnalysis() << "\""
                  << "  Result   " << res.getResultType() << "  Step  " << res.getStep() << "  "

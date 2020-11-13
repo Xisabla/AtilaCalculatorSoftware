@@ -9,18 +9,20 @@
 =========================================================================*/
 #include "BinaryDataGiD.h"
 
-Str_binary_data_GiD::Str_binary_data_GiD(std::string file): Str_binary_data(file) { }
+Str_binary_data_GiD::Str_binary_data_GiD(std::string file): BinaryData(file) { }
 
 
 void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
                                                           const int& number_frame) {
-    while (auto one_result = read_one_result()) {
+    while (auto one_result = readResult()) {
         if (fabs(one_result->getStep() - step) / fabs(one_result->getStep() + step) < 1.e-4) {
-            results_.emplace_back(std::move(*one_result));
+            results.emplace_back(std::move(*one_result));
+        } else {
+            __DEBUG__(one_result->getStep());
         }
     }
 
-    for (auto result = results_.begin(); result != results_.end(); ++result) {
+    for (auto result = results.begin(); result != results.end(); ++result) {
         if (std::string::npos != result->getResultType().find("Harmonic")) {
             if (std::string::npos != result->getResultType().find("Real")) {
                 auto& my_real = result;
@@ -195,12 +197,12 @@ void Str_binary_data_GiD::write_one_step_to_post_gid_file(const float& step,
             }
         }
     }
-    results_.clear();
+    results.clear();
 }
 
 
 void Str_binary_data_GiD::write_meshes() {
-    for (auto& mesh: meshes_) {
+    for (auto& mesh: meshes) {
         mesh.toPostGid();
     }
 }

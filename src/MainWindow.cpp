@@ -93,7 +93,7 @@ void MainWindow::slotOpenFile() {
         std::map<float, QMenu*> stepMenus;
 
         // Add results menus
-        for (auto&& res: this->binary->results_) {
+        for (auto&& res: this->binary->getResults()) {
             if (!std::binary_search(steps.begin(), steps.end(), res.getStep())) {
                 steps.push_back(res.getStep());
                 QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(res.getStep()));
@@ -121,7 +121,7 @@ void MainWindow::slotOpenFile() {
         }
 
         // Set the view
-        this->setVTK(this->binary->results_.front(), 0);
+        this->setVTK(this->binary->getResults().front(), 0);
     } else {
         // TODO: Change this
         // NOTE: Crashes when trying to load twice another .res file

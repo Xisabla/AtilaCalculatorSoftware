@@ -34,9 +34,12 @@ Result::Result(gzFile file, char (*fields)[40], const int componentCount) {
 
 const std::string Result::getAnalysis() { return this->analysis; }
 const std::string Result::getResultType() { return this->result; }
+
 const float Result::getStep() { return this->step; }
+
 const unsigned int Result::getComponentCount() { return this->componentCount; }
 const unsigned int Result::getValuesCount() { return this->valuesCount; }
+
 const std::vector<std::string> Result::getComponents() { return this->components; }
 
 //  --------------------------------------------------------------------------------------
@@ -86,6 +89,7 @@ void Result::readResults(gzFile file, char* buffer) {
     int* nodes = static_cast<int*>(malloc(sizeof(int) * Mesh::Mesh::maxNodeCount));
     float* results =
     static_cast<float*>(malloc(sizeof(float) * componentCount * Mesh::Mesh::maxNodeCount));
+
 
     unsigned int readingSize = componentCount * sizeof(float);
 

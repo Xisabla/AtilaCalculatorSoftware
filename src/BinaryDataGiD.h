@@ -19,7 +19,8 @@
 #include <string>
 #include <vector>
 
-struct Str_binary_data_GiD : Str_binary_data {
+class Str_binary_data_GiD : public BinaryData {
+  public:
     //	std::vector<Str_Mesh_GiD> meshes_;
     Str_binary_data_GiD(std::string file);
     void write_meshes();
