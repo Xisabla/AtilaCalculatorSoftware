@@ -223,12 +223,12 @@ class Mesh {
     /**
      * @brief Elements of the mesh
      */
-    std::unique_ptr<int[]> elements;
+    int* elements;
 
     /**
      * @brief Connectivity of the elements
      */
-    std::unique_ptr<int[]> elementsConnectivity;
+    int* elementsConnectivity;
 };
 
 //  --------------------------------------------------------------------------------------

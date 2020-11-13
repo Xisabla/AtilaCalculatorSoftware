@@ -83,9 +83,9 @@ void Result::readResults(gzFile file, char* buffer) {
     unsigned int shiftNodes = 0;
     unsigned int shiftResults = 0;
 
-    std::unique_ptr<int[]> nodes = std::make_unique<int[]>(Mesh::Mesh::maxNodeCount);
-    std::unique_ptr<float[]> results =
-    std::make_unique<float[]>(componentCount * Mesh::Mesh::maxNodeCount);
+    int* nodes = static_cast<int*>(malloc(sizeof(int) * Mesh::Mesh::maxNodeCount));
+    float* results =
+    static_cast<float*>(malloc(sizeof(float) * componentCount * Mesh::Mesh::maxNodeCount));
 
     unsigned int readingSize = componentCount * sizeof(float);
 
@@ -110,9 +110,7 @@ void Result::readResults(gzFile file, char* buffer) {
 
     if (strcmp(buffer, "End Values")) __THROW__("Unexpected end of values");
 
-    this->nodeIDs = std::make_unique<int[]>(shiftNodes);
-    this->values = std::make_unique<float[]>(shiftResults);
-    std::memcpy(this->nodeIDs.get(), nodes.get(), shiftNodes * sizeof(int));
-    std::memcpy(this->values.get(), results.get(), shiftResults * sizeof(int));
+    this->nodeIDs = nodes;
+    this->values = results;
     this->valuesCount = shiftNodes;
 }

@@ -124,12 +124,12 @@ class Result {
     /**
      * @brief List of IDs of the nodes involved in the result
      */
-    std::unique_ptr<int[]> nodeIDs;
+    int* nodeIDs;
 
     /**
      * @brief Values of the result
      */
-    std::unique_ptr<float[]> values;
+    float* values;
 };
 
 #endif // ATILACALCULATORSOFTWARE_RESULT_H

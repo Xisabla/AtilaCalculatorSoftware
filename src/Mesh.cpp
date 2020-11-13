@@ -187,8 +187,8 @@ void Mesh::Mesh::readElements(gzFile& file, char* buffer) {
     unsigned int elementCount = 1;
     unsigned int count = 1;
 
-    const std::unique_ptr<int[]> connectivity { new int[maxNodeCount] };
-    const std::unique_ptr<int[]> elements { new int[n * maxNodeCount] };
+    int* connectivity { new int[maxNodeCount] };
+    int* elements { new int[n * maxNodeCount] };
 
     unsigned int nodeShift = 0;
     unsigned int elementsShift = 0;
@@ -220,10 +220,8 @@ void Mesh::Mesh::readElements(gzFile& file, char* buffer) {
         elementsShift += n;
     }
 
-    this->elementsConnectivity = std::make_unique<int[]>(nodeShift);
-    this->elements = std::make_unique<int[]>(elementsShift);
-    memcpy(this->elementsConnectivity.get(), connectivity.get(), nodeShift * sizeof(int));
-    memcpy(this->elements.get(), elements.get(), elementsShift * sizeof(int));
+    this->elementsConnectivity = connectivity;
+    this->elements = elements;
     this->elementCount = nodeShift;
 }
 
