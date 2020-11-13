@@ -26,6 +26,11 @@
  */
 class Result {
   public:
+    /**
+     * @param file res gzFile
+     * @param fields Base fields read from the file
+     * @param componentCount Number of component to seek into the result data
+     */
     Result(gzFile file, dataFields fields, const int componentCount);
 
     /**

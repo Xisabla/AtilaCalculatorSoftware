@@ -62,19 +62,17 @@ void Result::readComponents(gzFile file, char* buffer, char (*fields)[40]) {
         for (unsigned int i = 0; i < componentCount; i++) this->components.emplace_back(fields[i]);
 
         Mesh::getFields(file, buffer, fields);
-    } else {
-        if (componentCount == 1) {
-            strcpy(fields[0], "X");
-            this->components.emplace_back(fields[0]);
-        } else if (componentCount == 4) {
-            strcpy(fields[0], "X");
-            strcpy(fields[1], "Y");
-            strcpy(fields[2], "Z");
-            strcpy(fields[3], "M");
+    } else if (componentCount == 1) {
+        strcpy(fields[0], "X");
+        this->components.emplace_back(fields[0]);
+    } else if (componentCount == 4) {
+        strcpy(fields[0], "X");
+        strcpy(fields[1], "Y");
+        strcpy(fields[2], "Z");
+        strcpy(fields[3], "M");
 
-            for (unsigned int i = 0; i < componentCount; i++) {
-                this->components.emplace_back(fields[i]);
-            }
+        for (unsigned int i = 0; i < componentCount; i++) {
+            this->components.emplace_back(fields[i]);
         }
     }
 }
