@@ -15,14 +15,14 @@ Str_Result::Str_Result(gzFile file_msh, dataFields fields, const int result_size
     this->analysis_ = r.getAnalysis();
     this->results_ = r.getResults();
     this->step_ = r.getStep();
-    this->result_size_ = r.getResultSize();
+    this->result_size_ = r.getComponentCount();
     this->number_of_results_ = r.getResultCount();
     this->component_names_ = r.getComponents();
     r.moveNodeCounts(&(this->node_numbers_));
     r.moveValues(&(this->data_));
 }
 
-std::tuple<int&, float*> const Str_Result::get_one_result(const int& ind) {
+const std::tuple<int&, float*> Str_Result::get_one_result(const int& ind) {
     return std::make_tuple(std::ref(node_numbers_[ind]), &data_[ind * result_size_]);
 }
 
@@ -30,12 +30,12 @@ std::tuple<int&, float*> const Str_Result::get_one_result(const int& ind) {
 //  RESULT
 //  --------------------------------------------------------------------------------------
 
-Result::Result(gzFile file, char (*fields)[40], const int resultSize) {
+Result::Result(gzFile file, char (*fields)[40], const int componentCount) {
     // Import header data
     this->analysis = fields[1];
     this->results = fields[2];
     this->step = static_cast<float>(std::atof(fields[3]));
-    this->resultSize = resultSize;
+    this->componentCount = componentCount;
 
     // Shared buffer
     char buffer[GZ_BUFFER_SIZE];
@@ -52,10 +52,10 @@ Result::Result(gzFile file, char (*fields)[40], const int resultSize) {
 const std::string Result::getAnalysis() { return this->analysis; }
 const std::string Result::getResults() { return this->results; }
 const float Result::getStep() { return this->step; }
-const unsigned int Result::getResultSize() { return this->resultSize; }
+const unsigned int Result::getComponentCount() { return this->componentCount; }
 const unsigned int Result::getResultCount() { return this->resultCount; }
 const std::vector<std::string> Result::getComponents() { return this->components; }
-void Result::moveNodeCounts(std::unique_ptr<int[]>* ptr) { *ptr = std::move(nodeCounts); }
+void Result::moveNodeCounts(std::unique_ptr<int[]>* ptr) { *ptr = std::move(nodeIDs); }
 void Result::moveValues(std::unique_ptr<float[]>* ptr) { *ptr = std::move(values); }
 
 //  --------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void Result::moveValues(std::unique_ptr<float[]>* ptr) { *ptr = std::move(values
 //  --------------------------------------------------------------------------------------
 
 const std::tuple<int&, float*> Result::getResult(const int& id) {
-    return std::make_tuple(std::ref(nodeCounts[id]), &values[id * resultSize]);
+    return std::make_tuple(std::ref(nodeIDs[id]), &values[id * componentCount]);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -74,20 +74,20 @@ void Result::readComponents(gzFile file, char* buffer, char (*fields)[40]) {
     Mesh::getFields(file, buffer, fields);
 
     if (!strncmp(fields[0], "ComponentNames", 14)) {
-        for (unsigned int i = 0; i < resultSize; i++) this->components.emplace_back(fields[i]);
+        for (unsigned int i = 0; i < componentCount; i++) this->components.emplace_back(fields[i]);
 
         Mesh::getFields(file, buffer, fields);
     } else {
-        if (resultSize == 1) {
+        if (componentCount == 1) {
             strcpy(fields[0], "X");
             this->components.emplace_back(fields[0]);
-        } else if (resultSize == 4) {
+        } else if (componentCount == 4) {
             strcpy(fields[0], "X");
             strcpy(fields[1], "Y");
             strcpy(fields[2], "Z");
             strcpy(fields[3], "M");
 
-            for (unsigned int i = 0; i < resultSize; i++) {
+            for (unsigned int i = 0; i < componentCount; i++) {
                 this->components.emplace_back(fields[i]);
             }
         }
@@ -102,9 +102,9 @@ void Result::readResults(gzFile file, char* buffer) {
 
     std::unique_ptr<int[]> nodes = std::make_unique<int[]>(Mesh::Mesh::maxNodeCount);
     std::unique_ptr<float[]> results =
-    std::make_unique<float[]>(resultSize * Mesh::Mesh::maxNodeCount);
+    std::make_unique<float[]>(componentCount * Mesh::Mesh::maxNodeCount);
 
-    unsigned int readingSize = resultSize * sizeof(float);
+    unsigned int readingSize = componentCount * sizeof(float);
 
     gzread(file, &node, sizeof(int));
 
@@ -112,7 +112,7 @@ void Result::readResults(gzFile file, char* buffer) {
     while (node != -1) {
         gzReadSize = gzread(file, &results[shiftResults], readingSize);
         nodes[shiftNodes++] = node;
-        shiftResults += resultSize;
+        shiftResults += componentCount;
 
         if (gzReadSize == 0) __THROW__("Unexpected read size: 0");
 
@@ -127,9 +127,9 @@ void Result::readResults(gzFile file, char* buffer) {
 
     if (strcmp(buffer, "End Values")) __THROW__("Unexpected end of values");
 
-    this->nodeCounts = std::make_unique<int[]>(shiftNodes);
+    this->nodeIDs = std::make_unique<int[]>(shiftNodes);
     this->values = std::make_unique<float[]>(shiftResults);
-    std::memcpy(this->nodeCounts.get(), nodes.get(), shiftNodes * sizeof(int));
+    std::memcpy(this->nodeIDs.get(), nodes.get(), shiftNodes * sizeof(int));
     std::memcpy(this->values.get(), results.get(), shiftResults * sizeof(int));
     this->resultCount = shiftNodes;
 }

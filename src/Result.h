@@ -62,16 +62,22 @@ struct Str_Result {
 
 // - Work In Progress ------------------------------------------------------------------------------
 
+/**
+ * @class Result
+ * @brief Representation of all the results and their components read from a res file
+ */
 class Result {
   public:
-    Result(gzFile file, dataFields fields, const int resultSize);
+    Result(gzFile file, dataFields fields, const int componentCount);
 
     const std::string getAnalysis();
     const std::string getResults();
     const float getStep();
-    const unsigned int getResultSize();
+    const unsigned int getComponentCount();
     const unsigned int getResultCount();
     const std::vector<std::string> getComponents();
+
+    // TODO: Remove
     void moveNodeCounts(std::unique_ptr<int[]>* ptr);
     void moveValues(std::unique_ptr<float[]>* ptr);
 
@@ -79,26 +85,62 @@ class Result {
      * @param id ID of the result
      * @return Return information about the result
      */
-    std::tuple<int&, float*> const getResult(const int& id);
+    const std::tuple<int&, float*> getResult(const int& id);
 
   private:
     /**
      * Read the result components from the mesh file
-     * @param file File tha contains the result and meshes information
+     * @param file File that contains the result and meshes information
      * @param buffer The zlib reading buffer from previous gzread
      * @param fields Base fields read from the file
      */
     void readComponents(gzFile file, char buffer[GZ_BUFFER_SIZE], dataFields fields);
 
+    /**
+     * Read the results values from the res file
+     * @param file File that contains the result information
+     * @param buffer Thz zlib reading buffer from previous gzread
+     */
     void readResults(gzFile file, char buffer[GZ_BUFFER_SIZE]);
 
+    /**
+     * @brief Type of analysis
+     */
     std::string analysis;
+
+    /**
+     * @brief Type of results
+     */
     std::string results;
+
+    /**
+     * @brief Time step inside the analysis
+     */
     float step;
-    unsigned int resultSize;
+
+    /**
+     * @brief Number of components of the result
+     */
+    unsigned int componentCount;
+
+    /**
+     * @brief Number of results read
+     */
     unsigned int resultCount;
+
+    /**
+     * @brief Components of the result (size = componentCount)
+     */
     std::vector<std::string> components;
-    std::unique_ptr<int[]> nodeCounts;
+
+    /**
+     * @brief List of IDs of the nodes involved in the result
+     */
+    std::unique_ptr<int[]> nodeIDs;
+
+    /**
+     * @brief Values of the result
+     */
     std::unique_ptr<float[]> values;
 };
 
