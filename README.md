@@ -33,7 +33,7 @@ make run
 
 ### TODO
 
-- [ ] Refactoring: Better structure, code comprehension and documentation/comments
+- [x] Refactoring: Better structure, code comprehension and documentation/comments
   - [x] Transform all structures into class
   - [x] Merge all related files together (to finally have BinaryData, Mesh, Result)
   - [x] Rebuild global structure of the different current files/class/structs
