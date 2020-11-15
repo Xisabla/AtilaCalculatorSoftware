@@ -47,7 +47,7 @@ std::vector<std::string> Result::getComponents() { return this->components; }
 //  --------------------------------------------------------------------------------------
 
 std::tuple<int&, float*> Result::getResult(const unsigned int& id) {
-    return std::make_tuple(std::ref(nodeIDs[id]), &values[id * componentCount]);
+    return std::make_tuple(std::ref(this->nodeIDs[id]), &this->values[id * this->componentCount]);
 }
 
 // const int Result::toPostGid() {
@@ -91,7 +91,7 @@ void Result::readResults(gzFile file, char* buffer) {
     static_cast<float*>(malloc(sizeof(float) * componentCount * Mesh::Mesh::maxNodeCount));
 
 
-    unsigned int readingSize = componentCount * sizeof(float);
+    unsigned int readingSize = this->componentCount * sizeof(float);
 
     gzread(file, &node, sizeof(int));
 
@@ -99,7 +99,7 @@ void Result::readResults(gzFile file, char* buffer) {
     while (node != -1) {
         gzReadSize = gzread(file, &results[shiftResults], readingSize);
         nodes[shiftNodes++] = static_cast<int>(node);
-        shiftResults += componentCount;
+        shiftResults += this->componentCount;
 
         if (gzReadSize == 0) __THROW__("Unexpected read size: 0");
 

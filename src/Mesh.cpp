@@ -109,7 +109,7 @@ std::vector<Node> Mesh::Mesh::getNodes() { return this->nodes; }
 //  --------------------------------------------------------------------------------------
 
 std::tuple<int&, int*> Mesh::getElement(const unsigned int& id) const {
-    return std::make_tuple(std::ref(elementsConnectivity[id]), &elements[id * (nodeCount + 1)]);
+    return std::make_tuple(std::ref(this->elementsConnectivity[id]), &this->elements[id * (this->nodeCount + 1)]);
 }
 
 // const int Mesh::toPostGid() {
@@ -134,9 +134,9 @@ std::tuple<int&, int*> Mesh::getElement(const unsigned int& id) const {
 
 GiD_ElementType Mesh::getGiDElementType(const char* element) {
     std::string elementString(element);
-    auto it = GiD_ElementTypeEncoding.find(elementString);
+    auto it = Mesh::GiD_ElementTypeEncoding.find(elementString);
 
-    if (it != GiD_ElementTypeEncoding.end()) return GiD_ElementTypeEncoding.at(elementString);
+    if (it != Mesh::GiD_ElementTypeEncoding.end()) return Mesh::GiD_ElementTypeEncoding.at(elementString);
 
     __THROW__("Cannot find the type of the given element: " + element);
 }
@@ -175,10 +175,11 @@ void Mesh::readCoordinates(gzFile& file, char* buffer) {
                       "coordinates");
 
         // Append node to Mesh nodes
-        nodes.emplace_back(nodeId, coord);
+        this->nodes.emplace_back(nodeId, coord);
     }
 
-    maxNodeCount = std::max(maxNodeCount, nodes.size());
+    // Update maxNodeCount
+    Mesh::maxNodeCount = std::max(Mesh::maxNodeCount, this->nodes.size());
 }
 
 void Mesh::readElements(gzFile& file, char* buffer) {
@@ -187,8 +188,8 @@ void Mesh::readElements(gzFile& file, char* buffer) {
     unsigned int elementCount = 1;
     unsigned int count = 1;
 
-    int* connectivity { new int[maxNodeCount] };
-    int* elements { new int[n * maxNodeCount] };
+    int* connectivity { new int[Mesh::maxNodeCount] };
+    int* elements { new int[n * Mesh::maxNodeCount] };
 
     unsigned int nodeShift = 0;
     unsigned int elementsShift = 0;

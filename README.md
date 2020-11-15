@@ -45,7 +45,7 @@ make run
     - [x] result
     - [x] <s>result_GiD</s>
   - [x] Doxygen doc everywhere
-  - [ ] Comment for big spots
+  - [x] Comment for big spots
   - [ ] Review and refactor (split) all big methods or macro methods
 - [ ] Debugging/Logging: Add a way to print important data, logging the different actions
   - [x] Debug macros

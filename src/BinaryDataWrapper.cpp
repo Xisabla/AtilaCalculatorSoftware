@@ -41,11 +41,14 @@ void BinaryDataWrapper::loadResult(Result& result, const int& component) {
     this->scalars = vtkNew<vtkFloatArray>();
     this->scalars->SetNumberOfValues(result.getValuesCount());
 
+    // Set scalar value for each result values
     for (unsigned int i = 0; i < result.getValuesCount(); i++) {
         auto [id, value] = result.getResult(i);
         this->scalars->SetValue(i, value[component]);
     }
 
+    // Keep only relevant information
+    // NOTE: Can be optimized by not adding irrelevant information
     while (this->informationList.size() > 4) this->informationList.removeLast();
 
     this->informationList << (QString::fromStdString("Result analysis ").toUpper() +
@@ -78,10 +81,11 @@ void BinaryDataWrapper::convertFromGiD() {
     this->unstructuredGrid = vtkNew<vtkUnstructuredGrid>();
 
     for (Mesh& mesh: this->meshes) {
+        // Append information
         this->loadMeshInformation(mesh);
 
+        // Add node to points
         for (Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());
-
         this->unstructuredGrid->SetPoints(this->points);
 
         for (unsigned int i = 0; i < mesh.getElementCount(); i++) {
@@ -91,8 +95,11 @@ void BinaryDataWrapper::convertFromGiD() {
 
             auto polygon =
             BinaryDataWrapper::getPolygonVTKCell(mesh.getElementName(), mesh.getDimCount());
+
             if (polygon != nullptr) {
+                // Set the number of points in the polygon
                 polygon->GetPointIds()->SetNumberOfIds(mesh.getNodeCount());
+                // Set each point of the polygon
                 for (auto j = 0; j < mesh.getNodeCount(); j++)
                     polygon->GetPointIds()->SetId(j, nid[j] - 1);
 
@@ -106,6 +113,7 @@ void BinaryDataWrapper::convertFromGiD() {
 vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,
                                                               const unsigned int& dimCount) {
     if (dimCount == 2) {
+        // 2D Elements
         if (meshElement == "Triangle") return vtkSmartPointer<vtkQuadraticTriangle>::New();
         else if (meshElement == "Pyramid")
             return vtkSmartPointer<vtkQuadraticPyramid>::New();
@@ -114,6 +122,7 @@ vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string&
 
         return vtkSmartPointer<vtkPolygon>::New();
     } else if (dimCount == 3) {
+        // 3D Elements
         if (meshElement == "Hexahedra") return vtkSmartPointer<vtkHexahedron>::New();
         else if (meshElement == "Pyramid")
             return vtkSmartPointer<vtkPyramid>::New();
