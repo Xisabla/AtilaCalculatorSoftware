@@ -7,8 +7,8 @@
   All rights reserved.
 
 =========================================================================*/
-#ifndef ATILACALCULATORSOFTWARE_BINARYDATACLASS_H
-#define ATILACALCULATORSOFTWARE_BINARYDATACLASS_H
+#ifndef ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H
+#define ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H
 
 #include "BinaryData.h"
 
@@ -74,7 +74,7 @@ class BinaryDataWrapper : public BinaryData {
     /**
      * @brief Read information from the mesh and write it to the informationList
      */
-    void loadMeshInformation(Mesh::Mesh& mesh);
+    void loadMeshInformation(Mesh& mesh);
 
     /**
      * @brief Read points from BinaryData values loaded with GiD (meshes)
@@ -111,4 +111,4 @@ class BinaryDataWrapper : public BinaryData {
     QStringList informationList;
 };
 
-#endif // ATILACALCULATORSOFTWARE_BINARYDATACLASS_H
+#endif // ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H

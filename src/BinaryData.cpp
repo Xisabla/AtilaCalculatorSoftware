@@ -10,7 +10,7 @@
 #include "BinaryData.h"
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA
+//  BINARY DATA
 //  --------------------------------------------------------------------------------------
 
 BinaryData::BinaryData(std::string file) {
@@ -36,16 +36,16 @@ BinaryData::~BinaryData() {
 }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA > GETTERS
+//  BINARY DATA > GETTERS
 //  --------------------------------------------------------------------------------------
 
 const gzFile BinaryData::getFile() { return this->file; }
 
-std::vector<Mesh::Mesh>& BinaryData::getMeshes() { return this->meshes; }
+std::vector<Mesh>& BinaryData::getMeshes() { return this->meshes; }
 std::vector<Result>& BinaryData::getResults() { return this->results; }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA > PUBLIC METHODS
+//  BINARY DATA > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
 void BinaryData::readMeshes() {
@@ -53,13 +53,13 @@ void BinaryData::readMeshes() {
     dataFields fields;
 
     z_off_t currentPos = gztell(file);
-    int size = Mesh::getFields(file, buffer, fields);
+    int size = getFields(file, buffer, fields);
 
     while (size > 0 && !strcmp(fields[0], "MESH")) {
-        meshes.push_back(Mesh::Mesh(file, fields));
+        meshes.push_back(Mesh(file, fields));
 
         currentPos = gztell(file);
-        size = Mesh::getFields(file, buffer, fields);
+        size = getFields(file, buffer, fields);
     }
 
     if (gzseek(file, currentPos, SEEK_SET) == -1)
@@ -72,7 +72,7 @@ std::optional<Result> BinaryData::readResult() {
     char buffer[GZ_BUFFER_SIZE];
     dataFields fields;
 
-    if (!Mesh::getFields(file, buffer, fields)) return std::nullopt;
+    if (!getFields(file, buffer, fields)) return std::nullopt;
     if (!strcmp(fields[0], "Result")) {
         if (!strcmp(fields[4], "Vector")) {
             return Result(file, fields, 4);
@@ -100,5 +100,5 @@ std::vector<Result> BinaryData::readResults(unsigned int n) {
 }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA > PRIVATE METHODS
+//  BINARY DATA > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------

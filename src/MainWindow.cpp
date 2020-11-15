@@ -165,13 +165,13 @@ void MainWindow::slotInteractWithObject() {
 #endif
 }
 
-void MainWindow::slotResult(Result& res, const int& choice) {
+void MainWindow::slotResult(Result& result, const int& component) {
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #endif
-    this->setVTK(res, choice);
+    this->setVTK(result, component);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -200,8 +200,8 @@ void MainWindow::initAxes() {
     this->axesWidget = axesWidget;
 }
 
-void MainWindow::setVTK(Result& res, const int& choice) {
-    this->binary->loadResult(res, choice);
+void MainWindow::setVTK(Result& result, const int& component) {
+    this->binary->loadResult(result, component);
 
     // Update information list
     this->model->setStringList(this->binary->getInformationList());
@@ -229,7 +229,7 @@ void MainWindow::setVTK(Result& res, const int& choice) {
     // Side scalar bar
     vtkNew<vtkScalarBarActor> scalarBar;
     scalarBar->SetLookupTable(mapper->GetLookupTable());
-    scalarBar->SetTitle(std::string(res.getAnalysis() + std::to_string(choice)).c_str());
+    scalarBar->SetTitle(std::string(result.getAnalysis() + std::to_string(component)).c_str());
     scalarBar->UnconstrainedFontSizeOn();
     scalarBar->SetNumberOfLabels(5);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio() / 2.0);

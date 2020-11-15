@@ -10,37 +10,37 @@
 #include "Mesh.h"
 
 //  --------------------------------------------------------------------------------------
-//  MESH > NODE
+//  NODE
 //  --------------------------------------------------------------------------------------
 
-Mesh::Node::Node(unsigned int id, float* coord): id(id) {
+Node::Node(unsigned int id, float* coord): id(id) {
     this->coord[0] = coord[0];
     this->coord[1] = coord[1];
     this->coord[2] = coord[2];
 };
 
-Mesh::Node::Node(unsigned int id, float x, float y, float z): id(id) {
+Node::Node(unsigned int id, float x, float y, float z): id(id) {
     this->coord[0] = x;
     this->coord[1] = y;
     this->coord[2] = z;
 }
 
 //  --------------------------------------------------------------------------------------
-//  MESH > NODE > GETTERS
+//  NODE > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const unsigned int Mesh::Node::getId() { return this->id; }
+const unsigned int Node::getId() { return this->id; }
 
-const float* Mesh::Node::getCoords() { return this->coord; }
-const float Mesh::Node::getX() { return this->coord[0]; }
-const float Mesh::Node::getY() { return this->coord[1]; }
-const float Mesh::Node::getZ() { return this->coord[2]; }
+const float* Node::getCoords() { return this->coord; }
+const float Node::getX() { return this->coord[0]; }
+const float Node::getY() { return this->coord[1]; }
+const float Node::getZ() { return this->coord[2]; }
 
 //  --------------------------------------------------------------------------------------
-//  MESH > MESH
+//  MESH
 //  --------------------------------------------------------------------------------------
 
-Mesh::Mesh::Mesh(gzFile file, dataFields(fields)) {
+Mesh::Mesh(gzFile file, dataFields(fields)) {
     // Check if the header is fine
     if (strcmp("dimension", fields[2]))
         __THROW__("Cannot read binary file: fields[2], expected \"dimensions\", got \"" +
@@ -74,9 +74,9 @@ Mesh::Mesh::Mesh(gzFile file, dataFields(fields)) {
     if (!strcmp(fields[0], "Elements")) this->readElements(file, buffer);
 }
 
-size_t Mesh::Mesh::maxNodeCount = 0;
+size_t Mesh::maxNodeCount = 0;
 
-const std::map<std::string, GiD_ElementType> Mesh::Mesh::GiD_ElementTypeEncoding = {
+const std::map<std::string, GiD_ElementType> Mesh::GiD_ElementTypeEncoding = {
     { "", GiD_NoElement },
     { "Point", GiD_NoElement },
     { "Linear", GiD_NoElement },
@@ -91,48 +91,48 @@ const std::map<std::string, GiD_ElementType> Mesh::Mesh::GiD_ElementTypeEncoding
 };
 
 //  --------------------------------------------------------------------------------------
-//  MESH > MESH > GETTERS
+//  MESH > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const std::string Mesh::Mesh::getName() { return this->name; }
-const std::string Mesh::Mesh::getElementName() { return this->elementName; }
-const GiD_ElementType Mesh::Mesh::getElementType() { return this->elementType; }
+const std::string Mesh::getName() { return this->name; }
+const std::string Mesh::getElementName() { return this->elementName; }
+const GiD_ElementType Mesh::getElementType() { return this->elementType; }
 
-const unsigned int Mesh::Mesh::getDimCount() { return this->dimCount; }
-const unsigned int Mesh::Mesh::getNodeCount() { return this->nodeCount; }
-const unsigned int Mesh::Mesh::getElementCount() { return this->elementCount; }
+const unsigned int Mesh::getDimCount() { return this->dimCount; }
+const unsigned int Mesh::getNodeCount() { return this->nodeCount; }
+const unsigned int Mesh::getElementCount() { return this->elementCount; }
 
-std::vector<Mesh::Node> Mesh::Mesh::getNodes() { return this->nodes; }
+std::vector<Node> Mesh::Mesh::getNodes() { return this->nodes; }
 
 //  --------------------------------------------------------------------------------------
-//  MESH > MESH > PUBLIC METHODS
+//  MESH > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
-const std::tuple<int&, int*> Mesh::Mesh::getElement(const int& id) {
+std::tuple<int&, int*> Mesh::getElement(const int& id) const {
     return std::make_tuple(std::ref(elementsConnectivity[id]), &elements[id * (nodeCount + 1)]);
 }
 
-const int Mesh::Mesh::toPostGid() {
-    GiD_BeginMesh(name.c_str(), DIM(dimCount), elementType, nodeCount);
+// const int Mesh::toPostGid() {
+//    GiD_BeginMesh(name.c_str(), DIM(dimCount), elementType, nodeCount);
+//
+//    // Write Coordinates
+//    GiD_BeginCoordinates();
+//    for (Node& node: nodes)
+//        GiD_WriteCoordinates(node.getId(), node.getX(), node.getY(), node.getZ());
+//    GiD_EndCoordinates();
+//
+//    // Write Elements
+//    GiD_BeginElements();
+//    for (unsigned int i = 0; i < elementCount; i++) {
+//        auto [id, nid] = getElement(i);
+//        GiD_WriteElement(id, nid);
+//    }
+//    GiD_EndElements();
+//
+//    return GiD_EndMesh();
+//}
 
-    // Write Coordinates
-    GiD_BeginCoordinates();
-    for (Node& node: nodes)
-        GiD_WriteCoordinates(node.getId(), node.getX(), node.getY(), node.getZ());
-    GiD_EndCoordinates();
-
-    // Write Elements
-    GiD_BeginElements();
-    for (unsigned int i = 0; i < elementCount; i++) {
-        auto [id, nid] = getElement(i);
-        GiD_WriteElement(id, nid);
-    }
-    GiD_EndElements();
-
-    return GiD_EndMesh();
-}
-
-const GiD_ElementType Mesh::Mesh::getGiDElementType(const char* element) {
+const GiD_ElementType Mesh::getGiDElementType(const char* element) {
     std::string elementString(element);
     auto it = GiD_ElementTypeEncoding.find(elementString);
 
@@ -142,10 +142,10 @@ const GiD_ElementType Mesh::Mesh::getGiDElementType(const char* element) {
 }
 
 //  --------------------------------------------------------------------------------------
-//  MESH > MESH > PRIVATE METHODS
+//  MESH > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
 
-void Mesh::Mesh::readCoordinates(gzFile& file, char* buffer) {
+void Mesh::readCoordinates(gzFile& file, char* buffer) {
     unsigned int nodeId = 1;
     unsigned int count = 1;
 
@@ -181,7 +181,7 @@ void Mesh::Mesh::readCoordinates(gzFile& file, char* buffer) {
     maxNodeCount = std::max(maxNodeCount, nodes.size());
 }
 
-void Mesh::Mesh::readElements(gzFile& file, char* buffer) {
+void Mesh::readElements(gzFile& file, char* buffer) {
     const unsigned int n = nodeCount + 1;
     const unsigned int elemSize = n * sizeof(int);
     unsigned int elementCount = 1;
@@ -226,10 +226,10 @@ void Mesh::Mesh::readElements(gzFile& file, char* buffer) {
 }
 
 //  --------------------------------------------------------------------------------------
-//  MESH > METHODS
+//  METHODS
 //  --------------------------------------------------------------------------------------
 
-const unsigned int Mesh::getFields(gzFile file, char* buffer, dataFields fields) {
+const unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
     unsigned int size = 0;
 
     GZ_READ_CHECK(file, &size, 1);

@@ -7,10 +7,10 @@
   All rights reserved.
 
 =========================================================================*/
-#include "BinaryDataClass.h"
+#include "BinaryDataWrapper.h"
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA_WRAPPER
+//  BINARY DATA WRAPPER
 //  --------------------------------------------------------------------------------------
 
 BinaryDataWrapper::BinaryDataWrapper(std::string file): BinaryData(file) {
@@ -22,7 +22,7 @@ BinaryDataWrapper::BinaryDataWrapper(std::string file): BinaryData(file) {
 BinaryDataWrapper::~BinaryDataWrapper() { }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA_WRAPPER > GETTERS
+//  BINARY DATA WRAPPER > GETTERS
 //  --------------------------------------------------------------------------------------
 
 vtkSmartPointer<vtkUnstructuredGrid> BinaryDataWrapper::getUnstructuredGrid() const {
@@ -34,7 +34,7 @@ vtkSmartPointer<vtkFloatArray> BinaryDataWrapper::getScalars() const { return th
 QStringList BinaryDataWrapper::getInformationList() const { return this->informationList; }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA_WRAPPER > PUBLIC METHODS
+//  BINARY DATA WRAPPER > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
 void BinaryDataWrapper::loadResult(Result& result, const unsigned int& component) {
@@ -59,10 +59,10 @@ void BinaryDataWrapper::loadResult(Result& result, const unsigned int& component
 }
 
 //  --------------------------------------------------------------------------------------
-//  BINARY_DATA_WRAPPER > PRIVATE METHODS
+//  BINARY DATA WRAPPER > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
 
-void BinaryDataWrapper::loadMeshInformation(Mesh::Mesh& mesh) {
+void BinaryDataWrapper::loadMeshInformation(Mesh& mesh) {
     this->informationList << (QString::fromStdString("Mesh Name : ").toUpper() +
                               QString::fromStdString(mesh.getName()))
                           << (QString::fromStdString("Mesh Dimension : ").toUpper() +
@@ -77,10 +77,10 @@ void BinaryDataWrapper::convertFromGiD() {
     this->points = vtkNew<vtkPoints>();
     this->unstructuredGrid = vtkNew<vtkUnstructuredGrid>();
 
-    for (Mesh::Mesh& mesh: this->meshes) {
+    for (Mesh& mesh: this->meshes) {
         this->loadMeshInformation(mesh);
 
-        for (Mesh::Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());
+        for (Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());
 
         this->unstructuredGrid->SetPoints(this->points);
 

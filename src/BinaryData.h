@@ -42,7 +42,7 @@ class BinaryData {
     /**
      * @return The loaded meshes
      */
-    std::vector<Mesh::Mesh>& getMeshes();
+    std::vector<Mesh>& getMeshes();
 
     /**
      * @return The loaded results
@@ -81,7 +81,7 @@ class BinaryData {
     /**
      * @brief Read meshes
      */
-    std::vector<Mesh::Mesh> meshes;
+    std::vector<Mesh> meshes;
 
     /**
      * @brief Read meshes

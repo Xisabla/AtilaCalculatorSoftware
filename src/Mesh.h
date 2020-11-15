@@ -25,8 +25,6 @@
 
 #define DIM(x) x == 3 ? GiD_3D : GiD_2D
 
-namespace Mesh {
-
 //  --------------------------------------------------------------------------------------
 //  NODE
 //  --------------------------------------------------------------------------------------
@@ -144,13 +142,13 @@ class Mesh {
      * @param id ID of the element
      * @return Return information about an element:
      */
-    const std::tuple<int&, int*> getElement(const int& id);
+    std::tuple<int&, int*> getElement(const int& id) const;
 
-    /**
-     * @brief Write the mesh into a currently open PostResultFile
-     * @return The state of the GiD Post Mesh closure
-     */
-    const int toPostGid();
+    //    /**
+    //     * @brief Write the mesh into a currently open PostResultFile
+    //     * @return The state of the GiD Post Mesh closure
+    //     */
+    //    const int toPostGid();
 
     /**
      * @brief Get the GiD_ElementType of a string encoded GiDElementType
@@ -236,7 +234,5 @@ class Mesh {
 //  --------------------------------------------------------------------------------------
 
 const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
-
-} // namespace Mesh
 
 #endif // ATILACALCULATORSOFTWARE_MESH_H

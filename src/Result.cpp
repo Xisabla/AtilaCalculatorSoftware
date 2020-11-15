@@ -59,12 +59,12 @@ const std::tuple<int&, float*> Result::getResult(const int& id) {
 //  --------------------------------------------------------------------------------------
 
 void Result::readComponents(gzFile file, char* buffer, char (*fields)[40]) {
-    Mesh::getFields(file, buffer, fields);
+    getFields(file, buffer, fields);
 
     if (!strncmp(fields[0], "ComponentNames", 14)) {
         for (unsigned int i = 0; i < componentCount; i++) this->components.emplace_back(fields[i]);
 
-        Mesh::getFields(file, buffer, fields);
+        getFields(file, buffer, fields);
     } else if (componentCount == 1) {
         strcpy(fields[0], "X");
         this->components.emplace_back(fields[0]);

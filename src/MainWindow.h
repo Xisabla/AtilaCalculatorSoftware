@@ -10,7 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_MAINWINDOW_H
 #define ATILACALCULATORSOFTWARE_MAINWINDOW_H
 
-#include "BinaryDataClass.h"
+#include "BinaryDataWrapper.h"
 #include "ui_MainWindow.h"
 
 #include <QFileDialog>
@@ -74,12 +74,15 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
 
     /**
      * Select the result to visualise
-     * @param res Result to visualise
-     * @param choice Choice for setVTK method
+     * @param result Result to visualise
+     * @param component Choice for setVTK method
      */
-    void slotResult(Result& res, const int& choice);
+    void slotResult(Result& result, const int& component);
 
   private:
+    void loadBinaryData(std::string filename);
+    void clearBinaryData();
+
     /**
      * Path to directory that stores the objects to open
      */
@@ -104,10 +107,10 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
 
     /**
      * Load the VKT result and show it
-     * @param res Result read by the binary data
-     * @param choice
+     * @param result Result read by the binary data
+     * @param component
      */
-    void setVTK(Result& res, const int& choice);
+    void setVTK(Result& result, const int& component);
 };
 
 #endif
