@@ -89,13 +89,13 @@ std::optional<Result> BinaryData::readResult() {
 }
 
 std::vector<Result> BinaryData::readResults(unsigned int n) {
-    if(results.size() >= n) return results;
+    if(n > 0 && results.size() >= n) return results;
     unsigned int current = results.size();
 
     while(std::optional<Result> result = readResult()) {
         results.emplace_back(std::move(*result));
 
-        if(++current >= n) break;
+        if(n > 0 && ++current >= n) break;
     }
 
     return results;
