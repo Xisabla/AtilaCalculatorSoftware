@@ -10,6 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_UTILS_H
 #define ATILACALCULATORSOFTWARE_UTILS_H
 
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -73,5 +74,18 @@
 //  --------------------------------------------------------------------------------------
 
 typedef char dataFields[10][40];
+
+//  --------------------------------------------------------------------------------------
+//  METHODS
+//  --------------------------------------------------------------------------------------
+
+/**
+ * @brief Read fields from the given resource file
+ * @param file resource file to read
+ * @param buffer Zlib reading buffer
+ * @param fields dataFields pointer in which fields will be written
+ * @return The size of read data
+ */
+const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
 
 #endif // ATILACALCULATORSOFTWARE_UTILS_H

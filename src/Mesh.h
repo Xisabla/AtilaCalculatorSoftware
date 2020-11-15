@@ -229,10 +229,4 @@ class Mesh {
     int* elementsConnectivity;
 };
 
-//  --------------------------------------------------------------------------------------
-//  METHODS
-//  --------------------------------------------------------------------------------------
-
-const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
-
 #endif // ATILACALCULATORSOFTWARE_MESH_H
