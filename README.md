@@ -34,14 +34,14 @@ make run
 ### TODO
 
 - [ ] Refactoring: Better structure, code comprehension and documentation/comments
-  - [ ] Transform all structures into class
+  - [x] Transform all structures into class
   - [ ] Merge all related files together (to finally have BinaryData, Mesh, Result)
-  - [ ] Rebuild global structure of the different current files/class/structs
+  - [x] Rebuild global structure of the different current files/class/structs
     - [x] binary_data
-    - [ ] binary_data_class
-    - [ ] binary_data_GiD 
+    - [x] binary_data_class
+    - [x] <s>binary_data_GiD</s> 
     - [x] mesh
-    - [x] mesh_GiD
+    - [x] <s>mesh_GiD</s>
     - [x] result
     - [x] <s>result_GiD</s>
   - [ ] Doxygen doc everywhere
@@ -57,3 +57,6 @@ make run
   - [ ] Mesh visualisation
   - [ ] Write to GiD file
   - [ ] Shortcuts (Ctrl+O to open file, ...)
+ - [ ] Fixes
+    - NOTE: It may be a good practice to use a github issue for each bug and make another branch + use a pull request to fix each bug 
+    - [x] Opening a new resource files occurs to a crash 

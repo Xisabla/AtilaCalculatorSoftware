@@ -79,54 +79,10 @@ void MainWindow::slotOpenFile() {
     // Stop if no given file/action cancelled
     if (filename.isEmpty()) return;
 
-    if (this->binary == NULL) {
-        // Load binary data
-        this->binary = new Binary_data_class(filename.toStdString());
-
-        // Enable view actions
-        this->actionZoomOnArea->setEnabled(true);
-        this->actionResetCamera->setEnabled(true);
-        this->actionInteractWithObject->setEnabled(true);
-
-        // Set result actions
-        std::vector<float> steps;
-        std::map<float, QMenu*> stepMenus;
-
-        // Add results menus
-        for (auto&& result: this->binary->getResults()) {
-            if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
-                steps.push_back(result.getStep());
-                QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
-                stepMenus.insert(std::pair<float, QMenu*>(result.getStep(), stepMenuItem));
-            }
-
-            QMenu* menu =
-            stepMenus[result.getStep()]->addMenu(QString::fromStdString(result.getAnalysis()));
-
-            // Add results menu action
-            for (unsigned int i = 0; i < result.getComponentCount(); i++) {
-                QAction* resultItemAction;
-
-                if (result.getComponents().size() > 0) {
-                    resultItemAction =
-                    menu->addAction(QString::fromStdString(result.getComponents().at(i)));
-                } else {
-                    resultItemAction = menu->addAction(QString::number(i));
-                }
-
-                connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
-                    this->slotResult(result, i);
-                });
-            }
-        }
-
-        // Set the view
-        this->setVTK(this->binary->getResults().front(), 0);
-    } else {
-        // TODO: Change this
-        // NOTE: Crashes when trying to load twice another .res file
+    if (this->binary != NULL) {
+        // TODO: Move this in a private method "unloadBinaryData"
+        // TODO: Clean results menu (maybe do this in another method "cleanBinaryResults")
         delete this->binary;
-        this->binary = NULL;
 #if VTK890
         this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
@@ -136,6 +92,51 @@ void MainWindow::slotOpenFile() {
         ->RemoveAllViewProps();
 #endif
     }
+
+    // TODO: Move this in a private method "loadBinaryData"
+    // Load binary data
+    this->binary = new BinaryDataWrapper(filename.toStdString());
+
+    // Enable view actions
+    this->actionZoomOnArea->setEnabled(true);
+    this->actionResetCamera->setEnabled(true);
+    this->actionInteractWithObject->setEnabled(true);
+
+    // Set result actions
+    std::vector<float> steps;
+    std::map<float, QMenu*> stepMenus;
+
+    // Add results menus
+    // TODO: Maybe move this in another method "addBinaryResults"
+    for (auto&& result: this->binary->getResults()) {
+        if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
+            steps.push_back(result.getStep());
+            QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
+            stepMenus.insert(std::pair<float, QMenu*>(result.getStep(), stepMenuItem));
+        }
+
+        QMenu* menu =
+        stepMenus[result.getStep()]->addMenu(QString::fromStdString(result.getAnalysis()));
+
+        // Add results menu action
+        for (unsigned int i = 0; i < result.getComponentCount(); i++) {
+            QAction* resultItemAction;
+
+            if (result.getComponents().size() > 0) {
+                resultItemAction =
+                menu->addAction(QString::fromStdString(result.getComponents().at(i)));
+            } else {
+                resultItemAction = menu->addAction(QString::number(i));
+            }
+
+            connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
+                this->slotResult(result, i);
+            });
+        }
+    }
+
+    // Set the view
+    this->setVTK(this->binary->getResults().front(), 0);
 }
 
 void MainWindow::slotResetCamera() {
@@ -200,10 +201,10 @@ void MainWindow::initAxes() {
 }
 
 void MainWindow::setVTK(Result& res, const int& choice) {
-    this->binary->setScalarFromQT2(res, choice);
+    this->binary->loadResult(res, choice);
 
     // Update information list
-    this->model->setStringList(this->binary->getstrList());
+    this->model->setStringList(this->binary->getInformationList());
     this->listView->setModel(this->model);
     this->listView->adjustSize();
     this->listView->setVisible(true);
@@ -217,11 +218,11 @@ void MainWindow::setVTK(Result& res, const int& choice) {
     lookupTable->SetTableRange(range);
     lookupTable->Build();
 
-    this->binary->getUGrid()->GetPointData()->SetScalars(this->binary->getScalars());
+    this->binary->getUnstructuredGrid()->GetPointData()->SetScalars(this->binary->getScalars());
 
     // Mapper
     vtkNew<vtkDataSetMapper> mapper;
-    mapper->SetInputData(this->binary->getUGrid());
+    mapper->SetInputData(this->binary->getUnstructuredGrid());
     mapper->SetScalarRange(range);
     mapper->SetLookupTable(lookupTable);
 

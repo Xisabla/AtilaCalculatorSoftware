@@ -10,7 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_BINARYDATACLASS_H
 #define ATILACALCULATORSOFTWARE_BINARYDATACLASS_H
 
-#include "BinaryDataGiD.h"
+#include "BinaryData.h"
 
 #include <QString>
 #include <QStringList>
@@ -32,59 +32,83 @@
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 
-// TODO:
-// - Merge Binary_data & Binary_data_GiD into a single class BinaryData
-// - Rework and rename Binary_data_class into VTKResource/ResourceWrapper/BinaryDataWrapper
-
-// Class qui transforme l'objet binaire en objets vtk
-class Binary_data_class : public Str_binary_data_GiD {
-
+/**
+ * @class BinaryDataWrapper
+ * @brief Wrapper around the BinaryData class that allows to interact with VTK
+ */
+class BinaryDataWrapper : public BinaryData {
   public:
-    // Construteur utilisant le construteur de la struct Str_binary_data_GiD afin d'utiliser la
-    // librairie gidpost Il prépare obj pour qui soit compréhensible par l'utilisateur ou VTK
-    Binary_data_class(std::string str);
+    /**
+     * @param file Path to the res gzFile
+     */
+    BinaryDataWrapper(std::string file);
 
-    ~Binary_data_class();
+    /**
+     * @brief Empty but needed for unstructuredGrid destruction
+     */
+    ~BinaryDataWrapper();
 
-    // Fonction qui transforme les informations obtenu avec Gidpost en objets VTK
-    void setUpGiDtoVTK();
+    /**
+     * @brief Load the given component of the given result, set inner values
+     * @param result Result to load
+     * @param component Component to load
+     */
+    void loadResult(Result& result, const unsigned int& component);
 
-    // Fonction qui attribue les valeur a chaque point de l'objet en fonction du choix de résultat
-    // par l'utilisateur
-    void setScalarFromQT2(Result& res, const int& choice);
+    /**
+     * @return The DataSet of points of the loaded and converted GiD resource file
+     */
+    vtkSmartPointer<vtkUnstructuredGrid> getUnstructuredGrid() const;
 
-    // Retourne le tableau contenant la valeur de chaque point
+    /**
+     * @return Observed values of the loaded result
+     */
     vtkSmartPointer<vtkFloatArray> getScalars() const;
 
-    // Retourne le tableau des points et leurs coordonnées
-    vtkSmartPointer<vtkPoints> getvtkPoints() const;
-
-    // Retourne le tableau contenant les formes (triangles, carrés, cube ...)
-    vtkSmartPointer<vtkCellArray> getvtkCellArray() const;
-
-    // Retourne la Grid, elle contient les points et les formes en fonction de leur position
-    vtkSmartPointer<vtkUnstructuredGrid> getUGrid() const;
-
-    // Retourne la list qui contient les informations sur l'objet binaires
-    QStringList getstrList() const;
-
-    // Retourne le chemin vers le fichier binaire
-    std::string getPath() const;
-
-    // Fonction qui permet de créer deux fichiers .msh et .res contenant les informations des mesh
-    // et des résultats
-    void toTextFile();
-
-    // Fonction dictant avec quelle forme les points de l'objet binaire doivent etre reliés
-    vtkSmartPointer<vtkCell> createVTKCell(const std::string& mesh_name_, const int& ndim_);
+    /**
+     * @return Information about the current results as a QT usable object
+     */
+    QStringList getInformationList() const;
 
   private:
-    vtkSmartPointer<vtkUnstructuredGrid> uGrid;
-    std::string pathToFile;
-    QStringList strList;
+    /**
+     * @brief Read information from the mesh and write it to the informationList
+     */
+    void loadMeshInformation(Mesh::Mesh& mesh);
+
+    /**
+     * @brief Read points from BinaryData values loaded with GiD (meshes)
+     */
+    void convertFromGiD();
+
+    /**
+     * @brief Find and return the good polygon fitting the mesh elements and dimensions
+     * @param meshElement Element of the mesh
+     * @param dimCount Number of dimensions of the count
+     * @return The well fitting polygon as a VTKCell object
+     */
+    vtkSmartPointer<vtkCell> getPolygonVTKCell(const std::string& meshElement,
+                                               const unsigned int& dimCount);
+
+    /**
+     * @brief DataSet of all the points converted from GiD representation
+     */
+    vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid;
+
+    /**
+     * @brief Mesh nodes as vtkPoints object
+     */
     vtkSmartPointer<vtkPoints> points;
-    vtkSmartPointer<vtkCellArray> array;
+
+    /**
+     * @brief Observed values
+     */
     vtkSmartPointer<vtkFloatArray> scalars;
+
+    /**
+     * @brief Information about the current results
+     */
+    QStringList informationList;
 };
 
 #endif // ATILACALCULATORSOFTWARE_BINARYDATACLASS_H

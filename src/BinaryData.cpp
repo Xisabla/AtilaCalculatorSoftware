@@ -29,10 +29,8 @@ BinaryData::BinaryData(std::string file) {
     // this->readResults();
 }
 
-BinaryData::BinaryData(QString filename) { BinaryData(filename.toStdString()); }
-
 BinaryData::~BinaryData() {
-    if(file != NULL) gzclose(file);
+    if (file != NULL) gzclose(file);
     meshes.clear();
     results.clear();
 }
@@ -44,7 +42,7 @@ BinaryData::~BinaryData() {
 const gzFile BinaryData::getFile() { return this->file; }
 
 std::vector<Mesh::Mesh>& BinaryData::getMeshes() { return this->meshes; }
-std::vector<Result> &BinaryData::getResults() { return this->results; }
+std::vector<Result>& BinaryData::getResults() { return this->results; }
 
 //  --------------------------------------------------------------------------------------
 //  BINARY_DATA > PUBLIC METHODS
@@ -89,13 +87,13 @@ std::optional<Result> BinaryData::readResult() {
 }
 
 std::vector<Result> BinaryData::readResults(unsigned int n) {
-    if(n > 0 && results.size() >= n) return results;
+    if (n > 0 && results.size() >= n) return results;
     unsigned int current = results.size();
 
-    while(std::optional<Result> result = readResult()) {
+    while (std::optional<Result> result = readResult()) {
         results.emplace_back(std::move(*result));
 
-        if(n > 0 && ++current >= n) break;
+        if (n > 0 && ++current >= n) break;
     }
 
     return results;

@@ -95,7 +95,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * Data imported from the current .res file
      */
-    Binary_data_class* binary = NULL;
+    BinaryDataWrapper* binary = NULL;
 
     /**
      * Initialize axes view

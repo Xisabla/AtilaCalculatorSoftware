@@ -9,150 +9,120 @@
 =========================================================================*/
 #include "BinaryDataClass.h"
 
-using namespace std;
+//  --------------------------------------------------------------------------------------
+//  BINARY_DATA_WRAPPER
+//  --------------------------------------------------------------------------------------
 
-Binary_data_class::Binary_data_class(std::string str): Str_binary_data_GiD(str), pathToFile(str) {
+BinaryDataWrapper::BinaryDataWrapper(std::string file): BinaryData(file) {
     this->readMeshes();
-    while (auto one_result = readResult()) {
-        results.emplace_back(move(*one_result));
-    }
-    this->setUpGiDtoVTK();
+    this->readResults();
+    this->convertFromGiD();
 }
-std::string Binary_data_class::getPath() const { return pathToFile; }
-Binary_data_class::~Binary_data_class() { }
-vtkSmartPointer<vtkPoints> Binary_data_class::getvtkPoints() const { return this->points; }
-vtkSmartPointer<vtkCellArray> Binary_data_class::getvtkCellArray() const { return this->array; }
-QStringList Binary_data_class::getstrList() const { return this->strList; }
-void Binary_data_class::setUpGiDtoVTK() {
-    this->points = vtkSmartPointer<vtkPoints>::New();
-    this->array = vtkSmartPointer<vtkCellArray>::New();
-    this->uGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    for (auto&& mesh: this->meshes) {
-        this->strList << (QString::fromStdString("Mesh Name : ").toUpper() +
-                          QString::fromStdString(mesh.getName()))
-                      << (QString::fromStdString("Mesh Dimension : ").toUpper() +
-                          QString::number(mesh.getDimCount()))
-                      << (QString::fromStdString("Element Type : ").toUpper() +
-                          QString::fromStdString(mesh.getElementName()))
-                      << (QString::fromStdString("Number of nodes : ").toUpper() +
-                          QString::number(mesh.getNodeCount()));
-        for (auto&& nodes: mesh.getNodes()) {
-            this->points->InsertNextPoint(nodes.getX(), nodes.getY(), nodes.getZ());
-        }
-        this->uGrid->SetPoints(this->points);
-        for (auto a = 0; a < mesh.getElementCount(); a++) {
-            auto [id, element] = mesh.getElement(a);
-            if (id == a + 1) {
-                auto polygone = this->createVTKCell(mesh.getElementName(), mesh.getDimCount());
-                if (polygone != NULL) {
-                    polygone->GetPointIds()->SetNumberOfIds(mesh.getNodeCount());
-                    for (auto i = 0; i < mesh.getNodeCount(); i++) {
-                        // crée une forme en fonction de l'id des points donnée par les elements
-                        // Il y a un décalage de car lors de l'insertion des points dans le
-                        // vtkPoints, le point avec l'id 1 devient le point 0 Donc le point id 1 et
-                        // a la position 0 dans le tableau
-                        polygone->GetPointIds()->SetId(i, element[i] - 1);
-                    }
-                    this->array->InsertNextCell(polygone);
-                    this->uGrid->InsertNextCell(polygone->GetCellType(), polygone->GetPointIds());
-                }
 
-            } else
-                break;
-        }
-    }
+BinaryDataWrapper::~BinaryDataWrapper() { }
+
+//  --------------------------------------------------------------------------------------
+//  BINARY_DATA_WRAPPER > GETTERS
+//  --------------------------------------------------------------------------------------
+
+vtkSmartPointer<vtkUnstructuredGrid> BinaryDataWrapper::getUnstructuredGrid() const {
+    return this->unstructuredGrid;
 }
-void Binary_data_class::setScalarFromQT2(Result& res, const int& choice) {
-    this->scalars = vtkSmartPointer<vtkFloatArray>::New();
-    while (this->strList.size() > 4) {
-        this->strList.removeLast();
+
+vtkSmartPointer<vtkFloatArray> BinaryDataWrapper::getScalars() const { return this->scalars; }
+
+QStringList BinaryDataWrapper::getInformationList() const { return this->informationList; }
+
+//  --------------------------------------------------------------------------------------
+//  BINARY_DATA_WRAPPER > PUBLIC METHODS
+//  --------------------------------------------------------------------------------------
+
+void BinaryDataWrapper::loadResult(Result& result, const unsigned int& component) {
+    this->scalars = vtkNew<vtkFloatArray>();
+    this->scalars->SetNumberOfValues(result.getValuesCount());
+
+    for (unsigned int i = 0; i < result.getValuesCount(); i++) {
+        auto [id, value] = result.getResult(i);
+        this->scalars->SetValue(i, value[component]);
     }
-    this->strList << (QString::fromStdString("Result analysis ").toUpper() +
-                      QString::fromStdString(res.getAnalysis()))
-                  << (QString::fromStdString("Result ").toUpper() +
-                      QString::fromStdString(res.getResultType()))
-                  << (QString::fromStdString("Step ").toUpper() + QString::number(res.getStep()))
-                  << (QString::fromStdString("Choice ").toUpper() + QString::number(choice));
-    this->scalars->SetNumberOfValues(res.getValuesCount());
-    for (auto i = 0; i < res.getValuesCount(); ++i) {
-        auto [node_number, data] = res.getResult(i);
-        this->scalars->SetValue(i, data[choice]);
-    }
+
+    while (this->informationList.size() > 4) this->informationList.removeLast();
+
+    this->informationList << (QString::fromStdString("Result analysis ").toUpper() +
+                              QString::fromStdString(result.getAnalysis()))
+                          << (QString::fromStdString("Result ").toUpper() +
+                              QString::fromStdString(result.getResultType()))
+                          << (QString::fromStdString("Step ").toUpper() +
+                              QString::number(result.getStep()))
+                          << (QString::fromStdString("Choice ").toUpper() +
+                              QString::number(component));
 }
-vtkSmartPointer<vtkFloatArray> Binary_data_class::getScalars() const { return this->scalars; }
-void Binary_data_class::toTextFile() {
-    GiD_PostInit();
-    GiD_OpenPostResultFile("test.flavia.msh", GiD_PostAscii);
-    this->readMeshes();
-    this->write_meshes();
-    ofstream SaveFile("test.flavia.res");
-    for (auto& res: this->results) {
-        SaveFile << "Result "
-                 << "\"" << res.getAnalysis() << "\""
-                 << "  Result   " << res.getResultType() << "  Step  " << res.getStep() << "  "
-                 << std::endl;
-        ;
-        SaveFile << "Values";
-        // for (auto& comp : res.component_names_) {
-        //	SaveFile << comp << " ";
-        //}
-        SaveFile << std::endl;
-        for (auto i = 0; i < res.getValuesCount(); ++i) {
-            auto [node_number, data] = res.getResult(i);
-            SaveFile << node_number << " ";
-            for (auto j = 0; j < res.getComponentCount(); ++j) {
-                SaveFile << data[j] << " ";
+
+//  --------------------------------------------------------------------------------------
+//  BINARY_DATA_WRAPPER > PRIVATE METHODS
+//  --------------------------------------------------------------------------------------
+
+void BinaryDataWrapper::loadMeshInformation(Mesh::Mesh& mesh) {
+    this->informationList << (QString::fromStdString("Mesh Name : ").toUpper() +
+                              QString::fromStdString(mesh.getName()))
+                          << (QString::fromStdString("Mesh Dimension : ").toUpper() +
+                              QString::number(mesh.getDimCount()))
+                          << (QString::fromStdString("Element Type : ").toUpper() +
+                              QString::fromStdString(mesh.getElementName()))
+                          << (QString::fromStdString("Number of nodes : ").toUpper() +
+                              QString::number(mesh.getNodeCount()));
+}
+
+void BinaryDataWrapper::convertFromGiD() {
+    this->points = vtkNew<vtkPoints>();
+    this->unstructuredGrid = vtkNew<vtkUnstructuredGrid>();
+
+    for (Mesh::Mesh& mesh: this->meshes) {
+        this->loadMeshInformation(mesh);
+
+        for (Mesh::Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());
+
+        this->unstructuredGrid->SetPoints(this->points);
+
+        for (unsigned int i = 0; i < mesh.getElementCount(); i++) {
+            auto [id, nid] = mesh.getElement(i);
+
+            if (id != i + 1) break;
+
+            auto polygon = this->getPolygonVTKCell(mesh.getElementName(), mesh.getDimCount());
+            if (polygon != NULL) {
+                polygon->GetPointIds()->SetNumberOfIds(mesh.getNodeCount());
+                for (auto j = 0; j < mesh.getNodeCount(); j++)
+                    polygon->GetPointIds()->SetId(j, nid[j] - 1);
+
+                this->unstructuredGrid->InsertNextCell(polygon->GetCellType(),
+                                                       polygon->GetPointIds());
             }
-            SaveFile << std::endl;
         }
-        SaveFile << "End Values" << std::endl;
     }
-    SaveFile.close();
-    GiD_ClosePostResultFile();
-    GiD_PostDone();
 }
-vtkSmartPointer<vtkUnstructuredGrid> Binary_data_class::getUGrid() const { return uGrid; }
-vtkSmartPointer<vtkCell> Binary_data_class::createVTKCell(const std::string& str,
-                                                          const int& ndim_) {
-    if (ndim_ == 2) {
-        if (str == "Triangle") {
-            auto cell = vtkSmartPointer<vtkQuadraticTriangle>::New();
-            return cell;
-        } else if (str == "Pyramid") {
-            auto cell = vtkSmartPointer<vtkQuadraticPyramid>::New();
-            return cell;
-        } else if (str == "Quadrilateral") {
-            auto cell = vtkSmartPointer<vtkQuad>::New();
-            return cell;
-        }
 
-        else {
-            auto cell = vtkSmartPointer<vtkPolygon>::New();
-            return cell;
-        }
+vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,
+                                                              const unsigned int& dimCount) {
+    if (dimCount == 2) {
+        if (meshElement == "Triangle")
+            return vtkSmartPointer<vtkQuadraticTriangle>::New();
+        else if (meshElement == "Pyramid")
+            return vtkSmartPointer<vtkQuadraticPyramid>::New();
+        else if (meshElement == "Quadrilateral")
+            return vtkSmartPointer<vtkQuad>::New();
 
-    } else if (ndim_ == 3) {
-        if (str == "Hexahedra") {
-            auto cell = vtkSmartPointer<vtkHexahedron>::New();
-            return cell;
-        } else if (str == "Pyramid") {
-            auto cell = vtkSmartPointer<vtkPyramid>::New();
-            return cell;
-        }
+        return vtkSmartPointer<vtkPolygon>::New();
+    } else if (dimCount == 3) {
+        if (meshElement == "Hexahedra")
+            return vtkSmartPointer<vtkHexahedron>::New();
+        else if (meshElement == "Pyramid")
+            return vtkSmartPointer<vtkPyramid>::New();
 
-        else {
-            auto cell = vtkSmartPointer<vtkPolyhedron>::New();
-            return cell;
-        }
-
+        return vtkSmartPointer<vtkPolyhedron>::New();
     } else {
-        if (str == "Linear") {
-            auto cell = vtkSmartPointer<vtkLine>::New();
-            return cell;
-        } else if (str == "Point") {
-            return NULL;
-        } else {
-            return NULL;
-        }
+        if (meshElement == "Linear") return vtkSmartPointer<vtkLine>::New();
+
+        return NULL;
     }
 }

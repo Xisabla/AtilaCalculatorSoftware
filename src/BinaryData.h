@@ -35,11 +35,6 @@ class BinaryData {
     BinaryData(std::string file);
 
     /**
-     * @param filename Path to the res gzFile
-     */
-    BinaryData(QString filename);
-
-    /**
      * @return The currently open res gzFile
      */
     const gzFile getFile();
@@ -97,7 +92,6 @@ class BinaryData {
      * @brief Constant value for reading check
      */
     const static int byteOrderCheck = 0x91d;
-
 };
 
 #endif // ATILACALCULATORSOFTWARE_BINARYDATA_H
