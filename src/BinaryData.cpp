@@ -9,31 +9,6 @@
 =========================================================================*/
 #include "BinaryData.h"
 
-static int ByteOrderCheck = 0x91d;
-
-Str_binary_data::~Str_binary_data() {
-    gzclose(file_msh_);
-    meshes_.clear();
-    results_.clear();
-    std::cout << "clearing ... " << std::endl;
-}
-
-Str_binary_data::Str_binary_data(std::string file) : bd(file)  {
-    this->file_msh_ = this->bd.getFile();
-}
-
-bool Str_binary_data::read_meshes() {
-    bd.readMeshes();
-
-    return true;
-}
-
-std::optional<Result> Str_binary_data::read_one_result() {
-    return bd.readResult();
-}
-
-// - Work In Progress ------------------------------------------------------------------------------
-
 //  --------------------------------------------------------------------------------------
 //  BINARY_DATA
 //  --------------------------------------------------------------------------------------
