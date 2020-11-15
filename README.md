@@ -35,7 +35,7 @@ make run
 
 - [ ] Refactoring: Better structure, code comprehension and documentation/comments
   - [x] Transform all structures into class
-  - [ ] Merge all related files together (to finally have BinaryData, Mesh, Result)
+  - [x] Merge all related files together (to finally have BinaryData, Mesh, Result)
   - [x] Rebuild global structure of the different current files/class/structs
     - [x] binary_data
     - [x] binary_data_class
@@ -44,7 +44,7 @@ make run
     - [x] <s>mesh_GiD</s>
     - [x] result
     - [x] <s>result_GiD</s>
-  - [ ] Doxygen doc everywhere
+  - [x] Doxygen doc everywhere
   - [ ] Comment for big spots
   - [ ] Review and refactor (split) all big methods or macro methods
 - [ ] Debugging/Logging: Add a way to print important data, logging the different actions

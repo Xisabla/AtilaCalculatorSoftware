@@ -93,6 +93,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget;
 
+    /**
+     * @brief Information module model
+     */
     QStringListModel* model;
 
     /**
