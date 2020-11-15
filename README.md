@@ -1,7 +1,8 @@
-# [WIP] AtilaCalculatorSoftware v2
+# AtilaCalculatorSoftware
 
 ## Dependencies
 
+- Boost 1.72
 - [GiDPost](https://www.gidhome.com/gid-plus/tools/476/gidpost/) 2.7
 - [zlib](https://zlib.net/)
 - [HDF5 Library](https://portal.hdfgroup.org/pages/viewpage.action?pageId=50073884)
@@ -17,17 +18,16 @@
 
 ## Building and running
 
-### Using CMake (best option)
-
-```bash
+```shell script
 mkdir build && cd build
-cmake ../
-# or cmake -DVTK_DIR:PATH=/path/to/vtk ../ -Wno-dev
+cmake ../ # or cmake -DVTK_DIR:PATH=/path/to/vtk ../ -Wno-dev
+make
+./AtilaCalculatorSoftware # or ./AtilaCalculatorSoftware /path/to/data/directory
 ```
 
-### Using dev Makefile
+or using make
 
-```bash
+```shell script
 make run
 ```
 

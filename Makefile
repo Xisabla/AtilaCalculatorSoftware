@@ -1,38 +1,14 @@
-.DEFAULT_GOAL=run
-.PHONY=all
-
-# ************************************************************************************** #
-
-# DISCLAIMER:
-#	This makefile purpose is mainly to test VTK versions or as developing stage use,
-#   make sure to understand that it will mainly use CMake as build tool
-#
-#	If you simply want to build and run the program, it is recommended to rather use
-#	CMake directly.
-#
-#	However, if you truly understand how this Makefile works, feel free to use it
-#
-# 	And just to tell you, "run" recipe will build everytime and does not look for change
-
-# ************************************************************************************** #
+.DEFAULT_GOAL=build
 
 #----------------------------------------------------------------------------------------#
 #                                                                                        #
-#                                      VTK Options                                       #
-#                                                                                        #
-#----------------------------------------------------------------------------------------#
-
-VTK_PATH=/home/gautier/Downloads/vtk
-VTK_VERSION=9.0.1
-
-#----------------------------------------------------------------------------------------#
-#                                                                                        #
-#                                  Formatting Options                                    #
+#                                        Options                                         #
 #                                                                                        #
 #----------------------------------------------------------------------------------------#
 
 CLANG_FORMAT_OPTIONS=--verbose -i --style=file
 CLANG_FORMAT_FILES=src/*.{cpp,h}
+CMAKE_FLAGS=-Wno-dev
 
 #----------------------------------------------------------------------------------------#
 #                                                                                        #
@@ -40,41 +16,51 @@ CLANG_FORMAT_FILES=src/*.{cpp,h}
 #                                                                                        #
 #----------------------------------------------------------------------------------------#
 
+.PHONY: help
 help: ## Show this help.
 	@printf "\033[32m%-30s     \033[32m %s\n" "VARIABLE NAME" "DEFAULT_VALUE"
 	@grep -E '^[a-zA-Z_-]+(\?=|=).*$$' $(MAKEFILE_LIST) |sort | awk 'BEGIN {FS = "(?=|=)"}; {printf "\033[36m%-30s     \033[0m %s\n", $$1, $$2}'
 	@printf "\n\033[32m%-30s     \033[32m %s\033[0m\n" "RECIPE" "DESCRIPTION"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "make \033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-checkout: ## Checkout VTK branch
-	@cd $(VTK_PATH); \
-		git checkout tags/v$(VTK_VERSION) | sed -e 's/^/[vtk:checkout] /'
+.PHONY: check-boost
+check-boost: ## Check for boost include file (assuming that all boost include files might be present)
+ifeq (,$(wildcard /usr/include/boost/version.hpp))
+$(error "boost installation not found")
+endif
 
-$(VTK_PATH)/build: checkout $(VTK_PATH) ## VTK Build
-	@mkdir -p $(VTK_PATH)/build
-	@cd $(VTK_PATH)/build; \
-		git describe --tags | sed -e 's/^/[vtk:version] Now on: /'; \
-		cmake ../ -Wno-dev | sed -e 's/^/[vtk:cmake] /'
+.PHONY: check-gidpost
+check-gidpost: /usr/local/include/gidpost.h ## Check for gidpost include file
 
-deep-clean: clean ## Clean build files and VKT build
-	rm -rf $(VTK_PATH)/build
+.PHONY: check-hdf5
+check-hdf5: /usr/include/hdf5.h ## Check for hdf5 include file
 
+.PHONY: check-vtk
+check-vtk: /usr/include/vtk/vtk_hdf5.h ## Check for vtk hdf5 include file (assuming that all vtk include files might be present)
+
+.PHONY: check-zlib
+check-zlib: /usr/include/zlib.h ## Check for zlib include file
+
+.PHONY: check-dependencies ## Check for needed dependencies
+check-dependencies: check-boost check-gidpost check-hdf5 check-vtk check-zlib
+
+.PHONY: clean
 clean: ## Clean build files
 	rm -rf build
 
-format: ## Format sources using clang-format configuration
+.PHONY: format
+format: ## Format sources using clang-format
 	clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
 
-build: format $(VTK_PATH)/build ## Build the program
+./build/AtilaCalculatorSoftware: check-dependencies
 	@mkdir -p build
 	@cd build; \
-		cmake -DVTK_DIR:PATH=$(VTK_PATH) ../ -Wno-dev | sed -e 's/^/[build:cmake] /'; \
-		make | sed -e 's/^/[build:make] /'
+		cmake $(CMAKE_FLAGS) ../; \
+		make
 
-run: build ## Run the program
-	./build/AtilaCalculatorSoftware | sed -e 's/^/[run] /'
+.PHONY: build
+build: ./build/AtilaCalculatorSoftware ## Build the program
 
-test-run: clean build ## Try to build and run then kill the program (also print VTK version)
-	@echo Starting...
-	@timeout --preserve-status 2s ./build/AtilaCalculatorSoftware ; echo Done.
-	@echo VTK_VERSION=$(VTK_VERSION)
+.PHONY: run
+run: ./build/AtilaCalculatorSoftware ## Run the program
+	./build/AtilaCalculatorSoftware
