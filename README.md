@@ -37,12 +37,12 @@ make run
   - [x] Transform all structures into class
   - [x] Merge all related files together (to finally have BinaryData, Mesh, Result)
   - [x] Rebuild global structure of the different current files/class/structs
-    - [x] binary_data
-    - [x] binary_data_class
+    - [x] BinaryData
+    - [x] BinaryDataWrapper
     - [x] <s>binary_data_GiD</s>
-    - [x] mesh
+    - [x] Mesh
     - [x] <s>mesh_GiD</s>
-    - [x] result
+    - [x] Result
     - [x] <s>result_GiD</s>
   - [x] Doxygen doc everywhere
   - [x] Comment for big spots
