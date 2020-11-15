@@ -31,43 +31,43 @@ class Result {
      * @param fields Base fields read from the file
      * @param componentCount Number of component to seek into the result data
      */
-    Result(gzFile file, dataFields fields, const int componentCount);
+    Result(gzFile file, dataFields fields, int componentCount);
 
     /**
      * @return The type of analysis of the result
      */
-    const std::string getAnalysis();
+    std::string getAnalysis();
 
     /**
      * @return The type of result
      */
-    const std::string getResultType();
+    std::string getResultType();
 
     /**
      * @return Step of the result
      */
-    const float getStep();
+    float getStep() const;
 
     /**
      * @return The number component of the result (1 or 4)
      */
-    const unsigned int getComponentCount();
+    int getComponentCount() const;
 
     /**
      * @return The number of values of the result
      */
-    const unsigned int getValuesCount();
+    unsigned int getValuesCount() const;
 
     /**
      * @return The components of the result (X, Y, Z, M)
      */
-    const std::vector<std::string> getComponents();
+    std::vector<std::string> getComponents();
 
     /**
      * @param id ID of the result
      * @return Return information about the result
      */
-    const std::tuple<int&, float*> getResult(const int& id);
+    std::tuple<int&, float*> getResult(const unsigned int& id);
 
     //    /**
     //     * @brief Write the result into a currently open PostResultFile
@@ -109,7 +109,7 @@ class Result {
     /**
      * @brief Number of components of the result
      */
-    unsigned int componentCount;
+    int componentCount;
 
     /**
      * @brief Number of values read

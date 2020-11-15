@@ -32,12 +32,12 @@ class BinaryData {
     /**
      * @param file Path to the res gzFile
      */
-    BinaryData(std::string file);
+    BinaryData(const std::string& file);
 
     /**
      * @return The currently open res gzFile
      */
-    const gzFile getFile();
+    gzFile getFile();
 
     /**
      * @return The loaded meshes

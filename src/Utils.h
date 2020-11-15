@@ -86,6 +86,6 @@ typedef char dataFields[10][40];
  * @param fields dataFields pointer in which fields will be written
  * @return The size of read data
  */
-const unsigned int getFields(gzFile file, char* buffer, dataFields fields);
+unsigned int getFields(gzFile file, char* buffer, dataFields fields);
 
 #endif // ATILACALCULATORSOFTWARE_UTILS_H

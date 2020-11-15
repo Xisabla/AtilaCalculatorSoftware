@@ -13,13 +13,13 @@
 //  BINARY DATA WRAPPER
 //  --------------------------------------------------------------------------------------
 
-BinaryDataWrapper::BinaryDataWrapper(std::string file): BinaryData(file) {
+BinaryDataWrapper::BinaryDataWrapper(const std::string& file): BinaryData(file) {
     this->readMeshes();
     this->readResults();
     this->convertFromGiD();
 }
 
-BinaryDataWrapper::~BinaryDataWrapper() { }
+BinaryDataWrapper::~BinaryDataWrapper() = default;
 
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER > GETTERS
@@ -37,7 +37,7 @@ QStringList BinaryDataWrapper::getInformationList() const { return this->informa
 //  BINARY DATA WRAPPER > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
-void BinaryDataWrapper::loadResult(Result& result, const unsigned int& component) {
+void BinaryDataWrapper::loadResult(Result& result, const int& component) {
     this->scalars = vtkNew<vtkFloatArray>();
     this->scalars->SetNumberOfValues(result.getValuesCount());
 
@@ -89,8 +89,9 @@ void BinaryDataWrapper::convertFromGiD() {
 
             if (id != i + 1) break;
 
-            auto polygon = this->getPolygonVTKCell(mesh.getElementName(), mesh.getDimCount());
-            if (polygon != NULL) {
+            auto polygon =
+            BinaryDataWrapper::getPolygonVTKCell(mesh.getElementName(), mesh.getDimCount());
+            if (polygon != nullptr) {
                 polygon->GetPointIds()->SetNumberOfIds(mesh.getNodeCount());
                 for (auto j = 0; j < mesh.getNodeCount(); j++)
                     polygon->GetPointIds()->SetId(j, nid[j] - 1);
@@ -105,8 +106,7 @@ void BinaryDataWrapper::convertFromGiD() {
 vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,
                                                               const unsigned int& dimCount) {
     if (dimCount == 2) {
-        if (meshElement == "Triangle")
-            return vtkSmartPointer<vtkQuadraticTriangle>::New();
+        if (meshElement == "Triangle") return vtkSmartPointer<vtkQuadraticTriangle>::New();
         else if (meshElement == "Pyramid")
             return vtkSmartPointer<vtkQuadraticPyramid>::New();
         else if (meshElement == "Quadrilateral")
@@ -114,8 +114,7 @@ vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string&
 
         return vtkSmartPointer<vtkPolygon>::New();
     } else if (dimCount == 3) {
-        if (meshElement == "Hexahedra")
-            return vtkSmartPointer<vtkHexahedron>::New();
+        if (meshElement == "Hexahedra") return vtkSmartPointer<vtkHexahedron>::New();
         else if (meshElement == "Pyramid")
             return vtkSmartPointer<vtkPyramid>::New();
 
@@ -123,6 +122,6 @@ vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string&
     } else {
         if (meshElement == "Linear") return vtkSmartPointer<vtkLine>::New();
 
-        return NULL;
+        return nullptr;
     }
 }

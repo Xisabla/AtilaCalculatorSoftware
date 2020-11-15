@@ -32,21 +32,21 @@ Result::Result(gzFile file, char (*fields)[40], const int componentCount) {
 //  RESULT > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const std::string Result::getAnalysis() { return this->analysis; }
-const std::string Result::getResultType() { return this->result; }
+std::string Result::getAnalysis() { return this->analysis; }
+std::string Result::getResultType() { return this->result; }
 
-const float Result::getStep() { return this->step; }
+float Result::getStep() const { return this->step; }
 
-const unsigned int Result::getComponentCount() { return this->componentCount; }
-const unsigned int Result::getValuesCount() { return this->valuesCount; }
+int Result::getComponentCount() const { return this->componentCount; }
+unsigned int Result::getValuesCount() const { return this->valuesCount; }
 
-const std::vector<std::string> Result::getComponents() { return this->components; }
+std::vector<std::string> Result::getComponents() { return this->components; }
 
 //  --------------------------------------------------------------------------------------
 //  RESULT > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
-const std::tuple<int&, float*> Result::getResult(const int& id) {
+std::tuple<int&, float*> Result::getResult(const unsigned int& id) {
     return std::make_tuple(std::ref(nodeIDs[id]), &values[id * componentCount]);
 }
 
@@ -81,13 +81,13 @@ void Result::readComponents(gzFile file, char* buffer, char (*fields)[40]) {
 }
 
 void Result::readResults(gzFile file, char* buffer) {
-    unsigned int gzReadSize;
+    int gzReadSize;
     unsigned int node = 0;
     unsigned int shiftNodes = 0;
     unsigned int shiftResults = 0;
 
     int* nodes = static_cast<int*>(malloc(sizeof(int) * Mesh::Mesh::maxNodeCount));
-    float* results =
+    auto* results =
     static_cast<float*>(malloc(sizeof(float) * componentCount * Mesh::Mesh::maxNodeCount));
 
 
@@ -98,7 +98,7 @@ void Result::readResults(gzFile file, char* buffer) {
     // Read nodes
     while (node != -1) {
         gzReadSize = gzread(file, &results[shiftResults], readingSize);
-        nodes[shiftNodes++] = node;
+        nodes[shiftNodes++] = static_cast<int>(node);
         shiftResults += componentCount;
 
         if (gzReadSize == 0) __THROW__("Unexpected read size: 0");
@@ -112,7 +112,7 @@ void Result::readResults(gzFile file, char* buffer) {
     gzread(file, &node, sizeof(int));
     gzread(file, buffer, node);
 
-    if (strcmp(buffer, "End Values")) __THROW__("Unexpected end of values");
+    if (strcmp(buffer, "End Values") != 0) __THROW__("Unexpected end of values");
 
     this->nodeIDs = nodes;
     this->values = results;

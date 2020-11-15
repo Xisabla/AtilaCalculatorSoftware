@@ -13,7 +13,7 @@
 //  NODE
 //  --------------------------------------------------------------------------------------
 
-Node::Node(unsigned int id, float* coord): id(id) {
+Node::Node(unsigned int id, const float* coord): id(id) {
     this->coord[0] = coord[0];
     this->coord[1] = coord[1];
     this->coord[2] = coord[2];
@@ -29,12 +29,12 @@ Node::Node(unsigned int id, float x, float y, float z): id(id) {
 //  NODE > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const unsigned int Node::getId() { return this->id; }
+unsigned int Node::getId() const { return this->id; }
 
 const float* Node::getCoords() { return this->coord; }
-const float Node::getX() { return this->coord[0]; }
-const float Node::getY() { return this->coord[1]; }
-const float Node::getZ() { return this->coord[2]; }
+float Node::getX() { return this->coord[0]; }
+float Node::getY() { return this->coord[1]; }
+float Node::getZ() { return this->coord[2]; }
 
 //  --------------------------------------------------------------------------------------
 //  MESH
@@ -42,21 +42,21 @@ const float Node::getZ() { return this->coord[2]; }
 
 Mesh::Mesh(gzFile file, dataFields(fields)) {
     // Check if the header is fine
-    if (strcmp("dimension", fields[2]))
+    if (strcmp("dimension", fields[2]) != 0)
         __THROW__("Cannot read binary file: fields[2], expected \"dimensions\", got \"" +
                   fields[2] + "\"");
-    if (strcmp("ElemType", fields[4]))
+    if (strcmp("ElemType", fields[4]) != 0)
         __THROW__("Cannot read binary file: fields[4], expected \"ElemType\", got \"" + fields[4] +
                   "\"");
-    if (strcmp("Nnode", fields[6]))
+    if (strcmp("Nnode", fields[6]) != 0)
         __THROW__("Cannot read binary file: fields[6], expected \"Nnode\", got \"" + fields[6] +
                   "\"");
 
     // Import header data
     this->name = fields[1];
-    this->dimCount = std::atoi(fields[3]);
+    this->dimCount = static_cast<unsigned int>(std::atoi(fields[3]));
     this->elementName = fields[5];
-    this->nodeCount = std::atoi(fields[7]);
+    this->nodeCount = static_cast<unsigned int>(std::atoi(fields[7]));
 
     char buffer[GZ_BUFFER_SIZE];
 
@@ -94,13 +94,13 @@ const std::map<std::string, GiD_ElementType> Mesh::GiD_ElementTypeEncoding = {
 //  MESH > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const std::string Mesh::getName() { return this->name; }
-const std::string Mesh::getElementName() { return this->elementName; }
-const GiD_ElementType Mesh::getElementType() { return this->elementType; }
+std::string Mesh::getName() { return this->name; }
+std::string Mesh::getElementName() { return this->elementName; }
+GiD_ElementType Mesh::getElementType() { return this->elementType; }
 
-const unsigned int Mesh::getDimCount() { return this->dimCount; }
-const unsigned int Mesh::getNodeCount() { return this->nodeCount; }
-const unsigned int Mesh::getElementCount() { return this->elementCount; }
+unsigned int Mesh::getDimCount() const { return this->dimCount; }
+unsigned int Mesh::getNodeCount() const { return this->nodeCount; }
+unsigned int Mesh::getElementCount() const { return this->elementCount; }
 
 std::vector<Node> Mesh::Mesh::getNodes() { return this->nodes; }
 
@@ -108,7 +108,7 @@ std::vector<Node> Mesh::Mesh::getNodes() { return this->nodes; }
 //  MESH > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
-std::tuple<int&, int*> Mesh::getElement(const int& id) const {
+std::tuple<int&, int*> Mesh::getElement(const unsigned int& id) const {
     return std::make_tuple(std::ref(elementsConnectivity[id]), &elements[id * (nodeCount + 1)]);
 }
 
@@ -132,7 +132,7 @@ std::tuple<int&, int*> Mesh::getElement(const int& id) const {
 //    return GiD_EndMesh();
 //}
 
-const GiD_ElementType Mesh::getGiDElementType(const char* element) {
+GiD_ElementType Mesh::getGiDElementType(const char* element) {
     std::string elementString(element);
     auto it = GiD_ElementTypeEncoding.find(elementString);
 
@@ -211,7 +211,7 @@ void Mesh::readElements(gzFile& file, char* buffer) {
         }
 
         ++count;
-        connectivity[nodeShift++] = elementCount;
+        connectivity[nodeShift++] = static_cast<int>(elementCount);
 
         // Read element
         if (gzread(file, &elements[elementsShift], elemSize) == 0)

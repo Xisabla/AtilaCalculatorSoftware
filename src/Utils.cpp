@@ -9,7 +9,7 @@
 =========================================================================*/
 #include "Utils.h"
 
-const unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
+unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
     unsigned int size = 0;
 
     GZ_READ_CHECK(file, &size, 1);
@@ -26,13 +26,13 @@ const unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
     if (!size) __THROW__("No more data to read");
 
     size = 0;
-    while (ptr != NULL) {
+    while (ptr != nullptr) {
         if (ptr[0] == '"') {
             // Set current field
             strcpy(fields[size], ptr);
 
             while (ptr[strlen(ptr) - 1] != '"') {
-                ptr = strtok(NULL, " ");
+                ptr = strtok(nullptr, " ");
                 strcat(fields[size], ptr);
             }
 
@@ -51,7 +51,7 @@ const unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
             strcpy(fields[size++], ptr);
         }
 
-        ptr = strtok(NULL, " ");
+        ptr = strtok(nullptr, " ");
     }
 
     return size;

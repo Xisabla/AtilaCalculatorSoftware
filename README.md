@@ -54,6 +54,7 @@ make run
   - [ ] Log window bind to the Logger for the user to be able to see logs
   - [ ] Stringify methods for all objects
 - [ ] New features
+  - [ ] Loading window when opening file
   - [ ] Mesh visualisation
   - [ ] Write to GiD file
   - [ ] Shortcuts (Ctrl+O to open file, ...)

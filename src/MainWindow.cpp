@@ -69,7 +69,7 @@ MainWindow::MainWindow(char* dataDirectory) {
 
 void MainWindow::slotExit() {
     this->close();
-    qApp->exit(0);
+    qApp->exit();
 }
 
 void MainWindow::slotOpenFile() {
@@ -79,7 +79,7 @@ void MainWindow::slotOpenFile() {
     // Stop if no given file/action cancelled
     if (filename.isEmpty()) return;
 
-    if (this->binary != NULL) {
+    if (this->binary != nullptr) {
         // TODO: Move this in a private method "unloadBinaryData"
         // TODO: Clean results menu (maybe do this in another method "cleanBinaryResults")
         delete this->binary;
@@ -122,7 +122,7 @@ void MainWindow::slotOpenFile() {
         for (unsigned int i = 0; i < result.getComponentCount(); i++) {
             QAction* resultItemAction;
 
-            if (result.getComponents().size() > 0) {
+            if (!result.getComponents().empty()) {
                 resultItemAction =
                 menu->addAction(QString::fromStdString(result.getComponents().at(i)));
             } else {
@@ -165,13 +165,13 @@ void MainWindow::slotInteractWithObject() {
 #endif
 }
 
-void MainWindow::slotResult(Result& result, const int& component) {
+void MainWindow::slotResult(Result& result, const unsigned int& component) {
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #endif
-    this->setVTK(result, component);
+    this->setVTK(result, static_cast<int>(component));
 }
 
 //  --------------------------------------------------------------------------------------

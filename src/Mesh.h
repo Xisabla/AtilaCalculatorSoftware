@@ -13,10 +13,10 @@
 #include "Utils.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <gidpost.h>
 #include <map>
-#include <math.h>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -40,7 +40,7 @@ class Node {
      * @param id ID of the current Node
      * @param coord Space coordinates of the node
      */
-    Node(unsigned int id, float* coord);
+    Node(unsigned int id, const float* coord);
 
     /**
      * @param id ID of the current Node
@@ -53,7 +53,7 @@ class Node {
     /**
      * @return The ID of the node
      */
-    const unsigned int getId();
+    unsigned int getId() const;
 
     /**
      * @return The pointer of the space coordinates of the node
@@ -63,17 +63,17 @@ class Node {
     /**
      * @return The X space coordinates component of the node
      */
-    const float getX();
+    float getX();
 
     /**
      * @return The Y space coordinates component of the node
      */
-    const float getY();
+    float getY();
 
     /**
      * @return The Z space coordinates component of the node
      */
-    const float getZ();
+    float getZ();
 
   private:
     /**
@@ -106,32 +106,32 @@ class Mesh {
     /**
      * @return The name of the name
      */
-    const std::string getName();
+    std::string getName();
 
     /**
      * @return The string encoded element type of the mesh
      */
-    const std::string getElementName();
+    std::string getElementName();
 
     /**
      * @return The Element type of the mesh
      */
-    const GiD_ElementType getElementType();
+    GiD_ElementType getElementType();
 
     /**
      * @return The number of dimension of the mesh (2 or 3)
      */
-    const unsigned int getDimCount();
+    unsigned int getDimCount() const;
 
     /**
      * @return The number of nodes that constitutes the mesh
      */
-    const unsigned int getNodeCount();
+    unsigned int getNodeCount() const;
 
     /**
      * @return The number of elements in the mesh
      */
-    const unsigned int getElementCount();
+    unsigned int getElementCount() const;
 
     /**
      * @return The nodes that constitutes the mesh
@@ -142,7 +142,7 @@ class Mesh {
      * @param id ID of the element
      * @return Return information about an element:
      */
-    std::tuple<int&, int*> getElement(const int& id) const;
+    std::tuple<int&, int*> getElement(const unsigned int& id) const;
 
     //    /**
     //     * @brief Write the mesh into a currently open PostResultFile
@@ -156,7 +156,7 @@ class Mesh {
      * @return The according GiD_ElementType, GiD_NoElement by default
      * @throw runtime_error if the encoded GiD_ElementType is not recognized
      */
-    const static GiD_ElementType getGiDElementType(const char* element);
+    static GiD_ElementType getGiDElementType(const char* element);
 
     /**
      * @brief Biggest number of node encountered in the mesh

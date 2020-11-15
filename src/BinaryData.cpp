@@ -13,7 +13,7 @@
 //  BINARY DATA
 //  --------------------------------------------------------------------------------------
 
-BinaryData::BinaryData(std::string file) {
+BinaryData::BinaryData(const std::string& file) {
     this->file = gzopen(file.c_str(), "r1");
 
     char buffer[GZ_BUFFER_SIZE];
@@ -30,7 +30,7 @@ BinaryData::BinaryData(std::string file) {
 }
 
 BinaryData::~BinaryData() {
-    if (file != NULL) gzclose(file);
+    if (file != nullptr) gzclose(file);
     meshes.clear();
     results.clear();
 }
@@ -39,7 +39,7 @@ BinaryData::~BinaryData() {
 //  BINARY DATA > GETTERS
 //  --------------------------------------------------------------------------------------
 
-const gzFile BinaryData::getFile() { return this->file; }
+gzFile BinaryData::getFile() { return this->file; }
 
 std::vector<Mesh>& BinaryData::getMeshes() { return this->meshes; }
 std::vector<Result>& BinaryData::getResults() { return this->results; }
@@ -53,10 +53,10 @@ void BinaryData::readMeshes() {
     dataFields fields;
 
     z_off_t currentPos = gztell(file);
-    int size = getFields(file, buffer, fields);
+    unsigned int size = getFields(file, buffer, fields);
 
     while (size > 0 && !strcmp(fields[0], "MESH")) {
-        meshes.push_back(Mesh(file, fields));
+        meshes.emplace_back(file, fields);
 
         currentPos = gztell(file);
         size = getFields(file, buffer, fields);
@@ -88,7 +88,7 @@ std::optional<Result> BinaryData::readResult() {
 
 std::vector<Result> BinaryData::readResults(unsigned int n) {
     if (n > 0 && results.size() >= n) return results;
-    unsigned int current = results.size();
+    unsigned int current = static_cast<int>(results.size());
 
     while (std::optional<Result> result = readResult()) {
         results.emplace_back(std::move(*result));

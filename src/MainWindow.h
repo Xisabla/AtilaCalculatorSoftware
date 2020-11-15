@@ -77,7 +77,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @param result Result to visualise
      * @param component Choice for setVTK method
      */
-    void slotResult(Result& result, const int& component);
+    void slotResult(Result& result, const unsigned int& component);
 
   private:
     void loadBinaryData(std::string filename);
@@ -101,7 +101,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * Data imported from the current .res file
      */
-    BinaryDataWrapper* binary = NULL;
+    BinaryDataWrapper* binary = nullptr;
 
     /**
      * Initialize axes view

@@ -41,7 +41,7 @@ class BinaryDataWrapper : public BinaryData {
     /**
      * @param file Path to the res gzFile
      */
-    BinaryDataWrapper(std::string file);
+    BinaryDataWrapper(const std::string& file);
 
     /**
      * @brief Empty but needed for unstructuredGrid destruction
@@ -53,7 +53,7 @@ class BinaryDataWrapper : public BinaryData {
      * @param result Result to load
      * @param component Component to load
      */
-    void loadResult(Result& result, const unsigned int& component);
+    void loadResult(Result& result, const int& component);
 
     /**
      * @return The DataSet of points of the loaded and converted GiD resource file
@@ -87,8 +87,8 @@ class BinaryDataWrapper : public BinaryData {
      * @param dimCount Number of dimensions of the count
      * @return The well fitting polygon as a VTKCell object
      */
-    vtkSmartPointer<vtkCell> getPolygonVTKCell(const std::string& meshElement,
-                                               const unsigned int& dimCount);
+    static vtkSmartPointer<vtkCell> getPolygonVTKCell(const std::string& meshElement,
+                                                      const unsigned int& dimCount);
 
     /**
      * @brief DataSet of all the points converted from GiD representation
