@@ -79,64 +79,8 @@ void MainWindow::slotOpenFile() {
     // Stop if no given file/action cancelled
     if (filename.isEmpty()) return;
 
-    if (this->binary != nullptr) {
-        // TODO: Move this in a private method "unloadBinaryData"
-        // TODO: Clean results menu (maybe do this in another method "cleanBinaryResults")
-        delete this->binary;
-#if VTK890
-        this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-#else
-        this->qvtkWidget->GetRenderWindow()
-        ->GetRenderers()
-        ->GetFirstRenderer()
-        ->RemoveAllViewProps();
-#endif
-    }
-
-    // TODO: Move this in a private method "loadBinaryData"
-    // Load binary data
-    this->binary = new BinaryDataWrapper(filename.toStdString());
-
-    // Enable view actions
-    this->actionZoomOnArea->setEnabled(true);
-    this->actionResetCamera->setEnabled(true);
-    this->actionInteractWithObject->setEnabled(true);
-
-    // Set result actions
-    std::vector<float> steps;
-    std::map<float, QMenu*> stepMenus;
-
-    // Add results menus
-    // TODO: Maybe move this in another method "addBinaryResults"
-    for (auto&& result: this->binary->getResults()) {
-        if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
-            steps.push_back(result.getStep());
-            QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
-            stepMenus.insert(std::pair<float, QMenu*>(result.getStep(), stepMenuItem));
-        }
-
-        QMenu* menu =
-        stepMenus[result.getStep()]->addMenu(QString::fromStdString(result.getAnalysis()));
-
-        // Add results menu action
-        for (unsigned int i = 0; i < result.getComponentCount(); i++) {
-            QAction* resultItemAction;
-
-            if (!result.getComponents().empty()) {
-                resultItemAction =
-                menu->addAction(QString::fromStdString(result.getComponents().at(i)));
-            } else {
-                resultItemAction = menu->addAction(QString::number(i));
-            }
-
-            connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
-                this->slotResult(result, i);
-            });
-        }
-    }
-
-    // Set the view
-    this->setVTK(this->binary->getResults().front(), 0);
+    // Load the binary data and show the object and scalar bar
+    this->loadBinaryData(filename.toStdString());
 }
 
 void MainWindow::slotResetCamera() {
@@ -249,3 +193,71 @@ void MainWindow::setVTK(Result& result, const int& component) {
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
 #endif
 }
+
+void MainWindow::loadBinaryData(std::string filename) {
+    // Unload data if there is already some loaded
+    if (this->binary != nullptr) this->unloadBinaryData();
+
+    // Load binary data
+    this->binary = new BinaryDataWrapper(filename);
+
+    // Enable view actions
+    this->actionZoomOnArea->setEnabled(true);
+    this->actionResetCamera->setEnabled(true);
+    this->actionInteractWithObject->setEnabled(true);
+
+    // Add results menus
+    this->setBinaryResults();
+
+    // Set the view
+    this->setVTK(this->binary->getResults().front(), 0);
+}
+
+void MainWindow::unloadBinaryData() {
+    delete this->binary;
+
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#endif
+
+    this->clearBinaryResults();
+}
+
+void MainWindow::setBinaryResults() {
+
+    // Set result actions
+    std::vector<float> steps;
+    std::map<float, QMenu*> stepMenus;
+
+    // Add results menus
+    for (auto&& result: this->binary->getResults()) {
+        if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
+            steps.push_back(result.getStep());
+            QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
+            stepMenus.insert(std::pair<float, QMenu*>(result.getStep(), stepMenuItem));
+        }
+
+        QMenu* menu =
+        stepMenus[result.getStep()]->addMenu(QString::fromStdString(result.getAnalysis()));
+
+        // Add results menu action
+        for (unsigned int i = 0; i < result.getComponentCount(); i++) {
+            QAction* resultItemAction;
+
+            if (!result.getComponents().empty()) {
+                resultItemAction =
+                menu->addAction(QString::fromStdString(result.getComponents().at(i)));
+            } else {
+                resultItemAction = menu->addAction(QString::number(i));
+            }
+
+            connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
+                this->slotResult(result, i);
+            });
+        }
+    }
+}
+
+void MainWindow::clearBinaryResults() { this->menuResults->clear(); }

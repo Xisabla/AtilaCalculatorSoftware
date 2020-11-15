@@ -80,8 +80,40 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     void slotResult(Result& result, const unsigned int& component);
 
   private:
+    /**
+     * Initialize axes view
+     */
+    void initAxes();
+
+    /**
+     * Load the VKT result and show it
+     * @param result Result read by the binary data
+     * @param component
+     */
+    void setVTK(Result& result, const int& component);
+
+    /**
+     * Read binary data and load it, then print the scalars and show the object, also set the
+     * "Results" menu @see setBinaryResults
+     * @param filename Path to the resource gzFile to read data from
+     */
     void loadBinaryData(std::string filename);
-    void clearBinaryData();
+
+    /**
+     * @brief Clear and destruct loaded binary data
+     */
+    void unloadBinaryData();
+
+    /**
+     * @brief Add action item to "Results" menu for each component of each loaded results of binary
+     * data
+     */
+    void setBinaryResults();
+
+    /**
+     * @brief Remove all actions of the "Results" menu
+     */
+    void clearBinaryResults();
 
     /**
      * Path to directory that stores the objects to open
@@ -102,18 +134,6 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * Data imported from the current .res file
      */
     BinaryDataWrapper* binary = nullptr;
-
-    /**
-     * Initialize axes view
-     */
-    void initAxes();
-
-    /**
-     * Load the VKT result and show it
-     * @param result Result read by the binary data
-     * @param component
-     */
-    void setVTK(Result& result, const int& component);
 };
 
 #endif

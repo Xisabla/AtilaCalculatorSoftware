@@ -39,14 +39,14 @@ make run
   - [x] Rebuild global structure of the different current files/class/structs
     - [x] binary_data
     - [x] binary_data_class
-    - [x] <s>binary_data_GiD</s> 
+    - [x] <s>binary_data_GiD</s>
     - [x] mesh
     - [x] <s>mesh_GiD</s>
     - [x] result
     - [x] <s>result_GiD</s>
   - [x] Doxygen doc everywhere
   - [x] Comment for big spots
-  - [ ] Review and refactor (split) all big methods or macro methods
+  - [x] Review and refactor (split) all big methods or macro methods
 - [ ] Debugging/Logging: Add a way to print important data, logging the different actions
   - [x] Debug macros
   - [ ] Logger object to keep all logs and manage I/O
@@ -58,6 +58,6 @@ make run
   - [ ] Mesh visualisation
   - [ ] Write to GiD file
   - [ ] Shortcuts (Ctrl+O to open file, ...)
- - [ ] Fixes
-    - NOTE: It may be a good practice to use a github issue for each bug and make another branch + use a pull request to fix each bug 
-    - [x] Opening a new resource files occurs to a crash 
+- [ ] Fixes
+  - NOTE: It may be a good practice to use a github issue for each bug and make another branch + use a pull request to fix each bug
+  - [x] Opening a new resource files occurs to a crash

@@ -109,7 +109,8 @@ std::vector<Node> Mesh::Mesh::getNodes() { return this->nodes; }
 //  --------------------------------------------------------------------------------------
 
 std::tuple<int&, int*> Mesh::getElement(const unsigned int& id) const {
-    return std::make_tuple(std::ref(this->elementsConnectivity[id]), &this->elements[id * (this->nodeCount + 1)]);
+    return std::make_tuple(std::ref(this->elementsConnectivity[id]),
+                           &this->elements[id * (this->nodeCount + 1)]);
 }
 
 // const int Mesh::toPostGid() {
@@ -136,7 +137,8 @@ GiD_ElementType Mesh::getGiDElementType(const char* element) {
     std::string elementString(element);
     auto it = Mesh::GiD_ElementTypeEncoding.find(elementString);
 
-    if (it != Mesh::GiD_ElementTypeEncoding.end()) return Mesh::GiD_ElementTypeEncoding.at(elementString);
+    if (it != Mesh::GiD_ElementTypeEncoding.end())
+        return Mesh::GiD_ElementTypeEncoding.at(elementString);
 
     __THROW__("Cannot find the type of the given element: " + element);
 }
