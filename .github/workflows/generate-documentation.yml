@@ -18,13 +18,28 @@ jobs:
         run: sudo apt install doxygen
       - name: Run doxygen
         run: doxygen ./Doxyfile
-      - name: Commit
+      - name: Remove uncessessary files
+        run: |
+          rm -rf build
+          rm -rf cmake
+          rm -rf data
+          rm -rf include
+          rm -rf qt
+          rm -rf src
+          rm -rf .clang-format
+          rm -rf CMakeLists.txt
+          rm -rf Doxyfile
+          rm -rf Makefile
+      - name: Commit documentation
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add . -f
           git add doc/ -f
           git commit -m "generate documentation"
-      - name: Push
+      - name: Push documentation
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: documentation
+          force: true
