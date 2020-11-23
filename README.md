@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- Boost 1.72
+- [Boost](https://www.boost.org/) 1.72
 - [GiDPost](https://www.gidhome.com/gid-plus/tools/476/gidpost/) 2.7
 - [zlib](https://zlib.net/)
 - [HDF5 Library](https://portal.hdfgroup.org/pages/viewpage.action?pageId=50073884)
