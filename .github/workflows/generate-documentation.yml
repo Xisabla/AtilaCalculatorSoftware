@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [ dev/documentation ]
+    branches: [ master ]
 
 jobs:
   make-doc:
