@@ -14,7 +14,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Run make doc
+      - name: Install doxygen
+        run: sudo apt install doxygen
+      - name: Run doxygen
         run: doxygen ./Doxyfile
       - name: Commit
         run: |
