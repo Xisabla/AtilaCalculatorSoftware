@@ -34,6 +34,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add . -f
           git add doc/ -f
           git commit -m "generate documentation"
       - name: Push documentation
