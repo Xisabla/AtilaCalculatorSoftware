@@ -15,7 +15,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Run make doc
-        run: make doc
+        run: doxygen ./Doxyfile
       - name: Commit
         run: |
           git config --local user.email "action@github.com"

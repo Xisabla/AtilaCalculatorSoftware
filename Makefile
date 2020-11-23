@@ -50,7 +50,7 @@ clean: ## Clean build files
 	rm -rf doc
 
 .PHONY: doc
-doc:  ## Generate documentation using Doxygen
+doc: ## Generate documentation using Doxygen
 	doxygen ./Doxyfile
 
 .PHONY: format
