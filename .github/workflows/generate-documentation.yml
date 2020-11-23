@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev/documentation ]
 
 jobs:
   make-doc:
@@ -18,13 +18,28 @@ jobs:
         run: sudo apt install doxygen
       - name: Run doxygen
         run: doxygen ./Doxyfile
-      - name: Commit
+      - name: Commit master
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add doc/ -f
           git commit -m "generate documentation"
-      - name: Push
+      - name: Push master
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+      - name: Copy on documentation
+        run: |
+          git checkout master
+          git checkout documentation -- doc
+      - name: Commit documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add doc/ -f
+          git commit -m "generate documentation"
+      - name: Push documentation
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
