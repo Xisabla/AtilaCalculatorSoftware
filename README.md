@@ -1,5 +1,9 @@
 # AtilaCalculatorSoftware
 
+C++ Interface Software for Atila fem resources files
+
+Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware/doc/)
+
 ## Dependencies
 
 - [Boost](https://www.boost.org/) 1.72
