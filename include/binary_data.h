@@ -1,17 +1,17 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      BinaryData.h
+  File:      binary_data.h
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#ifndef ATILACALCULATORSOFTWARE_BINARYDATA_H
-#define ATILACALCULATORSOFTWARE_BINARYDATA_H
+#ifndef ATILACALCULATORSOFTWARE_BINARY_DATA_H
+#define ATILACALCULATORSOFTWARE_BINARY_DATA_H
 
-#include "Mesh.h"
-#include "Result.h"
+#include "mesh.h"
+#include "result.h"
 
 #include <QString>
 #include <functional>
@@ -94,4 +94,4 @@ class BinaryData {
     const static int byteOrderCheck = 0x91d;
 };
 
-#endif // ATILACALCULATORSOFTWARE_BINARYDATA_H
+#endif // ATILACALCULATORSOFTWARE_BINARY_DATA_H

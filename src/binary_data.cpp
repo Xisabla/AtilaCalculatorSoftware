@@ -1,13 +1,13 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      BinaryData.cpp
+  File:      binary_data.cpp
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#include "BinaryData.h"
+#include "binary_data.h"
 
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA

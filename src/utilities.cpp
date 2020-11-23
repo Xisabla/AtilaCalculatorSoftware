@@ -1,13 +1,13 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      Utils.cpp
+  File:      utils.cpp
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#include "Utils.h"
+#include "utilities.h"
 
 unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
     unsigned int size = 0;

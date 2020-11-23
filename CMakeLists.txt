@@ -43,13 +43,26 @@ endif()
 # -----------------------------------------------------------------------------
 # Qt .ui files
 set(UI_FILES
-        src/MainWindow.ui)
+        qt/MainWindow.ui)
 
 # Include files
-file(GLOB HEADERS include/*.h)
+set(HEADERS
+        include/binary_data.h
+        include/binary_data_wrapper.h
+        include/main_window.h
+        include/mesh.h
+        include/result.h
+        include/utilities.h)
 
 # Source files
-file(GLOB SOURCES src/*.cpp)
+set(SOURCES
+        src/app.cpp
+        src/binary_data.cpp
+        src/binary_data_wrapper.cpp
+        src/main_window.cpp
+        src/mesh.cpp
+        src/result.cpp
+        src/utilities.cpp)
 
 # -----------------------------------------------------------------------------
 # Dependencies

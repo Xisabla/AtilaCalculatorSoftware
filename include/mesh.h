@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      Mesh.h
+  File:      mesh.h
 
   Copyright (c) 2020
   All rights reserved.
@@ -10,7 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_MESH_H
 #define ATILACALCULATORSOFTWARE_MESH_H
 
-#include "Utils.h"
+#include "utilities.h"
 
 #include <algorithm>
 #include <cmath>

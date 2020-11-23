@@ -1,13 +1,13 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      MainWindow.cpp
+  File:      main_window.cpp
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#include "MainWindow.h"
+#include "main_window.h"
 
 #if VTK_VERSION_NUMBER >= 89000000000ULL
 #define VTK890 1

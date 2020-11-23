@@ -1,16 +1,16 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      MainWindow.h
+  File:      main_window.h
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#ifndef ATILACALCULATORSOFTWARE_MAINWINDOW_H
-#define ATILACALCULATORSOFTWARE_MAINWINDOW_H
+#ifndef ATILACALCULATORSOFTWARE_MAIN_WINDOW_H
+#define ATILACALCULATORSOFTWARE_MAIN_WINDOW_H
 
-#include "BinaryDataWrapper.h"
+#include "binary_data_wrapper.h"
 #include "ui_MainWindow.h"
 
 #include <QFileDialog>

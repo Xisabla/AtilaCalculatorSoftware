@@ -1,16 +1,16 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      BinaryDataClass.h
+  File:      binary_data_wrapper.h
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#ifndef ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H
-#define ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H
+#ifndef ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H
+#define ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H
 
-#include "BinaryData.h"
+#include "binary_data.h"
 
 #include <QString>
 #include <QStringList>
@@ -111,4 +111,4 @@ class BinaryDataWrapper : public BinaryData {
     QStringList informationList;
 };
 
-#endif // ATILACALCULATORSOFTWARE_BINARYDATAWRAPPER_H
+#endif // ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H

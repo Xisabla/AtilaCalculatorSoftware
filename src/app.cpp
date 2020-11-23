@@ -1,13 +1,13 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      App.cpp
+  File:      app.cpp
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#include "MainWindow.h"
+#include "main_window.h"
 
 #include <QApplication>
 #include <QSurfaceFormat>

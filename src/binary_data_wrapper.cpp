@@ -1,13 +1,13 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      BinaryDataClass.cpp
+  File:      binary_data_wrapper.cpp
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#include "BinaryDataWrapper.h"
+#include "binary_data_wrapper.h"
 
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER

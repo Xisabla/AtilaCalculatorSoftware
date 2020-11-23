@@ -1,14 +1,14 @@
 /*=========================================================================
 
   Project:   AtilaCalculatorSoftware
-  File:      Utils.h
+  File:      utils.h
 
   Copyright (c) 2020
   All rights reserved.
 
 =========================================================================*/
-#ifndef ATILACALCULATORSOFTWARE_UTILS_H
-#define ATILACALCULATORSOFTWARE_UTILS_H
+#ifndef ATILACALCULATORSOFTWARE_UTILITIES_H
+#define ATILACALCULATORSOFTWARE_UTILITIES_H
 
 #include <cstring>
 #include <iostream>
@@ -88,4 +88,4 @@ typedef char dataFields[10][40];
  */
 unsigned int getFields(gzFile file, char* buffer, dataFields fields);
 
-#endif // ATILACALCULATORSOFTWARE_UTILS_H
+#endif // ATILACALCULATORSOFTWARE_UTILITIES_H
