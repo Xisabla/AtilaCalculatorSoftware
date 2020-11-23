@@ -18,6 +18,18 @@ jobs:
         run: sudo apt install doxygen
       - name: Run doxygen
         run: doxygen ./Doxyfile
+      - name: Remove uncessessary files
+        run: |
+          rm -rf build
+          rm -rf cmake
+          rm -rf data
+          rm -rf include
+          rm -rf qt
+          rm -rf src
+          rm -rf .clang-format
+          rm -rf CMakeLists.txt
+          rm -rf Doxyfile
+          rm -rf Makefile
       - name: Commit documentation
         run: |
           git config --local user.email "action@github.com"
