@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@dev/documentation
+        uses: actions/checkout@master
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -23,6 +23,6 @@ jobs:
           git add doc/ -f
           git commit -m "generate documentation"
       - name: Push
-        uses: ad-m/github-push-action@dev/documentation
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
