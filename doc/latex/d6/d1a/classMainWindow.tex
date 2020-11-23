@@ -1,0 +1,106 @@
+\hypertarget{classMainWindow}{}\section{Main\+Window Class Reference}
+\label{classMainWindow}\index{Main\+Window@{Main\+Window}}
+
+
+Qt main window.  
+
+
+
+
+{\ttfamily \#include $<$main\+\_\+window.\+h$>$}
+
+Inheritance diagram for Main\+Window\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{d6/d1a/classMainWindow}
+\end{center}
+\end{figure}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classMainWindow_aca3b7226e638a0cd5ef9d7db749ff67e}{slot\+Exit} ()
+\item 
+void \hyperlink{classMainWindow_a2ef511727fce3fc9bdf17a73f078cec7}{slot\+Open\+File} ()
+\item 
+void \hyperlink{classMainWindow_a73d6c706bae3e712ab654a78d1921c89}{slot\+Reset\+Camera} ()
+\item 
+void \hyperlink{classMainWindow_ab4be74f01161ac57ddf86f32c60137d3}{slot\+Zoom\+Area} ()
+\item 
+void \hyperlink{classMainWindow_ab2c27d510eabe77a0eb11fc091adc293}{slot\+Interact\+With\+Object} ()
+\item 
+void \hyperlink{classMainWindow_a914c794d921ccfcd861284bc8cd9f96a}{slot\+Result} (\hyperlink{classResult}{Result} \&result, const unsigned int \&component)
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMainWindow_a06c3eabf20b0ef52c0b33208334e8e1f}{Main\+Window} (char $\ast$data\+Directory)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Qt main window. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMainWindow_a06c3eabf20b0ef52c0b33208334e8e1f}\label{classMainWindow_a06c3eabf20b0ef52c0b33208334e8e1f}} 
+\index{Main\+Window@{Main\+Window}!Main\+Window@{Main\+Window}}
+\index{Main\+Window@{Main\+Window}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{Main\+Window()}{MainWindow()}}
+{\footnotesize\ttfamily Main\+Window\+::\+Main\+Window (\begin{DoxyParamCaption}\item[{char $\ast$}]{data\+Directory }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\+Directory} & The path to the objects directory \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classMainWindow_aca3b7226e638a0cd5ef9d7db749ff67e}\label{classMainWindow_aca3b7226e638a0cd5ef9d7db749ff67e}} 
+\index{Main\+Window@{Main\+Window}!slot\+Exit@{slot\+Exit}}
+\index{slot\+Exit@{slot\+Exit}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Exit}{slotExit}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Exit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Stop the application \mbox{\Hypertarget{classMainWindow_ab2c27d510eabe77a0eb11fc091adc293}\label{classMainWindow_ab2c27d510eabe77a0eb11fc091adc293}} 
+\index{Main\+Window@{Main\+Window}!slot\+Interact\+With\+Object@{slot\+Interact\+With\+Object}}
+\index{slot\+Interact\+With\+Object@{slot\+Interact\+With\+Object}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Interact\+With\+Object}{slotInteractWithObject}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Interact\+With\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Reset the interactor to allow object interaction after zoom\+Area \mbox{\Hypertarget{classMainWindow_a2ef511727fce3fc9bdf17a73f078cec7}\label{classMainWindow_a2ef511727fce3fc9bdf17a73f078cec7}} 
+\index{Main\+Window@{Main\+Window}!slot\+Open\+File@{slot\+Open\+File}}
+\index{slot\+Open\+File@{slot\+Open\+File}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Open\+File}{slotOpenFile}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Open\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Open and read object file, then render it \mbox{\Hypertarget{classMainWindow_a73d6c706bae3e712ab654a78d1921c89}\label{classMainWindow_a73d6c706bae3e712ab654a78d1921c89}} 
+\index{Main\+Window@{Main\+Window}!slot\+Reset\+Camera@{slot\+Reset\+Camera}}
+\index{slot\+Reset\+Camera@{slot\+Reset\+Camera}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Reset\+Camera}{slotResetCamera}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Reset\+Camera (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Reset the camera view as default \mbox{\Hypertarget{classMainWindow_a914c794d921ccfcd861284bc8cd9f96a}\label{classMainWindow_a914c794d921ccfcd861284bc8cd9f96a}} 
+\index{Main\+Window@{Main\+Window}!slot\+Result@{slot\+Result}}
+\index{slot\+Result@{slot\+Result}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Result}{slotResult}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Result (\begin{DoxyParamCaption}\item[{\hyperlink{classResult}{Result} \&}]{result,  }\item[{const unsigned int \&}]{component }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Select the result to visualise 
+\begin{DoxyParams}{Parameters}
+{\em result} & \hyperlink{classResult}{Result} to visualise \\
+\hline
+{\em component} & Choice for set\+V\+TK method \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMainWindow_ab4be74f01161ac57ddf86f32c60137d3}\label{classMainWindow_ab4be74f01161ac57ddf86f32c60137d3}} 
+\index{Main\+Window@{Main\+Window}!slot\+Zoom\+Area@{slot\+Zoom\+Area}}
+\index{slot\+Zoom\+Area@{slot\+Zoom\+Area}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{slot\+Zoom\+Area}{slotZoomArea}}
+{\footnotesize\ttfamily void Main\+Window\+::slot\+Zoom\+Area (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Allow the user to select an area to zoom on 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{main__window_8h}{main\+\_\+window.\+h}\item 
+src/\hyperlink{main__window_8cpp}{main\+\_\+window.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,193 @@
+\hypertarget{classBinaryData}{}\section{Binary\+Data Class Reference}
+\label{classBinaryData}\index{Binary\+Data@{Binary\+Data}}
+
+
+Load the resources file and allow to read meshes and results from it.  
+
+
+
+
+{\ttfamily \#include $<$binary\+\_\+data.\+h$>$}
+
+Inheritance diagram for Binary\+Data\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{dc/d47/classBinaryData}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classBinaryData_a0bba582d92f95dc186e3c36ea9ddcd36}{Binary\+Data} (const std\+::string \&\hyperlink{classBinaryData_a9eae74bdf3b91a3e1461802d820591e3}{file})
+\item 
+gz\+File \hyperlink{classBinaryData_a20d3521069ee75c21b83de91ddf5c44b}{get\+File} ()
+\item 
+std\+::vector$<$ \hyperlink{classMesh}{Mesh} $>$ \& \hyperlink{classBinaryData_ac2baca71c75e2ea6d12ed89d265dfb6f}{get\+Meshes} ()
+\item 
+std\+::vector$<$ \hyperlink{classResult}{Result} $>$ \& \hyperlink{classBinaryData_a33f15e0f1b9c34d286e84bc615e7a83e}{get\+Results} ()
+\item 
+\hyperlink{classBinaryData_a31499383f285646922658e87866a73ea}{$\sim$\+Binary\+Data} ()
+\begin{DoxyCompactList}\small\item\em Closes open files. \end{DoxyCompactList}\item 
+void \hyperlink{classBinaryData_a11126f35f2b4f20edc1f3c36f549fb10}{read\+Meshes} ()
+\item 
+std\+::optional$<$ \hyperlink{classResult}{Result} $>$ \hyperlink{classBinaryData_aa2fad71246ba4648b6f9d2045fd4201e}{read\+Result} ()
+\begin{DoxyCompactList}\small\item\em Read one result from the res gz\+File. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classResult}{Result} $>$ \hyperlink{classBinaryData_a0faec96c84437c29694d2e54689b7f07}{read\+Results} (unsigned int n=0)
+\begin{DoxyCompactList}\small\item\em Read the n given results, stops if there is no more result. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+gz\+File \hyperlink{classBinaryData_a9eae74bdf3b91a3e1461802d820591e3}{file}
+\begin{DoxyCompactList}\small\item\em Opened res gz\+File. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classMesh}{Mesh} $>$ \hyperlink{classBinaryData_af5e37d66b40c5cc7d835bac81a165b14}{meshes}
+\begin{DoxyCompactList}\small\item\em Read meshes. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classResult}{Result} $>$ \hyperlink{classBinaryData_a81c3bb02cb37946f441ce336bdf43784}{results}
+\begin{DoxyCompactList}\small\item\em Read meshes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const int \hyperlink{classBinaryData_a4e95a7b65e2fa6374d92108bb90eaf5b}{byte\+Order\+Check} = 0x91d
+\begin{DoxyCompactList}\small\item\em Constant value for reading check. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Load the resources file and allow to read meshes and results from it. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classBinaryData_a0bba582d92f95dc186e3c36ea9ddcd36}\label{classBinaryData_a0bba582d92f95dc186e3c36ea9ddcd36}} 
+\index{Binary\+Data@{Binary\+Data}!Binary\+Data@{Binary\+Data}}
+\index{Binary\+Data@{Binary\+Data}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{Binary\+Data()}{BinaryData()}}
+{\footnotesize\ttfamily Binary\+Data\+::\+Binary\+Data (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{file }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & Path to the res gz\+File \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classBinaryData_a31499383f285646922658e87866a73ea}\label{classBinaryData_a31499383f285646922658e87866a73ea}} 
+\index{Binary\+Data@{Binary\+Data}!````~Binary\+Data@{$\sim$\+Binary\+Data}}
+\index{````~Binary\+Data@{$\sim$\+Binary\+Data}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{$\sim$\+Binary\+Data()}{~BinaryData()}}
+{\footnotesize\ttfamily Binary\+Data\+::$\sim$\+Binary\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Closes open files. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classBinaryData_a20d3521069ee75c21b83de91ddf5c44b}\label{classBinaryData_a20d3521069ee75c21b83de91ddf5c44b}} 
+\index{Binary\+Data@{Binary\+Data}!get\+File@{get\+File}}
+\index{get\+File@{get\+File}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{get\+File()}{getFile()}}
+{\footnotesize\ttfamily gz\+File Binary\+Data\+::get\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The currently open res gz\+File 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classBinaryData_ac2baca71c75e2ea6d12ed89d265dfb6f}\label{classBinaryData_ac2baca71c75e2ea6d12ed89d265dfb6f}} 
+\index{Binary\+Data@{Binary\+Data}!get\+Meshes@{get\+Meshes}}
+\index{get\+Meshes@{get\+Meshes}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{get\+Meshes()}{getMeshes()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{classMesh}{Mesh} $>$ \& Binary\+Data\+::get\+Meshes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The loaded meshes 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classBinaryData_a33f15e0f1b9c34d286e84bc615e7a83e}\label{classBinaryData_a33f15e0f1b9c34d286e84bc615e7a83e}} 
+\index{Binary\+Data@{Binary\+Data}!get\+Results@{get\+Results}}
+\index{get\+Results@{get\+Results}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{get\+Results()}{getResults()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{classResult}{Result} $>$ \& Binary\+Data\+::get\+Results (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The loaded results 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classBinaryData_a11126f35f2b4f20edc1f3c36f549fb10}\label{classBinaryData_a11126f35f2b4f20edc1f3c36f549fb10}} 
+\index{Binary\+Data@{Binary\+Data}!read\+Meshes@{read\+Meshes}}
+\index{read\+Meshes@{read\+Meshes}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{read\+Meshes()}{readMeshes()}}
+{\footnotesize\ttfamily void Binary\+Data\+::read\+Meshes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Read all meshes from the res gz\+File \mbox{\Hypertarget{classBinaryData_aa2fad71246ba4648b6f9d2045fd4201e}\label{classBinaryData_aa2fad71246ba4648b6f9d2045fd4201e}} 
+\index{Binary\+Data@{Binary\+Data}!read\+Result@{read\+Result}}
+\index{read\+Result@{read\+Result}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{read\+Result()}{readResult()}}
+{\footnotesize\ttfamily std\+::optional$<$ \hyperlink{classResult}{Result} $>$ Binary\+Data\+::read\+Result (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Read one result from the res gz\+File. 
+
+\begin{DoxyReturn}{Returns}
+The result read or a nullopt if no result was found 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classBinaryData_a0faec96c84437c29694d2e54689b7f07}\label{classBinaryData_a0faec96c84437c29694d2e54689b7f07}} 
+\index{Binary\+Data@{Binary\+Data}!read\+Results@{read\+Results}}
+\index{read\+Results@{read\+Results}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{read\+Results()}{readResults()}}
+{\footnotesize\ttfamily std\+::vector$<$ \hyperlink{classResult}{Result} $>$ Binary\+Data\+::read\+Results (\begin{DoxyParamCaption}\item[{unsigned int}]{n = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+
+
+Read the n given results, stops if there is no more result. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & The number of results to read (0 = all) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The results read 
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classBinaryData_a4e95a7b65e2fa6374d92108bb90eaf5b}\label{classBinaryData_a4e95a7b65e2fa6374d92108bb90eaf5b}} 
+\index{Binary\+Data@{Binary\+Data}!byte\+Order\+Check@{byte\+Order\+Check}}
+\index{byte\+Order\+Check@{byte\+Order\+Check}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{byte\+Order\+Check}{byteOrderCheck}}
+{\footnotesize\ttfamily const int Binary\+Data\+::byte\+Order\+Check = 0x91d\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+
+
+Constant value for reading check. 
+
+\mbox{\Hypertarget{classBinaryData_a9eae74bdf3b91a3e1461802d820591e3}\label{classBinaryData_a9eae74bdf3b91a3e1461802d820591e3}} 
+\index{Binary\+Data@{Binary\+Data}!file@{file}}
+\index{file@{file}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{file}{file}}
+{\footnotesize\ttfamily gz\+File Binary\+Data\+::file\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Opened res gz\+File. 
+
+\mbox{\Hypertarget{classBinaryData_af5e37d66b40c5cc7d835bac81a165b14}\label{classBinaryData_af5e37d66b40c5cc7d835bac81a165b14}} 
+\index{Binary\+Data@{Binary\+Data}!meshes@{meshes}}
+\index{meshes@{meshes}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{meshes}{meshes}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{classMesh}{Mesh}$>$ Binary\+Data\+::meshes\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Read meshes. 
+
+\mbox{\Hypertarget{classBinaryData_a81c3bb02cb37946f441ce336bdf43784}\label{classBinaryData_a81c3bb02cb37946f441ce336bdf43784}} 
+\index{Binary\+Data@{Binary\+Data}!results@{results}}
+\index{results@{results}!Binary\+Data@{Binary\+Data}}
+\subsubsection{\texorpdfstring{results}{results}}
+{\footnotesize\ttfamily std\+::vector$<$\hyperlink{classResult}{Result}$>$ Binary\+Data\+::results\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Read meshes. 
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{binary__data_8h}{binary\+\_\+data.\+h}\item 
+src/\hyperlink{binary__data_8cpp}{binary\+\_\+data.\+cpp}\end{DoxyCompactItemize}

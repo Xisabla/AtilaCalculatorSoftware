@@ -1,0 +1,128 @@
+\hypertarget{classResult}{}\section{Result Class Reference}
+\label{classResult}\index{Result@{Result}}
+
+
+Representation of all the results and their components read from a res file.  
+
+
+
+
+{\ttfamily \#include $<$result.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classResult_aebbe4a0e66acff6edd381f2a6c7c46df}{Result} (gz\+File file, \hyperlink{utilities_8h_a981a882ef2a0d7ee5b6b32f27105644e}{data\+Fields} fields, int component\+Count)
+\item 
+std\+::string \hyperlink{classResult_ae9109a2e288a93e1c08d1e495f59191f}{get\+Analysis} ()
+\item 
+std\+::string \hyperlink{classResult_ad7d2789c7ec7187c67ef1541bd59f214}{get\+Result\+Type} ()
+\item 
+float \hyperlink{classResult_ae152b587e08f50380c6fc0a54faa08c5}{get\+Step} () const
+\item 
+int \hyperlink{classResult_a3385ff986211d42ed68d917f365413b9}{get\+Component\+Count} () const
+\item 
+unsigned int \hyperlink{classResult_a13c7c3058d5d8e2b52a31091061199d3}{get\+Values\+Count} () const
+\item 
+std\+::vector$<$ std\+::string $>$ \hyperlink{classResult_a20f951753ffd91535a66ec365e2256ff}{get\+Components} ()
+\item 
+std\+::tuple$<$ int \&, float $\ast$ $>$ \hyperlink{classResult_a987118e44f4275e394a27519fa9c70b1}{get\+Result} (const unsigned int \&id)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Representation of all the results and their components read from a res file. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classResult_aebbe4a0e66acff6edd381f2a6c7c46df}\label{classResult_aebbe4a0e66acff6edd381f2a6c7c46df}} 
+\index{Result@{Result}!Result@{Result}}
+\index{Result@{Result}!Result@{Result}}
+\subsubsection{\texorpdfstring{Result()}{Result()}}
+{\footnotesize\ttfamily Result\+::\+Result (\begin{DoxyParamCaption}\item[{gz\+File}]{file,  }\item[{\hyperlink{utilities_8h_a981a882ef2a0d7ee5b6b32f27105644e}{data\+Fields}}]{fields,  }\item[{int}]{component\+Count }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & res gz\+File \\
+\hline
+{\em fields} & Base fields read from the file \\
+\hline
+{\em component\+Count} & Number of component to seek into the result data \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classResult_ae9109a2e288a93e1c08d1e495f59191f}\label{classResult_ae9109a2e288a93e1c08d1e495f59191f}} 
+\index{Result@{Result}!get\+Analysis@{get\+Analysis}}
+\index{get\+Analysis@{get\+Analysis}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Analysis()}{getAnalysis()}}
+{\footnotesize\ttfamily std\+::string Result\+::get\+Analysis (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The type of analysis of the result 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_a3385ff986211d42ed68d917f365413b9}\label{classResult_a3385ff986211d42ed68d917f365413b9}} 
+\index{Result@{Result}!get\+Component\+Count@{get\+Component\+Count}}
+\index{get\+Component\+Count@{get\+Component\+Count}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Component\+Count()}{getComponentCount()}}
+{\footnotesize\ttfamily int Result\+::get\+Component\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\begin{DoxyReturn}{Returns}
+The number component of the result (1 or 4) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_a20f951753ffd91535a66ec365e2256ff}\label{classResult_a20f951753ffd91535a66ec365e2256ff}} 
+\index{Result@{Result}!get\+Components@{get\+Components}}
+\index{get\+Components@{get\+Components}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Components()}{getComponents()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ Result\+::get\+Components (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The components of the result (X, Y, Z, M) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_a987118e44f4275e394a27519fa9c70b1}\label{classResult_a987118e44f4275e394a27519fa9c70b1}} 
+\index{Result@{Result}!get\+Result@{get\+Result}}
+\index{get\+Result@{get\+Result}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Result()}{getResult()}}
+{\footnotesize\ttfamily std\+::tuple$<$ int \&, float $\ast$ $>$ Result\+::get\+Result (\begin{DoxyParamCaption}\item[{const unsigned int \&}]{id }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & ID of the result \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Return information about the result 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_ad7d2789c7ec7187c67ef1541bd59f214}\label{classResult_ad7d2789c7ec7187c67ef1541bd59f214}} 
+\index{Result@{Result}!get\+Result\+Type@{get\+Result\+Type}}
+\index{get\+Result\+Type@{get\+Result\+Type}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Result\+Type()}{getResultType()}}
+{\footnotesize\ttfamily std\+::string Result\+::get\+Result\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+The type of result 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_ae152b587e08f50380c6fc0a54faa08c5}\label{classResult_ae152b587e08f50380c6fc0a54faa08c5}} 
+\index{Result@{Result}!get\+Step@{get\+Step}}
+\index{get\+Step@{get\+Step}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Step()}{getStep()}}
+{\footnotesize\ttfamily float Result\+::get\+Step (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\begin{DoxyReturn}{Returns}
+Step of the result 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classResult_a13c7c3058d5d8e2b52a31091061199d3}\label{classResult_a13c7c3058d5d8e2b52a31091061199d3}} 
+\index{Result@{Result}!get\+Values\+Count@{get\+Values\+Count}}
+\index{get\+Values\+Count@{get\+Values\+Count}!Result@{Result}}
+\subsubsection{\texorpdfstring{get\+Values\+Count()}{getValuesCount()}}
+{\footnotesize\ttfamily unsigned int Result\+::get\+Values\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\begin{DoxyReturn}{Returns}
+The number of values of the result 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\hyperlink{result_8h}{result.\+h}\item 
+src/\hyperlink{result_8cpp}{result.\+cpp}\end{DoxyCompactItemize}

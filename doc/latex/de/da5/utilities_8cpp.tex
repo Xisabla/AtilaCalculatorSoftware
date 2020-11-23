@@ -1,0 +1,33 @@
+\hypertarget{utilities_8cpp}{}\section{src/utilities.cpp File Reference}
+\label{utilities_8cpp}\index{src/utilities.\+cpp@{src/utilities.\+cpp}}
+{\ttfamily \#include \char`\"{}utilities.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+unsigned int \hyperlink{utilities_8cpp_aac531f244d678e0521098463b1df220b}{get\+Fields} (gz\+File file, char $\ast$buffer, \hyperlink{utilities_8h_a981a882ef2a0d7ee5b6b32f27105644e}{data\+Fields} fields)
+\begin{DoxyCompactList}\small\item\em Read fields from the given resource file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{utilities_8cpp_aac531f244d678e0521098463b1df220b}\label{utilities_8cpp_aac531f244d678e0521098463b1df220b}} 
+\index{utilities.\+cpp@{utilities.\+cpp}!get\+Fields@{get\+Fields}}
+\index{get\+Fields@{get\+Fields}!utilities.\+cpp@{utilities.\+cpp}}
+\subsubsection{\texorpdfstring{get\+Fields()}{getFields()}}
+{\footnotesize\ttfamily unsigned int get\+Fields (\begin{DoxyParamCaption}\item[{gz\+File}]{file,  }\item[{char $\ast$}]{buffer,  }\item[{\hyperlink{utilities_8h_a981a882ef2a0d7ee5b6b32f27105644e}{data\+Fields}}]{fields }\end{DoxyParamCaption})}
+
+
+
+Read fields from the given resource file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & resource file to read \\
+\hline
+{\em buffer} & Zlib reading buffer \\
+\hline
+{\em fields} & data\+Fields pointer in which fields will be written \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The size of read data 
+\end{DoxyReturn}
