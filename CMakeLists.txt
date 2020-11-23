@@ -5,11 +5,55 @@ if(POLICY CMP0020)
   cmake_policy(SET CMP0071 NEW)
 endif()
 
-PROJECT(AtilaCalculatorSoftware)
+# -----------------------------------------------------------------------------
+# Project
+# -----------------------------------------------------------------------------
+include(cmake/Utils.cmake)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+read_version()
 
+PROJECT(AtilaCalculatorSoftware
+        VERSION "${CMAKE_PROJECT_VERSION}")
+
+message(STATUS "Building project ${PROJECT_NAME} v${PROJECT_VERSION}")
+
+# -----------------------------------------------------------------------------
+# Compiler and build config
+# -----------------------------------------------------------------------------
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
+endif()
+
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
+# Set code DEBUG mode if build type is Debug
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+  message(STATUS "Debug mode enabled")
+  add_compile_definitions(DEBUG)
+endif()
+
+# Use default cpp standard 20
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED True)
+endif()
+
+# -----------------------------------------------------------------------------
+# Project files
+# -----------------------------------------------------------------------------
+# Qt .ui files
+set(UI_FILES
+        src/MainWindow.ui)
+
+# Include files
+file(GLOB HEADERS include/*.h)
+
+# Source files
+file(GLOB SOURCES src/*.cpp)
+
+# -----------------------------------------------------------------------------
+# Dependencies
+# -----------------------------------------------------------------------------
 # find VKT
 find_package(VTK COMPONENTS
   vtkCommonColor
@@ -25,18 +69,19 @@ find_package(VTK COMPONENTS
   vtkGUISupportQt
   QUIET)
 
+# Stop if VTK is not find
 if (NOT VTK_FOUND)
-  message("Skipping AtilaCalculatorSoftware: VTK is not installed (${VTK_NOT_FOUND_MESSAGE})")
+  message(ERROR "VTK is not installed (${VTK_NOT_FOUND_MESSAGE})")
   return ()
 endif()
 
-message (STATUS "VTK_VERSION: ${VTK_VERSION}")
+message(STATUS "Using VTK v${VTK_VERSION}")
 
 # find hdf5
 find_package (HDF5 COMPONENTS CXX QUIET)
 
 if (NOT HDF5_FOUND)
-  message("Skipping AtilaCalculatorSoftware: HDF5 not found")
+  message(ERROR "HDF5 not found")
   return ()
 endif()
 
@@ -53,18 +98,12 @@ if(vtkGUISupportQt_LOADED OR TARGET VTK::GUISupportQt)
   # We have ui files, this will bring in the macro: qt5_wrap_ui
   find_package(Qt5Widgets REQUIRED QUIET)
 else()
-  message(STATUS "GuiSupportQt not found.")
+  message(ERROR "GuiSupportQt not found.")
   return()
 endif()
 
-# source files & directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
-file(GLOB UI_FILES src/*.ui)
-file(GLOB QT_WRAP src/*.h)
-file(GLOB CXX_FILES src/*.cpp)
-
-qt5_wrap_ui(UISrcs ${UI_FILES})
+# Wrap UI to sources
+qt5_wrap_ui(SOURCES ${UI_FILES})
 
 # link vtk
 if (VTK_VERSION VERSION_LESS "8.90.0")
@@ -72,13 +111,13 @@ if (VTK_VERSION VERSION_LESS "8.90.0")
   include(${VTK_USE_FILE})
   # CMAKE_AUTOMOC in ON so the MOC headers will be automatically wrapped.
   add_executable(AtilaCalculatorSoftware MACOSX_BUNDLE
-    ${CXX_FILES} ${UISrcs} ${QT_WRAP})
+    ${SOURCES} ${HEADERS})
   qt5_use_modules(AtilaCalculatorSoftware Core Gui)
   target_link_libraries(AtilaCalculatorSoftware ${VTK_LIBRARIES})
 else()
   # CMAKE_AUTOMOC in ON so the MOC headers will be automatically wrapped.
   add_executable(AtilaCalculatorSoftware MACOSX_BUNDLE
-    ${CXX_FILES} ${UISrcs} ${QT_WRAP})
+    ${SOURCES} ${HEADERS})
   qt5_use_modules(AtilaCalculatorSoftware Core Gui)
   target_link_libraries(AtilaCalculatorSoftware ${VTK_LIBRARIES})
   # vtk_module_autoinit is needed
@@ -88,7 +127,15 @@ else()
   )
 endif()
 
-add_compile_definitions(DEBUG)
+# -----------------------------------------------------------------------------
+# Build and linking instructions
+# -----------------------------------------------------------------------------
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 # link other libs (gidpost, zlib, hdf5)
 target_link_libraries(AtilaCalculatorSoftware -lgidpost)
