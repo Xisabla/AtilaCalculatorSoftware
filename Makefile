@@ -47,6 +47,11 @@ check-dependencies: check-boost check-gidpost check-hdf5 check-vtk check-zlib
 .PHONY: clean
 clean: ## Clean build files
 	rm -rf build
+	rm -rf doc
+
+.PHONY: doc
+doc:  ## Generate documentation using Doxygen
+	doxygen ./Doxyfile
 
 .PHONY: format
 format: ## Format sources using clang-format
