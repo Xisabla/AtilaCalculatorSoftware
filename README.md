@@ -31,33 +31,21 @@ or using make
 make run
 ```
 
-### TODO
+## Progression/To Do
 
-- [x] Refactoring: Better structure, code comprehension and documentation/comments
-  - [x] Transform all structures into class
-  - [x] Merge all related files together (to finally have BinaryData, Mesh, Result)
-  - [x] Rebuild global structure of the different current files/class/structs
-    - [x] BinaryData
-    - [x] BinaryDataWrapper
-    - [x] <s>binary_data_GiD</s>
-    - [x] Mesh
-    - [x] <s>mesh_GiD</s>
-    - [x] Result
-    - [x] <s>result_GiD</s>
-  - [x] Doxygen doc everywhere
-  - [x] Comment for big spots
-  - [x] Review and refactor (split) all big methods or macro methods
-- [ ] Debugging/Logging: Add a way to print important data, logging the different actions
-  - [x] Debug macros
-  - [ ] Logger object to keep all logs and manage I/O
-  - [ ] Logger logs to console with cli arg eg: `./AtilaCalculatorSoftware --verbose`)
-  - [ ] Log window bind to the Logger for the user to be able to see logs
-  - [ ] Stringify methods for all objects
-- [ ] New features
-  - [ ] Loading window when opening file
-  - [ ] Mesh visualisation
-  - [ ] Write to GiD file
-  - [ ] Shortcuts (Ctrl+O to open file, ...)
-- [ ] Fixes
-  - NOTE: It may be a good practice to use a github issue for each bug and make another branch + use a pull request to fix each bug
-  - [x] Opening a new resource files occurs to a crash
+See the [project management](https://github.com/Xisabla/AtilaCalculatorSoftware/projects) tab
+
+## Contributing
+
+To apply an enhancement idea, open [an issue](https://github.com/Xisabla/AtilaCalculatorSoftware/issues). Describe the wanted feature as much as possible. 
+
+To add a new feature/enhancement:
+- [Open an issue](https://github.com/Xisabla/AtilaCalculatorSoftware/issues) as described above
+- Add to your issue a detailed description (needed methods, objects, behavior, ...) (a marked list is always a good idea)
+- Add your enhancement issue to the [`Features` project](https://github.com/Xisabla/AtilaCalculatorSoftware/projects/2) as a "To Do" item
+- Open a new branch `feature/<feature-name>`
+- Once the development part is over, perform a [pull request](https://github.com/Xisabla/AtilaCalculatorSoftware/pulls) from your feature developing branch and do not forget to update the project [version](https://github.com/Xisabla/AtilaCalculatorSoftware/blob/master/include/version.h)
+
+## License
+
+Project under [MIT License](./LICENSE.md)
