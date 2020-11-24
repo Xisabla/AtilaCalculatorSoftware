@@ -76,6 +76,34 @@
 typedef char dataFields[10][40];
 
 //  --------------------------------------------------------------------------------------
+//  INLINE METHODS
+//  --------------------------------------------------------------------------------------
+
+/**
+ * @brief Allows to use to_string method for elements that are already string
+ * @param s Provided String
+ * @return The same String as provided
+ */
+inline std::string const& to_string(std::string const& s) { return s; }
+
+//  --------------------------------------------------------------------------------------
+//  TEMPLATES
+//  --------------------------------------------------------------------------------------
+
+template<typename... TArgs> std::string concat(TArgs const&... args) {
+    std::string str;
+
+    using ::to_string;
+    using std::to_string;
+
+    int unpack[] { 0, (str += to_string(args), 0)... };
+    static_cast<void>(unpack);
+
+    return str;
+}
+
+
+//  --------------------------------------------------------------------------------------
 //  METHODS
 //  --------------------------------------------------------------------------------------
 
