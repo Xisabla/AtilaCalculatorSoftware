@@ -15,7 +15,8 @@
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
 int main(int argc, char* argv[]) {
-    Logger::info("AtilaCalculatorSoftware v", ACS_VERSION_MAJOR, ".", ACS_VERSION_MINOR, ".", ACS_VERSION_PATCH);
+    Logger::info(
+    "AtilaCalculatorSoftware v", ACS_VERSION_MAJOR, ".", ACS_VERSION_MINOR, ".", ACS_VERSION_PATCH);
 
     // needed to ensure appropriate OpenGL context is created for VTK rendering.
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());

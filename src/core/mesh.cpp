@@ -17,7 +17,7 @@ Node::Node(unsigned int id, const float* coord): id(id) {
     this->coord[0] = coord[0];
     this->coord[1] = coord[1];
     this->coord[2] = coord[2];
-};
+}
 
 Node::Node(unsigned int id, float x, float y, float z): id(id) {
     this->coord[0] = x;

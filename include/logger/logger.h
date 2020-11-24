@@ -40,7 +40,7 @@ class LogMetaData {
      * @param level Log entry logging level
      * @param timestamp Log entry timestamp
      */
-    LogMetaData(LogLevel level, time_t timestamp = time(0));
+    explicit LogMetaData(LogLevel level, time_t timestamp = time(nullptr));
 
     /**
      * @return The logging level of the log entry
@@ -50,7 +50,7 @@ class LogMetaData {
     /**
      * @return The timestamp of the log entry
      */
-    time_t getTimestamp();
+    time_t getTimestamp() const;
 
   private:
     /**
@@ -79,7 +79,8 @@ class Logger {
      * @param timestamp Logging timestamp
      * @return The id of the current entry
      */
-    size_t log(std::string message, LogLevel level = Debug, time_t timestamp = time(0));
+    size_t
+    log(const std::string& message, LogLevel level = Debug, time_t timestamp = time(nullptr));
 
     /**
      * @brief Retrieve the current instance of logger or create a new one
@@ -119,8 +120,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t trace(TArgs const&... args) {
+    template<typename... TArgs> static size_t trace(TArgs const&... args) {
         return Logger::trace_s(concat(args...));
     }
 
@@ -137,8 +137,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t debug(TArgs const&... args) {
+    template<typename... TArgs> static size_t debug(TArgs const&... args) {
         return Logger::debug_s(concat(args...));
     }
 
@@ -155,8 +154,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t info(TArgs const&... args) {
+    template<typename... TArgs> static size_t info(TArgs const&... args) {
         return Logger::info_s(concat(args...));
     }
 
@@ -173,8 +171,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t warn(TArgs const&... args) {
+    template<typename... TArgs> static size_t warn(TArgs const&... args) {
         return Logger::warn_s(concat(args...));
     }
 
@@ -191,8 +188,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t error(TArgs const&... args) {
+    template<typename... TArgs> static size_t error(TArgs const&... args) {
         return Logger::error_s(concat(args...));
     }
 
@@ -209,8 +205,7 @@ class Logger {
      * @param args Elements to log (string, int, float, ...), will be concatenate
      * @return The id of the create entry
      */
-    template<typename... TArgs>
-    static size_t fatal(TArgs const&... args) {
+    template<typename... TArgs> static size_t fatal(TArgs const&... args) {
         return Logger::fatal_s(concat(args...));
     }
 
@@ -225,7 +220,7 @@ class Logger {
      * @param level The logging level
      * @return The string formatted logging level
      */
-    std::string formatLogLevel(LogLevel level);
+    static std::string formatLogLevel(LogLevel level);
 
     /**
      * @brief Get the formatted string of a log entry
@@ -235,8 +230,8 @@ class Logger {
      * @return The string formatted log entry
      */
     std::string format(LogMetaData metaData,
-                       std::string message,
-                       std::string format = Logger::getLoggingFormat());
+                       const std::string& message,
+                       const std::string& format = Logger::getLoggingFormat());
 
     /**
      * @brief Nonformatted raw log entries

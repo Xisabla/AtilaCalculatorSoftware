@@ -9,6 +9,8 @@
 =========================================================================*/
 #include "logger/logger.h"
 
+#include <utility>
+
 //  --------------------------------------------------------------------------------------
 //  LOG META DATA
 //  --------------------------------------------------------------------------------------
@@ -21,7 +23,7 @@ LogMetaData::LogMetaData(LogLevel level, time_t timestamp): level(level), timest
 
 LogLevel LogMetaData::getLogLevel() { return this->level; }
 
-time_t LogMetaData::getTimestamp() { return this->timestamp; }
+time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 
 //  --------------------------------------------------------------------------------------
 //  LOGGER
@@ -31,7 +33,7 @@ Logger::Logger() = default;
 
 LogTimeMode Logger::timeMode = TimeLocal;
 
-std::string Logger::logFormat = "";
+std::string Logger::logFormat;
 
 std::string Logger::defaultLogFormat =
 "[%dt:year%-%dt:mon%-%dt:mday%|%dt:hour%:%dt:min%:%dt:sec%][%level%] %message%";
@@ -49,7 +51,7 @@ Logger* Logger::getInstance() {
 }
 
 std::string Logger::getLoggingFormat() {
-    return Logger::logFormat == "" ? Logger::defaultLogFormat : Logger::logFormat;
+    return Logger::logFormat.empty() ? Logger::defaultLogFormat : Logger::logFormat;
 }
 
 std::string Logger::getDefaultLoggingFormat() { return Logger::defaultLogFormat; }
@@ -58,13 +60,13 @@ std::string Logger::getDefaultLoggingFormat() { return Logger::defaultLogFormat;
 //  LOGGER > SETTERS
 //  --------------------------------------------------------------------------------------
 
-void Logger::setLoggingFormat(std::string format) { Logger::logFormat = format; }
+void Logger::setLoggingFormat(std::string format) { Logger::logFormat = std::move(format); }
 
 //  --------------------------------------------------------------------------------------
 //  LOGGER > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
 
-size_t Logger::log(std::string message, LogLevel level, time_t timestamp) {
+size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp) {
     LogMetaData metaData(level, timestamp);
 
     this->entries.emplace_back(metaData, message);
@@ -75,17 +77,29 @@ size_t Logger::log(std::string message, LogLevel level, time_t timestamp) {
     return this->entries.size() - 1;
 }
 
-size_t Logger::trace_s(std::string message) { return Logger::getInstance()->log(message, Trace); }
+size_t Logger::trace_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Trace);
+}
 
-size_t Logger::debug_s(std::string message) { return Logger::getInstance()->log(message, Debug); }
+size_t Logger::debug_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Debug);
+}
 
-size_t Logger::info_s(std::string message) { return Logger::getInstance()->log(message, Info); }
+size_t Logger::info_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Info);
+}
 
-size_t Logger::warn_s(std::string message) { return Logger::getInstance()->log(message, Warn); }
+size_t Logger::warn_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Warn);
+}
 
-size_t Logger::error_s(std::string message) { return Logger::getInstance()->log(message, Error); }
+size_t Logger::error_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Error);
+}
 
-size_t Logger::fatal_s(std::string message) { return Logger::getInstance()->log(message, Fatal); }
+size_t Logger::fatal_s(std::string message) {
+    return Logger::getInstance()->log(std::move(message), Fatal);
+}
 
 //  --------------------------------------------------------------------------------------
 //  LOGGER > PRIVATE METHODS
@@ -102,7 +116,8 @@ std::string Logger::formatLogLevel(LogLevel level) {
     return "DEBUG";
 }
 
-std::string Logger::format(LogMetaData metaData, std::string message, std::string format) {
+std::string
+Logger::format(LogMetaData metaData, const std::string& message, const std::string& format) {
     time_t timestamp = metaData.getTimestamp();
     LogLevel level = metaData.getLogLevel();
 
