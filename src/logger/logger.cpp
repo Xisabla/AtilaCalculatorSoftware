@@ -75,29 +75,29 @@ size_t Logger::log(std::string message, LogLevel level, time_t timestamp) {
     return this->entries.size() - 1;
 }
 
-size_t Logger::trace(std::string message) { return Logger::getInstance()->log(message, Trace); }
+size_t Logger::trace_s(std::string message) { return Logger::getInstance()->log(message, Trace); }
 
-size_t Logger::debug(std::string message) { return Logger::getInstance()->log(message, Debug); }
+size_t Logger::debug_s(std::string message) { return Logger::getInstance()->log(message, Debug); }
 
-size_t Logger::info(std::string message) { return Logger::getInstance()->log(message, Info); }
+size_t Logger::info_s(std::string message) { return Logger::getInstance()->log(message, Info); }
 
-size_t Logger::warn(std::string message) { return Logger::getInstance()->log(message, Warn); }
+size_t Logger::warn_s(std::string message) { return Logger::getInstance()->log(message, Warn); }
 
-size_t Logger::error(std::string message) { return Logger::getInstance()->log(message, Error); }
+size_t Logger::error_s(std::string message) { return Logger::getInstance()->log(message, Error); }
 
-size_t Logger::fatal(std::string message) { return Logger::getInstance()->log(message, Fatal); }
+size_t Logger::fatal_s(std::string message) { return Logger::getInstance()->log(message, Fatal); }
 
 //  --------------------------------------------------------------------------------------
 //  LOGGER > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
 
 std::string Logger::formatLogLevel(LogLevel level) {
-    if(level == Trace) return "TRACE";
-    if(level == Debug) return "DEBUG";
-    if(level == Info) return "INFO";
-    if(level == Warn) return "WARN";
-    if(level == Error) return "ERROR";
-    if(level == Fatal) return "FATAL";
+    if (level == Trace) return "TRACE";
+    if (level == Debug) return "DEBUG";
+    if (level == Info) return "INFO";
+    if (level == Warn) return "WARN";
+    if (level == Error) return "ERROR";
+    if (level == Fatal) return "FATAL";
 
     return "DEBUG";
 }
@@ -106,7 +106,7 @@ std::string Logger::format(LogMetaData metaData, std::string message, std::strin
     time_t timestamp = metaData.getTimestamp();
     LogLevel level = metaData.getLogLevel();
 
-    tm *t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
+    tm* t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
 
     std::string formatted = std::regex_replace(format, std::regex("%message%"), message);
     formatted = std::regex_replace(formatted, std::regex("%level%"), formatLogLevel(level));
@@ -114,11 +114,13 @@ std::string Logger::format(LogMetaData metaData, std::string message, std::strin
     formatted = std::regex_replace(formatted, std::regex("%dt:yday%"), std::to_string(t->tm_yday));
     formatted = std::regex_replace(formatted, std::regex("%dt:wday%"), std::to_string(t->tm_wday));
     formatted = std::regex_replace(formatted, std::regex("%dt:year%"), std::to_string(t->tm_year));
-    formatted = std::regex_replace(formatted, std::regex("%dt:mon%"), std::to_string(t->tm_mon + 1));
+    formatted =
+    std::regex_replace(formatted, std::regex("%dt:mon%"), std::to_string(t->tm_mon + 1));
     formatted = std::regex_replace(formatted, std::regex("%dt:mday%"), std::to_string(t->tm_mday));
     formatted = std::regex_replace(formatted, std::regex("%dt:hour%"), std::to_string(t->tm_hour));
     formatted = std::regex_replace(formatted, std::regex("%dt:min%"), std::to_string(t->tm_min));
-    formatted = std::regex_replace(formatted, std::regex("%dt:sec%"), std::to_string(std::min(t->tm_sec, 59)));
+    formatted =
+    std::regex_replace(formatted, std::regex("%dt:sec%"), std::to_string(std::min(t->tm_sec, 59)));
 
     return formatted;
 }

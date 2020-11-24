@@ -15,8 +15,8 @@
 
 #include <ctime>
 #include <map>
-#include <string>
 #include <regex>
+#include <string>
 #include <vector>
 
 /**
@@ -107,46 +107,112 @@ class Logger {
     static void setLoggingFormat(std::string format);
 
     /**
-     * @brief Log a TRACE entry into the logger
+     * @brief Log a TRACE entry from the given string into the logger
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t trace(std::string message);
+    static size_t trace_s(std::string message);
 
     /**
-     * @brief Log a DEBUG entry into the logger
-     * @param message Message to log
-     * @return The id of the current entry
+     * @brief Concatenate and log the given elements as an TRACE entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
      */
-    static size_t debug(std::string message);
+    template<typename... TArgs>
+    static size_t trace(TArgs const&... args) {
+        return Logger::trace_s(concat(args...));
+    }
 
     /**
-     * @brief Log an INFO entry into the logger
+     * @brief Log a DEBUG entry from the given string into the logger
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t info(std::string message);
+    static size_t debug_s(std::string message);
 
     /**
-     * @brief Log a WARN entry into the logger
-     * @param message Message to log
-     * @return The id of the current entry
+     * @brief Concatenate and log the given elements as an DEBUG entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
      */
-    static size_t warn(std::string message);
+    template<typename... TArgs>
+    static size_t debug(TArgs const&... args) {
+        return Logger::debug_s(concat(args...));
+    }
 
     /**
-     * @brief Log an ERROR entry into the logger
+     * @brief Log an INFO entry from the given string into the logger
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t error(std::string message);
+    static size_t info_s(std::string message);
 
     /**
-     * @brief Log a FATAL entry into the logger
+     * @brief Concatenate and log the given elements as an INFO entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
+     */
+    template<typename... TArgs>
+    static size_t info(TArgs const&... args) {
+        return Logger::info_s(concat(args...));
+    }
+
+    /**
+     * @brief Log a WARN entry from the given string into the logger
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t fatal(std::string message);
+    static size_t warn_s(std::string message);
+
+    /**
+     * @brief Concatenate and log the given elements as an WARN entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
+     */
+    template<typename... TArgs>
+    static size_t warn(TArgs const&... args) {
+        return Logger::warn_s(concat(args...));
+    }
+
+    /**
+     * @brief Log an ERROR entry from the given string into the logger
+     * @param message Message to log
+     * @return The id of the current entry
+     */
+    static size_t error_s(std::string message);
+
+    /**
+     * @brief Concatenate and log the given elements as an ERROR entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
+     */
+    template<typename... TArgs>
+    static size_t error(TArgs const&... args) {
+        return Logger::error_s(concat(args...));
+    }
+
+    /**
+     * @brief Log a FATAL entry from the given string into the logger
+     * @param message Message to log
+     * @return The id of the current entry
+     */
+    static size_t fatal_s(std::string message);
+
+    /**
+     * @brief Concatenate and log the given elements as an FATAL entry
+     * @tparam TArgs Types of the given elements
+     * @param args Elements to log (string, int, float, ...), will be concatenate
+     * @return The id of the create entry
+     */
+    template<typename... TArgs>
+    static size_t fatal(TArgs const&... args) {
+        return Logger::fatal_s(concat(args...));
+    }
 
   private:
     /**

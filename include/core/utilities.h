@@ -90,6 +90,12 @@ inline std::string const& to_string(std::string const& s) { return s; }
 //  TEMPLATES
 //  --------------------------------------------------------------------------------------
 
+/**
+ * @brief Cast and concatenate parameter pack elements as string
+ * @tparam TArgs Types of the given elements
+ * @param args Elements to stringify and concatenate
+ * @return A single string with all the given elements
+ */
 template<typename... TArgs> std::string concat(TArgs const&... args) {
     std::string str;
 
