@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "result.h"
+#include "core/result.h"
 
 //  --------------------------------------------------------------------------------------
 //  RESULT
@@ -81,7 +81,6 @@ void Result::readComponents(gzFile file, char* buffer, char (*fields)[40]) {
 }
 
 void Result::readResults(gzFile file, char* buffer) {
-    int gzReadSize;
     unsigned int node = 0;
     unsigned int shiftNodes = 0;
     unsigned int shiftResults = 0;
@@ -97,7 +96,7 @@ void Result::readResults(gzFile file, char* buffer) {
 
     // Read nodes
     while (node != -1) {
-        gzReadSize = gzread(file, &results[shiftResults], readingSize);
+        int gzReadSize = gzread(file, &results[shiftResults], readingSize);
         nodes[shiftNodes++] = static_cast<int>(node);
         shiftResults += this->componentCount;
 

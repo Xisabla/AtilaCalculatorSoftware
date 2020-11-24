@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "main_window.h"
+#include "core/main_window.h"
 
 #if VTK_VERSION_NUMBER >= 89000000000ULL
 #define VTK890 1
@@ -58,9 +58,13 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
     // Disable view action by default
+    this->menuResults->setDisabled(true);
     this->actionZoomOnArea->setDisabled(true);
     this->actionResetCamera->setDisabled(true);
     this->actionInteractWithObject->setDisabled(true);
+
+    // Disable undone actions
+    this->actionExportToText->setDisabled(true);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -194,7 +198,7 @@ void MainWindow::setVTK(Result& result, const int& component) {
 #endif
 }
 
-void MainWindow::loadBinaryData(std::string filename) {
+void MainWindow::loadBinaryData(const std::string& filename) {
     // Unload data if there is already some loaded
     if (this->binary != nullptr) this->unloadBinaryData();
 
@@ -258,6 +262,9 @@ void MainWindow::setBinaryResults() {
             });
         }
     }
+
+    // Enable results menu
+    this->menuResults->setEnabled(true);
 }
 
 void MainWindow::clearBinaryResults() { this->menuResults->clear(); }

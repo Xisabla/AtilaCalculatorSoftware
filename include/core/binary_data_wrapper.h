@@ -41,7 +41,7 @@ class BinaryDataWrapper : public BinaryData {
     /**
      * @param file Path to the res gzFile
      */
-    BinaryDataWrapper(const std::string& file);
+    explicit BinaryDataWrapper(const std::string& file);
 
     /**
      * @brief Empty but needed for unstructuredGrid destruction

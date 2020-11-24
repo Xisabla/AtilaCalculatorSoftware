@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "binary_data_wrapper.h"
+#include "core/binary_data_wrapper.h"
 
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER

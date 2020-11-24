@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "utilities.h"
+#include "core/utilities.h"
 
 unsigned int getFields(gzFile file, char* buffer, dataFields fields) {
     unsigned int size = 0;

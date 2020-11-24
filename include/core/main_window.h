@@ -45,7 +45,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * @param dataDirectory The path to the objects directory
      */
-    MainWindow(char* dataDirectory);
+    explicit MainWindow(char* dataDirectory);
+
   public slots:
     /**
      * Stop the application
@@ -97,7 +98,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * "Results" menu @see setBinaryResults
      * @param filename Path to the resource gzFile to read data from
      */
-    void loadBinaryData(std::string filename);
+    void loadBinaryData(const std::string& filename);
 
     /**
      * @brief Clear and destruct loaded binary data

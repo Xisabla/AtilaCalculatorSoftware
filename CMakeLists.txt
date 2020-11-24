@@ -47,22 +47,22 @@ set(UI_FILES
 
 # Include files
 set(HEADERS
-        include/binary_data.h
-        include/binary_data_wrapper.h
-        include/main_window.h
-        include/mesh.h
-        include/result.h
-        include/utilities.h)
+        include/core/binary_data.h
+        include/core/binary_data_wrapper.h
+        include/core/main_window.h
+        include/core/mesh.h
+        include/core/result.h
+        include/core/utilities.h)
 
 # Source files
 set(SOURCES
-        src/app.cpp
-        src/binary_data.cpp
-        src/binary_data_wrapper.cpp
-        src/main_window.cpp
-        src/mesh.cpp
-        src/result.cpp
-        src/utilities.cpp)
+        src/core/app.cpp
+        src/core/binary_data.cpp
+        src/core/binary_data_wrapper.cpp
+        src/core/main_window.cpp
+        src/core/mesh.cpp
+        src/core/result.cpp
+        src/core/utilities.cpp)
 
 # -----------------------------------------------------------------------------
 # Dependencies

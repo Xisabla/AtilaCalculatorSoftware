@@ -64,9 +64,9 @@
  * @brief Macro to read a compressed file using gzread (zlib) that returns -1 if the read size is
  * not the expected size
  */
-#define GZ_READ_CHECK(FILE, BUFFER, LEN)                   \
-    if (static_cast<int>((LEN) * sizeof(*(BUFFER))) !=     \
-        gzread((FILE), (BUFFER), LEN * sizeof(*(BUFFER)))) \
+#define GZ_READ_CHECK(FILE, BUFFER, LEN)                     \
+    if (static_cast<int>((LEN) * sizeof(*(BUFFER))) !=       \
+        gzread((FILE), (BUFFER), (LEN) * sizeof(*(BUFFER)))) \
         return (-1);
 
 //  --------------------------------------------------------------------------------------

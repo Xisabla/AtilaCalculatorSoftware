@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "main_window.h"
+#include "core/main_window.h"
 
 #include <QApplication>
 #include <QSurfaceFormat>
