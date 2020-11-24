@@ -7,7 +7,7 @@
   All rights reserved.
 
 =========================================================================*/
-#include "main_window.h"
+#include "core/main_window.h"
 
 #if VTK_VERSION_NUMBER >= 89000000000ULL
 #define VTK890 1
