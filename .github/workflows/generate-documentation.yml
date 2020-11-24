@@ -16,6 +16,21 @@ jobs:
           fetch-depth: 0
       - name: Install doxygen
         run: sudo apt install doxygen
+      - name: Update documents version
+        run: |
+          sed -i "s/# AtilaCalculatorSoftware v[ 0-9\.]*/# AtilaCalculatorSoftware v$(cat "include/version.h" |grep "#define" |grep "VERSION_MAJOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_MINOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_PATCH" |cut -d ' ' -f3)/" README.md
+          sed -i "s/PROJECT_NUMBER[ ]*=[ 0-9\.]*/PROJECT_NUMBER         = $(cat "include/version.h" |grep "#define" |grep "VERSION_MAJOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_MINOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_PATCH" |cut -d ' ' -f3)/" Doxyfile
+      - name: Commit version update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add . -f
+          git commit -m "update version"
+      - name: Push version update on master
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
       - name: Run doxygen
         run: doxygen ./Doxyfile
       - name: Remove uncessessary files
@@ -37,7 +52,7 @@ jobs:
           git add . -f
           git add doc/ -f
           git commit -m "generate documentation"
-      - name: Push documentation
+      - name: Push doc on documentation
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
