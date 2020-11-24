@@ -7,7 +7,7 @@
 #----------------------------------------------------------------------------------------#
 
 CLANG_FORMAT_OPTIONS=--verbose -i --style=file
-CLANG_FORMAT_FILES=src/*.{cpp,h}
+CLANG_FORMAT_FILES=src/**/*.cpp include/**/*.h include/**.h
 CMAKE_FLAGS=-Wno-dev
 CPP_CHECK_FLAGS=--enable=all --quiet --suppress=unusedFunction
 
