@@ -45,7 +45,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * @param dataDirectory The path to the objects directory
      */
-    MainWindow(char* dataDirectory);
+    explicit MainWindow(char* dataDirectory);
+
   public slots:
     /**
      * Stop the application

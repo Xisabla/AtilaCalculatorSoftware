@@ -32,7 +32,7 @@ class BinaryData {
     /**
      * @param file Path to the res gzFile
      */
-    BinaryData(const std::string& file);
+    explicit BinaryData(const std::string& file);
 
     /**
      * @return The currently open res gzFile
