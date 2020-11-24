@@ -9,6 +9,7 @@
 CLANG_FORMAT_OPTIONS=--verbose -i --style=file
 CLANG_FORMAT_FILES=src/*.{cpp,h}
 CMAKE_FLAGS=-Wno-dev
+CPP_CHECK_FLAGS=--enable=all --quiet --suppress=unusedFunction
 
 #----------------------------------------------------------------------------------------#
 #                                                                                        #
@@ -56,6 +57,13 @@ doc: ## Generate documentation using Doxygen
 .PHONY: format
 format: ## Format sources using clang-format
 	clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
+
+.PHONY: check
+check: ## Run ccp-check code analysis
+	@mkdir -p build
+	@cd build; \
+		cmake $(CMAKE_FLAGS) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../ | tail -n +90; \
+		cppcheck --project=compile_commands.json $(CPP_CHECK_FLAGS)
 
 ./build/AtilaCalculatorSoftware: check-dependencies
 	@mkdir -p build
