@@ -58,9 +58,13 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
     // Disable view action by default
+    this->menuResults->setDisabled(true);
     this->actionZoomOnArea->setDisabled(true);
     this->actionResetCamera->setDisabled(true);
     this->actionInteractWithObject->setDisabled(true);
+
+    // Disable undone actions
+    this->actionExportToText->setDisabled(true);
 }
 
 //  --------------------------------------------------------------------------------------
@@ -258,6 +262,9 @@ void MainWindow::setBinaryResults() {
             });
         }
     }
+
+    // Enable results menu
+    this->menuResults->setEnabled(true);
 }
 
 void MainWindow::clearBinaryResults() { this->menuResults->clear(); }
