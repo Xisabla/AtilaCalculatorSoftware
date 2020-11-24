@@ -97,7 +97,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * "Results" menu @see setBinaryResults
      * @param filename Path to the resource gzFile to read data from
      */
-    void loadBinaryData(std::string filename);
+    void loadBinaryData(const std::string& filename);
 
     /**
      * @brief Clear and destruct loaded binary data

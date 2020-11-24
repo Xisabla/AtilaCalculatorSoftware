@@ -66,7 +66,7 @@
  */
 #define GZ_READ_CHECK(FILE, BUFFER, LEN)                   \
     if (static_cast<int>((LEN) * sizeof(*(BUFFER))) !=     \
-        gzread((FILE), (BUFFER), LEN * sizeof(*(BUFFER)))) \
+        gzread((FILE), (BUFFER), (LEN) * sizeof(*(BUFFER)))) \
         return (-1);
 
 //  --------------------------------------------------------------------------------------

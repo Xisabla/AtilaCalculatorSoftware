@@ -198,7 +198,7 @@ void MainWindow::setVTK(Result& result, const int& component) {
 #endif
 }
 
-void MainWindow::loadBinaryData(std::string filename) {
+void MainWindow::loadBinaryData(const std::string& filename) {
     // Unload data if there is already some loaded
     if (this->binary != nullptr) this->unloadBinaryData();
 
