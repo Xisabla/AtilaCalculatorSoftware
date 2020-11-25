@@ -16,10 +16,15 @@
 #include "log_entries.h"
 
 #include <ctime>
+#include <fstream>
 #include <map>
 #include <regex>
 #include <string>
+#include <set>
 #include <vector>
+
+// TODO: Logger
+//  - Remove static for all private attributes
 
 /**
  * @brief Imported class
@@ -132,6 +137,42 @@ class Logger {
      * @see defaultLogFormat
      */
     static std::string getDefaultLoggingFormat();
+
+    /**
+     * @brief Enable or disable Logger verbosity
+     */
+    static void setVerbosity(bool verbosity);
+
+    /**
+     * @brief Set the verbosity level, will show all logs above the given level (including itself)
+     * @param level Lower level of verbosity
+     */
+    static void setVerboseLevel(LogLevel level);
+
+    /**
+     * @brief Set the verbosity level range, won't show any log out of this range
+     * @param lowest Lowest verbosity level of the range
+     * @param highest Highest verbosity level of the range
+     */
+    static void setVerboseLevelRange(LogLevel lowest, LogLevel highest);
+
+    /**
+     * @brief Set the verbose levels manually, will only show elements that have the LogLevel in the set
+     * @param levels Set of allowed logging levels in verbose
+     */
+    static void setVerboseLevels(std::set<LogLevel> levels);
+
+    /**
+     * @brief Writes incoming logs to the given file
+     * @param filename Path to the log file
+     * @param legacy If set on true, will write all previous logs
+     */
+    static void logToFile(std::string filename, bool legacy = true);
+
+    /**
+     * @brief If set on true will enable file logging
+     */
+    static void setFileLogging(bool value);
 
     /**
      * @brief Set the logging formatting string of the logger
@@ -261,6 +302,27 @@ class Logger {
      * of a classic use (as LogEntries is "incomplete")
      */
     LogEntries* entries;
+
+    /**
+     * @brief If set on true, will show log messages in console
+     */
+    bool verbose;
+
+    /**
+     * @brief Allowed logging levels on verbose (in console)
+     */
+    std::set<LogLevel> verbosityLevels;
+
+    /**
+     * @brief If set on true, will write log messages into file
+     */
+    bool fileLogging;
+
+    /**
+     * @brief Output file stream for file writing log messages
+     */
+    std::ofstream loggingFile;
+
 
     /**
      * @brief Time mode of the log entries (Local or UTC - absolute)

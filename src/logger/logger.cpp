@@ -29,23 +29,28 @@ time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 //  LOGGER
 //  --------------------------------------------------------------------------------------
 
-Logger::Logger(): entries(new LogEntries()) {};
+Logger::Logger(): entries(new LogEntries()), verbose(false), verbosityLevels({ Info, Warn, Error, Fatal }), fileLogging(false), loggingFile() {};
 
 Logger::Logger(const Logger& logger) {
     // Move entries pointer
     this->entries = std::move(logger.entries);
+    this->verbose = logger.verbose;
+    this->verbosityLevels = logger.verbosityLevels;
+    this->loggingFile.copyfmt(logger.loggingFile);
+    this->fileLogging = logger.fileLogging;
 
     // Overwrite static parameters
     Logger::timeMode = logger.timeMode;
     Logger::logFormat = logger.logFormat;
-
-    // Update instance
-    Logger::instance = this;
 }
 
 Logger::~Logger() {
     // On destruction, clear entries
     delete this->entries;
+
+    // Close opened logging file
+    if(this->loggingFile.is_open())
+        this->loggingFile.close();
 
     // Reset instance pointer
     this->instance = nullptr;
@@ -67,13 +72,14 @@ Logger* Logger::instance = nullptr;
 Logger Logger::operator=(const Logger& logger) {
     // Move entries pointer
     this->entries = std::move(logger.entries);
+    this->verbose = logger.verbose;
+    this->verbosityLevels = logger.verbosityLevels;
+    this->loggingFile.copyfmt(logger.loggingFile);
+    this->fileLogging = logger.fileLogging;
 
     // Overwrite static parameters
     Logger::timeMode = logger.timeMode;
     Logger::logFormat = logger.logFormat;
-
-    // Update instance
-    Logger::instance = this;
 
     return *this;
 }
@@ -100,6 +106,42 @@ std::string Logger::getDefaultLoggingFormat() { return Logger::defaultLogFormat;
 //  LOGGER > SETTERS
 //  --------------------------------------------------------------------------------------
 
+void Logger::setVerbosity(bool verbosity) { Logger::getInstance()->verbose = verbosity; }
+
+void Logger::setVerboseLevel(LogLevel level) {
+    Logger::getInstance()->verbosityLevels = { level };
+}
+
+void Logger::setVerboseLevelRange(LogLevel lowest, LogLevel highest) {
+    Logger::getInstance()->verbosityLevels.clear();
+
+    if(Trace >= lowest && Trace <= highest) Logger::getInstance()->verbosityLevels.insert(Trace);
+    if(Debug >= lowest && Debug <= highest) Logger::getInstance()->verbosityLevels.insert(Debug);
+    if(Info >= lowest && Info <= highest) Logger::getInstance()->verbosityLevels.insert(Info);
+    if(Warn >= lowest && Warn <= highest) Logger::getInstance()->verbosityLevels.insert(Warn);
+    if(Error >= lowest && Error <= highest) Logger::getInstance()->verbosityLevels.insert(Error);
+    if(Fatal >= lowest && Fatal <= highest) Logger::getInstance()->verbosityLevels.insert(Fatal);
+}
+
+void Logger::setVerboseLevels(std::set<LogLevel> levels) { Logger::getInstance()->verbosityLevels = levels; }
+
+void Logger::logToFile(std::string filename, bool legacy) {
+    try {
+        Logger::getInstance()->loggingFile.open(filename);
+        Logger::getInstance()->fileLogging = true;
+
+        if(legacy) {
+            for(auto &entry : *Logger::getInstance()->entries) {
+                Logger::getInstance()->loggingFile << Logger::getInstance()->format(entry.first, entry.second) << std::endl;
+            }
+        }
+    } catch (std::exception& e) {
+        Logger::error("Unable to write logs to file \"", filename, "\"");
+    }
+}
+
+void Logger::setFileLogging(bool value) { Logger::getInstance()->fileLogging = value; }
+
 void Logger::setLoggingFormat(std::string format) { Logger::logFormat = std::move(format); }
 
 //  --------------------------------------------------------------------------------------
@@ -111,8 +153,11 @@ size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp)
 
     this->entries->emplace_back(metaData, message);
 
-    // TODO: Remove this or use a flag to turn on/off logging in console (depending on the loglevel)
-    std::cout << this->format(metaData, message) << std::endl;
+    if(this->verbose && this->verbosityLevels.contains(level))
+        std::cout << this->format(metaData, message) << std::endl;
+
+    if(this->fileLogging && this->loggingFile.is_open())
+        this->loggingFile << this->format(metaData, message) << std::endl;
 
     return this->entries->size() - 1;
 }
