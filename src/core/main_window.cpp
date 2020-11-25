@@ -8,6 +8,7 @@
 
 =========================================================================*/
 #include "core/main_window.h"
+
 #include "logger/logger.h"
 
 #if VTK_VERSION_NUMBER >= 89000000000ULL
@@ -21,7 +22,8 @@
 MainWindow::MainWindow(char* dataDirectory) {
     Logger::info("Initializing MainWindow...");
     this->objectDirectory = QString::fromUtf8(dataDirectory);
-    Logger::debug("Using default data directory: ", dataDirectory == nullptr ? "./" : dataDirectory);
+    Logger::debug("Using default data directory: ",
+                  dataDirectory == nullptr ? "./" : dataDirectory);
 
     this->setupUi(this);
     this->model = new QStringListModel(this);
@@ -101,7 +103,6 @@ void MainWindow::slotOpenFile() {
     } else {
         Logger::warn("Invalid or empty filename: ", filename.toStdString());
     }
-
 }
 
 void MainWindow::slotResetCamera() {
@@ -288,11 +289,15 @@ void MainWindow::setBinaryResults() {
 
 
             if (!result.getComponents().empty()) {
-                Logger::trace("Adding result sub-menu entry item ", result.getComponents().at(i) , " (", result.getStep(), ")");
+                Logger::trace("Adding result sub-menu entry item ",
+                              result.getComponents().at(i),
+                              " (",
+                              result.getStep(),
+                              ")");
                 resultItemAction =
                 menu->addAction(QString::fromStdString(result.getComponents().at(i)));
             } else {
-                Logger::trace("Adding result sub-menu entry item ", i , " (", result.getStep(), ")");
+                Logger::trace("Adding result sub-menu entry item ", i, " (", result.getStep(), ")");
                 resultItemAction = menu->addAction(QString::number(i));
             }
 

@@ -15,7 +15,10 @@
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
 
-void sampleLogListener(size_t index, const std::pair<LogMetaData, std::string> &entry, const std::string &formatted, const LogEntries& entries) {
+void sampleLogListener(size_t index,
+                       const std::pair<LogMetaData, std::string>& entry,
+                       const std::string& formatted,
+                       const LogEntries& entries) {
     // std::cout << "Listener: " << index << std::endl;
 }
 
