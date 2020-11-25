@@ -101,7 +101,7 @@ std::string Logger::getDefaultLoggingFormat() { return Logger::defaultLogFormat;
 
 void Logger::setVerbosity(bool verbosity) { Logger::getInstance()->verbose = verbosity; }
 
-void Logger::setVerboseLevel(LogLevel level) { Logger::getInstance()->verbosityLevels = { level }; }
+void Logger::setVerboseLevel(LogLevel level) { Logger::setVerboseLevelRange(level, Fatal); }
 
 void Logger::setVerboseLevelRange(LogLevel lowest, LogLevel highest) {
     Logger::getInstance()->verbosityLevels.clear();
