@@ -31,7 +31,25 @@ time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 
 Logger::Logger(): entries(new LogEntries()) {};
 
-Logger::~Logger() { delete this->entries; }
+Logger::Logger(const Logger& logger) {
+    // Move entries pointer
+    this->entries = std::move(logger.entries);
+
+    // Overwrite static parameters
+    Logger::timeMode = logger.timeMode;
+    Logger::logFormat = logger.logFormat;
+
+    // Update instance
+    Logger::instance = this;
+}
+
+Logger::~Logger() {
+    // On destruction, clear entries
+    delete this->entries;
+
+    // Reset instance pointer
+    this->instance = nullptr;
+}
 
 LogTimeMode Logger::timeMode = TimeLocal;
 
@@ -41,6 +59,24 @@ std::string Logger::defaultLogFormat =
 "[%dt:year%-%dt:mon%-%dt:mday%|%dt:hour%:%dt:min%:%dt:sec%][%level%] %message%";
 
 Logger* Logger::instance = nullptr;
+
+//  --------------------------------------------------------------------------------------
+//  LOGGER > OPERATORS
+//  --------------------------------------------------------------------------------------
+
+Logger Logger::operator=(const Logger& logger) {
+    // Move entries pointer
+    this->entries = std::move(logger.entries);
+
+    // Overwrite static parameters
+    Logger::timeMode = logger.timeMode;
+    Logger::logFormat = logger.logFormat;
+
+    // Update instance
+    Logger::instance = this;
+
+    return *this;
+}
 
 //  --------------------------------------------------------------------------------------
 //  LOGGER > GETTERS

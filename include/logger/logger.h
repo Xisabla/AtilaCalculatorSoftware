@@ -69,6 +69,26 @@ class LogMetaData {
 class Logger {
   public:
     /**
+     * @brief Copy constructor of Logger
+     * @param logger Logger to copy
+     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a referenced pointer
+     */
+    Logger(const Logger &logger);
+
+
+    /**
+     * @brief Logger destructor
+     */
+    ~Logger();
+
+    /**
+     * @brief Copy operator of Logger
+     * @param logger Logger to copy
+     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a referenced pointer
+     */
+    Logger operator=(const Logger &logger);
+
+    /**
      * @brief Add a log entry in the current logger, automatically create log meta data
      * @param message Message to log
      * @param level Logging level (default = Debug)
@@ -227,11 +247,6 @@ class Logger {
      * @brief Logger Singleton private constructor
      */
     Logger();
-
-    /**
-     * @brief Logger destructor
-     */
-    ~Logger();
 
     /**
      * @brief Get the string format of a given logging level
