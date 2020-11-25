@@ -19,16 +19,6 @@
 #include <vector>
 
 /**
- * @brief Imported class
- */
-class Logger;
-
-/**
- * @brief Imported class
- */
-class LogMetaData;
-
-/**
  * @class LogEntries
  * @brief Contains the entries of the logger
  */

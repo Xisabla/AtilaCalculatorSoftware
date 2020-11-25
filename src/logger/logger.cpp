@@ -144,16 +144,24 @@ void Logger::setLoggingFormat(std::string format) { Logger::logFormat = std::mov
 
 size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp) {
     LogMetaData metaData(level, timestamp);
+    std::pair<LogMetaData, std::string> entry = std::make_pair(metaData, message);
+    std::string formatted = Logger::format(metaData, message);
 
-    this->entries->emplace_back(metaData, message);
+    this->entries->push_back(entry);
+
+    size_t index = this->entries->size() - 1;
 
     if (this->verbose && this->verbosityLevels.contains(level))
-        std::cout << Logger::format(metaData, message) << std::endl;
+        std::cout << formatted << std::endl;
 
     if (this->fileLogging && this->loggingFile.is_open())
-        this->loggingFile << Logger::format(metaData, message) << std::endl;
+        this->loggingFile << formatted << std::endl;
 
-    return this->entries->size() - 1;
+    for(auto &listener : this->listeners) {
+        listener(index, entry, formatted, *(this->entries));
+    }
+
+    return index;
 }
 
 std::string
@@ -204,6 +212,12 @@ size_t Logger::error_s(const std::string& message) {
 
 size_t Logger::fatal_s(const std::string& message) {
     return Logger::getInstance()->log(message, Fatal);
+}
+
+size_t Logger::addEntryListener(entry_listener listener) {
+    Logger::getInstance()->listeners.push_back(listener);
+
+    return Logger::getInstance()->listeners.size();
 }
 
 //  --------------------------------------------------------------------------------------

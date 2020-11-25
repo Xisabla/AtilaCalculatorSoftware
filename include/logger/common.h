@@ -11,6 +11,21 @@
 #ifndef ATILACALCULATORSOFTWARE_COMMON_H
 #define ATILACALCULATORSOFTWARE_COMMON_H
 
+#include <string>
+#include <utility>
+
+//  --------------------------------------------------------------------------------------
+//  DEFINED LATER
+//  --------------------------------------------------------------------------------------
+
+class LogEntries;
+class LogMetaData;
+class Logger;
+
+//  --------------------------------------------------------------------------------------
+//  ENUMS
+//  --------------------------------------------------------------------------------------
+
 /**
  * @brief Logging time mode, TimeUTC means use abo
  */
@@ -21,5 +36,11 @@ enum LogTimeMode { TimeLocal, TimeUTC };
  * lower level entries
  */
 enum LogLevel { Trace = -1, Debug = 0, Info = 1, Warn = 2, Error = 3, Fatal = 4 };
+
+//  --------------------------------------------------------------------------------------
+//  STRUCTURES AND TYPES
+//  --------------------------------------------------------------------------------------
+
+typedef void (*entry_listener) (size_t index, const std::pair<LogMetaData, std::string> &entry, const std::string &formatted, const LogEntries& entries);
 
 #endif // ATILACALCULATORSOFTWARE_COMMON_H

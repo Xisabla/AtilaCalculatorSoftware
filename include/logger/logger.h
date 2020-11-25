@@ -24,11 +24,6 @@
 #include <vector>
 
 /**
- * @brief Imported class
- */
-class LogEntries;
-
-/**
  * @class LogMetaData
  * @brief Store information about the log entry (LogLevel, Timestamp, ...)
  */
@@ -283,6 +278,13 @@ class Logger {
         return Logger::fatal_s(concat(args...));
     }
 
+    /**
+     * @brief Add an entry listener in the entry listeners vector
+     * @param listener Listener that will trigger on any new entry
+     * @return The id of the listener
+     */
+    static size_t addEntryListener(entry_listener listener);
+
   private:
     /**
      * @brief Logger Singleton private constructor
@@ -315,6 +317,11 @@ class Logger {
      * @brief Output file stream for file writing log messages
      */
     std::ofstream loggingFile;
+
+    /**
+     * @brief Liste of listeners that will trigger on new entry
+     */
+    std::vector<entry_listener> listeners;
 
     /**
      * @brief Get the string format of a given logging level
