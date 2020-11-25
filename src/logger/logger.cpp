@@ -151,41 +151,67 @@ size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp)
 
     size_t index = this->entries->size() - 1;
 
-    if (this->verbose && this->verbosityLevels.contains(level))
-        std::cout << formatted << std::endl;
+    if (this->verbose && this->verbosityLevels.contains(level)) std::cout << formatted << std::endl;
 
     if (this->fileLogging && this->loggingFile.is_open())
         this->loggingFile << formatted << std::endl;
 
-    for(auto &listener : this->listeners) {
+    for (auto& listener: this->listeners) {
         listener(index, entry, formatted, *(this->entries));
     }
 
     return index;
 }
 
+std::string Logger::getEncodedLogLevel(LogLevel level) {
+    // TODO: Make this method a formatting method for the message, used by the global "format"
+    // method
+    if (level == Trace) return "TRACE";
+    if (level == Debug) return "DEBUG";
+    if (level == Info) return "INFO";
+    if (level == Warn) return "WARN";
+    if (level == Error) return "ERROR";
+    if (level == Fatal) return "FATAL";
+
+    return "DEBUG";
+}
+
+std::string Logger::formatInt(const int& value, int size) {
+    std::stringstream ss;
+
+    ss << std::setw(size) << std::setfill('0') << value;
+
+    return ss.str();
+}
+
+std::string Logger::formatEncodedLogLevel(std::string str, LogLevel level) {
+    return std::regex_replace(str, std::regex("%level%"), getEncodedLogLevel(level));
+}
+
+std::string Logger::formatTime(std::string str, time_t timestamp, tm* t) {
+    str = std::regex_replace(str, std::regex("%dt%"), std::to_string(timestamp));
+    str = std::regex_replace(str, std::regex("%dt:yday%"), formatInt(t->tm_yday, 3));
+    str = std::regex_replace(str, std::regex("%dt:wday%"), formatInt(t->tm_wday, 3));
+    str = std::regex_replace(str, std::regex("%dt:year%"), formatInt(t->tm_year + 1900, 4));
+    str = std::regex_replace(str, std::regex("%dt:mon%"), formatInt((t->tm_mon + 1), 2));
+    str = std::regex_replace(str, std::regex("%dt:mday%"), formatInt(t->tm_mday, 2));
+    str = std::regex_replace(str, std::regex("%dt:hour%"), formatInt(t->tm_hour, 2));
+    str = std::regex_replace(str, std::regex("%dt:min%"), formatInt(t->tm_min, 2));
+    str = std::regex_replace(str, std::regex("%dt:sec%"), formatInt(std::min(t->tm_sec, 59), 2));
+
+    return str;
+}
+
 std::string
 Logger::format(LogMetaData metaData, const std::string& message, const std::string& format) {
     time_t timestamp = metaData.getTimestamp();
     LogLevel level = metaData.getLogLevel();
-
-    // TODO: Split into "formatTime", "formatLogLevel", "formatMessage"
-    // TODO: Add colorizing if a flag is set
     tm* t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
 
+    // TODO: Add colorizing if a flag is set
     std::string formatted = std::regex_replace(format, std::regex("%message%"), message);
-    formatted = std::regex_replace(formatted, std::regex("%level%"), formatLogLevel(level));
-    formatted = std::regex_replace(formatted, std::regex("%dt%"), std::to_string(timestamp));
-    formatted = std::regex_replace(formatted, std::regex("%dt:yday%"), std::to_string(t->tm_yday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:wday%"), std::to_string(t->tm_wday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:year%"), std::to_string(t->tm_year));
-    formatted =
-    std::regex_replace(formatted, std::regex("%dt:mon%"), std::to_string(t->tm_mon + 1));
-    formatted = std::regex_replace(formatted, std::regex("%dt:mday%"), std::to_string(t->tm_mday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:hour%"), std::to_string(t->tm_hour));
-    formatted = std::regex_replace(formatted, std::regex("%dt:min%"), std::to_string(t->tm_min));
-    formatted =
-    std::regex_replace(formatted, std::regex("%dt:sec%"), std::to_string(std::min(t->tm_sec, 59)));
+    formatted = Logger::formatEncodedLogLevel(formatted, level);
+    formatted = Logger::formatTime(formatted, timestamp, t);
 
     return formatted;
 }
@@ -218,22 +244,4 @@ size_t Logger::addEntryListener(entry_listener listener) {
     Logger::getInstance()->listeners.push_back(listener);
 
     return Logger::getInstance()->listeners.size();
-}
-
-//  --------------------------------------------------------------------------------------
-//  LOGGER > PRIVATE METHODS
-//  --------------------------------------------------------------------------------------
-
-std::string Logger::formatLogLevel(LogLevel level) {
-    // TODO: Change this method name like "getEncodedLogLevel" (part of LogMetaData ?)
-    // TODO: Make this method a formatting method for the message, used by the global "format"
-    // method
-    if (level == Trace) return "TRACE";
-    if (level == Debug) return "DEBUG";
-    if (level == Info) return "INFO";
-    if (level == Warn) return "WARN";
-    if (level == Error) return "ERROR";
-    if (level == Fatal) return "FATAL";
-
-    return "DEBUG";
 }

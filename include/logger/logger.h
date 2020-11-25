@@ -17,6 +17,7 @@
 
 #include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <map>
 #include <regex>
 #include <set>
@@ -96,6 +97,37 @@ class Logger {
      */
     size_t
     log(const std::string& message, LogLevel level = Debug, time_t timestamp = time(nullptr));
+
+    /**
+     * @brief Get the string format of a given logging level
+     * @param level The logging level
+     * @return The string formatted logging level
+     */
+    static std::string getEncodedLogLevel(LogLevel level);
+
+    /**
+     * @brief Format integer value to string fitting a given size
+     * @param value Integer value to format
+     * @param size Size of the string
+     * @return The formatted string
+     */
+    static std::string formatInt(const int& value, int size);
+
+    /**
+     * @brief Replace the %level% variable by the given logging level
+     * @param str The base string
+     * @param level The logging level
+     * @return The string with the variable replaced
+     */
+    static std::string formatEncodedLogLevel(std::string str, LogLevel level);
+
+    /**
+     * @briefReplace the %dt:x% variables by the given time values
+     * @param str The base string
+     * @param t The time values
+     * @return The string with the variable replaced
+     */
+    static std::string formatTime(std::string str, time_t timestamp, tm* t);
 
     /**
      * @brief Get the formatted string of a log entry
@@ -322,13 +354,6 @@ class Logger {
      * @brief Liste of listeners that will trigger on new entry
      */
     std::vector<entry_listener> listeners;
-
-    /**
-     * @brief Get the string format of a given logging level
-     * @param level The logging level
-     * @return The string formatted logging level
-     */
-    static std::string formatLogLevel(LogLevel level);
 
     /**
      * @brief Time mode of the log entries (Local or UTC - absolute)
