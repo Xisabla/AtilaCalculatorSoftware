@@ -56,7 +56,7 @@ LogTimeMode Logger::timeMode = TimeLocal;
 std::string Logger::logFormat;
 
 std::string Logger::defaultLogFormat =
-"[%dt:year%-%dt:mon%-%dt:mday%|%dt:hour%:%dt:min%:%dt:sec%][%level%] %message%";
+"[%dt:year%-%dt:mon%-%dt:mday%|%dt:hour%:%dt:min%:%dt:sec%][%level%]%message%";
 
 Logger* Logger::instance = nullptr;
 
