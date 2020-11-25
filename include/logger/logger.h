@@ -119,7 +119,7 @@ class Logger {
      * @param level The logging level
      * @return The string with the variable replaced
      */
-    static std::string formatEncodedLogLevel(std::string str, LogLevel level);
+    static std::string formatEncodedLogLevel(const std::string& str, LogLevel level);
 
     /**
      * @briefReplace the %dt:x% variables by the given time values
@@ -351,7 +351,7 @@ class Logger {
     std::ofstream loggingFile;
 
     /**
-     * @brief Liste of listeners that will trigger on new entry
+     * @brief List of listeners that will trigger on new entry
      */
     std::vector<entry_listener> listeners;
 

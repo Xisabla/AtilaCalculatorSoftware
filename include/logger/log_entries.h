@@ -55,7 +55,7 @@ class LogEntries : private std::vector<std::pair<LogMetaData, std::string>> {
      * @return A new LogEntries object will filtered entries
      * @note This object is not refreshed by any new entry in the main object
      */
-    LogEntries filter(std::set<LogLevel> whitelist);
+    LogEntries filter(const std::set<LogLevel>& whitelist);
 
     /**
      * @brief Filter logs to exclude the given logging levels from the entry
@@ -81,7 +81,7 @@ class LogEntries : private std::vector<std::pair<LogMetaData, std::string>> {
      * @return A new LogEntries object will filtered entries
      * @note This object is not refreshed by any new entry in the main object
      */
-    LogEntries exclude(std::set<LogLevel> blacklist);
+    LogEntries exclude(const std::set<LogLevel>& blacklist);
 
     /**
      * @brief Get log entries as formatted string

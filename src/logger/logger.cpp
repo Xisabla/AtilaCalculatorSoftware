@@ -184,7 +184,7 @@ std::string Logger::formatInt(const int& value, int size) {
     return ss.str();
 }
 
-std::string Logger::formatEncodedLogLevel(std::string str, LogLevel level) {
+std::string Logger::formatEncodedLogLevel(const std::string& str, LogLevel level) {
     return std::regex_replace(str, std::regex("%level%"), getEncodedLogLevel(level));
 }
 

@@ -15,18 +15,8 @@
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
 
-void sampleLogListener(size_t index,
-                       const std::pair<LogMetaData, std::string>& entry,
-                       const std::string& formatted,
-                       const LogEntries& entries) {
-    // std::cout << "Listener: " << index << std::endl;
-}
-
 int main(int argc, char* argv[]) {
     Logger::setVerbosity(true);
-    Logger::setVerboseLevel(Debug);
-    Logger::logToFile("../logs.log");
-    Logger::addEntryListener(sampleLogListener);
 
     Logger::info(
     "AtilaCalculatorSoftware v", ACS_VERSION_MAJOR, ".", ACS_VERSION_MINOR, ".", ACS_VERSION_PATCH);

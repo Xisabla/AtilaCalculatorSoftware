@@ -42,7 +42,7 @@ LogEntries LogEntries::filter(LogLevel lowest, LogLevel highest) {
     return filtered;
 }
 
-LogEntries LogEntries::filter(std::set<LogLevel> whitelist) {
+LogEntries LogEntries::filter(const std::set<LogLevel>& whitelist) {
     LogEntries filtered;
 
     for (auto& entry: *this) {
@@ -73,7 +73,7 @@ LogEntries LogEntries::exclude(LogLevel lowest, LogLevel highest) {
     return filtered;
 }
 
-LogEntries LogEntries::exclude(std::set<LogLevel> blacklist) {
+LogEntries LogEntries::exclude(const std::set<LogLevel>& blacklist) {
     LogEntries filtered;
 
     for (auto& entry: *this) {
