@@ -24,7 +24,7 @@ void sampleLogListener(size_t index,
 
 int main(int argc, char* argv[]) {
     Logger::setVerbosity(true);
-    Logger::setVerboseLevel(Info);
+    Logger::setVerboseLevel(Debug);
     Logger::logToFile("../logs.log");
     Logger::addEntryListener(sampleLogListener);
 

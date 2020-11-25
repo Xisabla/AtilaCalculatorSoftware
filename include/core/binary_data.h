@@ -12,6 +12,7 @@
 
 #include "mesh.h"
 #include "result.h"
+#include "logger/logger.h"
 
 #include <QString>
 #include <functional>

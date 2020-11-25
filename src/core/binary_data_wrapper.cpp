@@ -123,7 +123,7 @@ void BinaryDataWrapper::convertFromGiD() {
 
 vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,
                                                               const unsigned int& dimCount) {
-    Logger::debug("Getting VKT Cell for ", meshElement, " with ", dimCount, " dimensions");
+    Logger::trace("Getting VKT Cell for ", meshElement, " with ", dimCount, " dimensions");
     if (dimCount == 2) {
         // 2D Elements
         if (meshElement == "Triangle") return vtkSmartPointer<vtkQuadraticTriangle>::New();
