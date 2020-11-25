@@ -40,5 +40,7 @@ function fix_new_line() {
 
 for file in "$@"
 do
-  fix_new_line "$file"
+  fix_new_line "$file" || exit 1
 done
+
+exit 0
