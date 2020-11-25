@@ -7,7 +7,7 @@
 #----------------------------------------------------------------------------------------#
 
 CLANG_FORMAT_OPTIONS=--verbose -i --style=file
-CLANG_FORMAT_FILES=src/**/*.cpp include/**/*.h include/**.h
+CLANG_FORMAT_FILES=$(wildcard ./include/**/**.h ./include/**.h ./src/**/**.cpp ./src/**.cpp)
 CMAKE_FLAGS=-Wno-dev
 CPP_CHECK_FLAGS=--enable=all --quiet --suppress=unusedFunction --suppress=copyCtorPointerCopying
 
@@ -56,7 +56,8 @@ doc: ## Generate documentation using Doxygen
 
 .PHONY: format
 format: ## Format sources using clang-format
-	clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
+	@./scripts/fix-new-line.sh $(CLANG_FORMAT_FILES)
+	@clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
 
 .PHONY: check
 check: ## Run ccp-check code analysis
