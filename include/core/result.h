@@ -10,7 +10,8 @@
 #ifndef ATILACALCULATORSOFTWARE_RESULT_H
 #define ATILACALCULATORSOFTWARE_RESULT_H
 
-#include "mesh.h"
+#include "core/mesh.h"
+#include "logger/logger.h"
 
 #include <cstring>
 #include <exception>

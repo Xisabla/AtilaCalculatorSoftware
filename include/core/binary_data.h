@@ -10,8 +10,8 @@
 #ifndef ATILACALCULATORSOFTWARE_BINARY_DATA_H
 #define ATILACALCULATORSOFTWARE_BINARY_DATA_H
 
-#include "mesh.h"
-#include "result.h"
+#include "core/mesh.h"
+#include "core/result.h"
 #include "logger/logger.h"
 
 #include <QString>

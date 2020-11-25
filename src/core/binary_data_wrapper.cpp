@@ -44,7 +44,6 @@ void BinaryDataWrapper::loadResult(Result& result, const int& component) {
 
     // Set scalar value for each result values
     for (unsigned int i = 0; i < result.getValuesCount(); i++) {
-        Logger::trace("Setting scalar #", i);
         auto [id, value] = result.getResult(i);
         this->scalars->SetValue(i, value[component]);
     }
@@ -123,7 +122,6 @@ void BinaryDataWrapper::convertFromGiD() {
 
 vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,
                                                               const unsigned int& dimCount) {
-    Logger::trace("Getting VKT Cell for ", meshElement, " with ", dimCount, " dimensions");
     if (dimCount == 2) {
         // 2D Elements
         if (meshElement == "Triangle") return vtkSmartPointer<vtkQuadraticTriangle>::New();

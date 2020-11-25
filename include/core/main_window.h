@@ -10,7 +10,7 @@
 #ifndef ATILACALCULATORSOFTWARE_MAIN_WINDOW_H
 #define ATILACALCULATORSOFTWARE_MAIN_WINDOW_H
 
-#include "binary_data_wrapper.h"
+#include "core/binary_data_wrapper.h"
 #include "ui_MainWindow.h"
 
 #include <QFileDialog>

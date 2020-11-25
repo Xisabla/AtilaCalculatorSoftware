@@ -60,7 +60,13 @@ Mesh::Mesh(gzFile file, dataFields(fields)) {
     this->elementName = fields[5];
     this->nodeCount = static_cast<unsigned int>(std::atoi(fields[7]));
 
-    Logger::trace("Mesh: ", this->name, " ", this->dimCount, " dimensions (", this->nodeCount, " nodes/elements)");
+    Logger::trace("Mesh: ",
+                  this->name,
+                  " ",
+                  this->dimCount,
+                  " dimensions (",
+                  this->nodeCount,
+                  " nodes/elements)");
 
     char buffer[GZ_BUFFER_SIZE];
 
@@ -190,7 +196,8 @@ void Mesh::readCoordinates(gzFile& file, char* buffer) {
 
     // Update maxNodeCount
     Mesh::maxNodeCount = std::max(Mesh::maxNodeCount, this->nodes.size());
-    Logger::trace("Mesh: ", this->name, ": reading coordinates: Done - ", this->nodes.size(), " nodes read");
+    Logger::trace(
+    "Mesh: ", this->name, ": reading coordinates: Done - ", this->nodes.size(), " nodes read");
 }
 
 void Mesh::readElements(gzFile& file, char* buffer) {
