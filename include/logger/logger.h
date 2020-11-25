@@ -252,6 +252,8 @@ class Logger {
 
     /**
      * @brief Nonformatted raw log entries
+     * @note As LogEntries and Logger as self including classes, we have to use a reference instead
+     * of a classic use (as LogEntries is "incomplete")
      */
     LogEntries* entries;
 

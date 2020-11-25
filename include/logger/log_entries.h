@@ -12,9 +12,10 @@
 #define ATILACALCULATORSOFTWARE_LOG_ENTRIES_H
 
 #include "logger.h"
+
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
 
 /**
  * @brief Imported class
@@ -32,12 +33,12 @@ class LogMetaData;
  */
 class LogEntries : private std::vector<std::pair<LogMetaData, std::string>> {
   public:
-    using vector::push_back;
     using vector::emplace_back;
-    using vector::size;
+    using vector::push_back;
     using vector::operator[];
     using vector::begin;
     using vector::end;
+    using vector::size;
 
     /*
     LogEntries* filter(LogLevel lowest);
@@ -51,7 +52,6 @@ class LogEntries : private std::vector<std::pair<LogMetaData, std::string>> {
 
     std::vector<std::string> formatted();
      */
-
 };
 
 #endif // ATILACALCULATORSOFTWARE_LOG_ENTRIES_H

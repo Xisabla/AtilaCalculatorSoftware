@@ -29,7 +29,7 @@ time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 //  LOGGER
 //  --------------------------------------------------------------------------------------
 
-Logger::Logger() : entries(new LogEntries()) {};
+Logger::Logger(): entries(new LogEntries()) {};
 
 Logger::~Logger() { delete this->entries; }
 
@@ -52,9 +52,7 @@ Logger* Logger::getInstance() {
     return Logger::instance;
 }
 
-LogEntries * Logger::getLogs() {
-    return Logger::getInstance()->entries;
-}
+LogEntries* Logger::getLogs() { return Logger::getInstance()->entries; }
 
 std::string Logger::getLoggingFormat() {
     return Logger::logFormat.empty() ? Logger::defaultLogFormat : Logger::logFormat;
@@ -112,6 +110,9 @@ size_t Logger::fatal_s(std::string message) {
 //  --------------------------------------------------------------------------------------
 
 std::string Logger::formatLogLevel(LogLevel level) {
+    // TODO: Change this method name like "getEncodedLogLevel" (part of LogMetaData ?)
+    // TODO: Make this method a formatting method for the message, used by the global "format"
+    // method
     if (level == Trace) return "TRACE";
     if (level == Debug) return "DEBUG";
     if (level == Info) return "INFO";
@@ -127,6 +128,8 @@ Logger::format(LogMetaData metaData, const std::string& message, const std::stri
     time_t timestamp = metaData.getTimestamp();
     LogLevel level = metaData.getLogLevel();
 
+    // TODO: Split into "formatTime", "formatLogLevel", "formatMessage"
+    // TODO: Add colorizing if a flag is set
     tm* t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
 
     std::string formatted = std::regex_replace(format, std::regex("%message%"), message);

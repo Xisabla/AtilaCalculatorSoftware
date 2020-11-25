@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     Logger::error("Error here");
     Logger::fatal("Fatal here");
 
-    for(auto &l : *Logger::getLogs()) std::cout << l.second << std::endl;
+    for (auto& l: *Logger::getLogs()) std::cout << l.second << std::endl;
 
     // TODO: Logger Other option
 
