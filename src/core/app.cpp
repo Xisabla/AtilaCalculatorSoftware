@@ -21,6 +21,7 @@ void sampleLogListener(size_t index, const std::pair<LogMetaData, std::string> &
 
 int main(int argc, char* argv[]) {
     Logger::setVerbosity(true);
+    Logger::setVerboseLevel(Info);
     Logger::logToFile("../logs.log");
     Logger::addEntryListener(sampleLogListener);
 
@@ -38,7 +39,8 @@ int main(int argc, char* argv[]) {
     window.show();
 
     static int status = QApplication::exec();
-    Logger::info("Terminated.");
+
+    Logger::info("QApplication terminated.");
 
     return status;
 }
