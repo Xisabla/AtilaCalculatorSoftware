@@ -9,8 +9,6 @@
 =========================================================================*/
 #include "logger/logger.h"
 
-#include <utility>
-
 //  --------------------------------------------------------------------------------------
 //  LOG META DATA
 //  --------------------------------------------------------------------------------------
@@ -29,19 +27,17 @@ time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 //  LOGGER
 //  --------------------------------------------------------------------------------------
 
-Logger::Logger(): entries(new LogEntries()), verbose(false), verbosityLevels({ Info, Warn, Error, Fatal }), fileLogging(false), loggingFile() {};
+Logger::Logger()
+: entries(new LogEntries()), verbose(false), verbosityLevels({ Info, Warn, Error, Fatal }),
+  fileLogging(false), loggingFile() { }
 
 Logger::Logger(const Logger& logger) {
     // Move entries pointer
-    this->entries = std::move(logger.entries);
+    this->entries = logger.entries;
     this->verbose = logger.verbose;
     this->verbosityLevels = logger.verbosityLevels;
     this->loggingFile.copyfmt(logger.loggingFile);
     this->fileLogging = logger.fileLogging;
-
-    // Overwrite static parameters
-    Logger::timeMode = logger.timeMode;
-    Logger::logFormat = logger.logFormat;
 }
 
 Logger::~Logger() {
@@ -49,11 +45,10 @@ Logger::~Logger() {
     delete this->entries;
 
     // Close opened logging file
-    if(this->loggingFile.is_open())
-        this->loggingFile.close();
+    if (this->loggingFile.is_open()) this->loggingFile.close();
 
     // Reset instance pointer
-    this->instance = nullptr;
+    Logger::instance = nullptr;
 }
 
 LogTimeMode Logger::timeMode = TimeLocal;
@@ -69,17 +64,15 @@ Logger* Logger::instance = nullptr;
 //  LOGGER > OPERATORS
 //  --------------------------------------------------------------------------------------
 
-Logger Logger::operator=(const Logger& logger) {
-    // Move entries pointer
-    this->entries = std::move(logger.entries);
-    this->verbose = logger.verbose;
-    this->verbosityLevels = logger.verbosityLevels;
-    this->loggingFile.copyfmt(logger.loggingFile);
-    this->fileLogging = logger.fileLogging;
-
-    // Overwrite static parameters
-    Logger::timeMode = logger.timeMode;
-    Logger::logFormat = logger.logFormat;
+Logger& Logger::operator=(const Logger& logger) {
+    if (&logger != this) {
+        // Move entries pointer
+        this->entries = logger.entries;
+        this->verbose = logger.verbose;
+        this->verbosityLevels = logger.verbosityLevels;
+        this->loggingFile.copyfmt(logger.loggingFile);
+        this->fileLogging = logger.fileLogging;
+    }
 
     return *this;
 }
@@ -108,31 +101,32 @@ std::string Logger::getDefaultLoggingFormat() { return Logger::defaultLogFormat;
 
 void Logger::setVerbosity(bool verbosity) { Logger::getInstance()->verbose = verbosity; }
 
-void Logger::setVerboseLevel(LogLevel level) {
-    Logger::getInstance()->verbosityLevels = { level };
-}
+void Logger::setVerboseLevel(LogLevel level) { Logger::getInstance()->verbosityLevels = { level }; }
 
 void Logger::setVerboseLevelRange(LogLevel lowest, LogLevel highest) {
     Logger::getInstance()->verbosityLevels.clear();
 
-    if(Trace >= lowest && Trace <= highest) Logger::getInstance()->verbosityLevels.insert(Trace);
-    if(Debug >= lowest && Debug <= highest) Logger::getInstance()->verbosityLevels.insert(Debug);
-    if(Info >= lowest && Info <= highest) Logger::getInstance()->verbosityLevels.insert(Info);
-    if(Warn >= lowest && Warn <= highest) Logger::getInstance()->verbosityLevels.insert(Warn);
-    if(Error >= lowest && Error <= highest) Logger::getInstance()->verbosityLevels.insert(Error);
-    if(Fatal >= lowest && Fatal <= highest) Logger::getInstance()->verbosityLevels.insert(Fatal);
+    if (Trace >= lowest && Trace <= highest) Logger::getInstance()->verbosityLevels.insert(Trace);
+    if (Debug >= lowest && Debug <= highest) Logger::getInstance()->verbosityLevels.insert(Debug);
+    if (Info >= lowest && Info <= highest) Logger::getInstance()->verbosityLevels.insert(Info);
+    if (Warn >= lowest && Warn <= highest) Logger::getInstance()->verbosityLevels.insert(Warn);
+    if (Error >= lowest && Error <= highest) Logger::getInstance()->verbosityLevels.insert(Error);
+    if (Fatal >= lowest && Fatal <= highest) Logger::getInstance()->verbosityLevels.insert(Fatal);
 }
 
-void Logger::setVerboseLevels(std::set<LogLevel> levels) { Logger::getInstance()->verbosityLevels = levels; }
+void Logger::setVerboseLevels(std::set<LogLevel> levels) {
+    Logger::getInstance()->verbosityLevels = std::move(levels);
+}
 
-void Logger::logToFile(std::string filename, bool legacy) {
+void Logger::logToFile(const std::string& filename, bool legacy) {
     try {
         Logger::getInstance()->loggingFile.open(filename);
         Logger::getInstance()->fileLogging = true;
 
-        if(legacy) {
-            for(auto &entry : *Logger::getInstance()->entries) {
-                Logger::getInstance()->loggingFile << Logger::getInstance()->format(entry.first, entry.second) << std::endl;
+        if (legacy) {
+            for (auto& entry: *Logger::getInstance()->entries) {
+                Logger::getInstance()->loggingFile << format(entry.first, entry.second)
+                                                   << std::endl;
             }
         }
     } catch (std::exception& e) {
@@ -153,11 +147,11 @@ size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp)
 
     this->entries->emplace_back(metaData, message);
 
-    if(this->verbose && this->verbosityLevels.contains(level))
-        std::cout << this->format(metaData, message) << std::endl;
+    if (this->verbose && this->verbosityLevels.contains(level))
+        std::cout << Logger::format(metaData, message) << std::endl;
 
-    if(this->fileLogging && this->loggingFile.is_open())
-        this->loggingFile << this->format(metaData, message) << std::endl;
+    if (this->fileLogging && this->loggingFile.is_open())
+        this->loggingFile << Logger::format(metaData, message) << std::endl;
 
     return this->entries->size() - 1;
 }
@@ -188,28 +182,28 @@ Logger::format(LogMetaData metaData, const std::string& message, const std::stri
     return formatted;
 }
 
-size_t Logger::trace_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Trace);
+size_t Logger::trace_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Trace);
 }
 
-size_t Logger::debug_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Debug);
+size_t Logger::debug_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Debug);
 }
 
-size_t Logger::info_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Info);
+size_t Logger::info_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Info);
 }
 
-size_t Logger::warn_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Warn);
+size_t Logger::warn_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Warn);
 }
 
-size_t Logger::error_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Error);
+size_t Logger::error_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Error);
 }
 
-size_t Logger::fatal_s(std::string message) {
-    return Logger::getInstance()->log(std::move(message), Fatal);
+size_t Logger::fatal_s(const std::string& message) {
+    return Logger::getInstance()->log(message, Fatal);
 }
 
 //  --------------------------------------------------------------------------------------

@@ -19,12 +19,9 @@
 #include <fstream>
 #include <map>
 #include <regex>
-#include <string>
 #include <set>
+#include <string>
 #include <vector>
-
-// TODO: Logger
-//  - Remove static for all private attributes
 
 /**
  * @brief Imported class
@@ -76,9 +73,10 @@ class Logger {
     /**
      * @brief Copy constructor of Logger
      * @param logger Logger to copy
-     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a referenced pointer
+     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a
+     * referenced pointer
      */
-    Logger(const Logger &logger);
+    Logger(const Logger& logger);
 
 
     /**
@@ -89,9 +87,10 @@ class Logger {
     /**
      * @brief Copy operator of Logger
      * @param logger Logger to copy
-     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a referenced pointer
+     * @note If the source logger is destroyed, the entries vector of the copy will reset as it is a
+     * referenced pointer
      */
-    Logger operator=(const Logger &logger);
+    Logger& operator=(const Logger& logger);
 
     /**
      * @brief Add a log entry in the current logger, automatically create log meta data
@@ -157,7 +156,8 @@ class Logger {
     static void setVerboseLevelRange(LogLevel lowest, LogLevel highest);
 
     /**
-     * @brief Set the verbose levels manually, will only show elements that have the LogLevel in the set
+     * @brief Set the verbose levels manually, will only show elements that have the LogLevel in the
+     * set
      * @param levels Set of allowed logging levels in verbose
      */
     static void setVerboseLevels(std::set<LogLevel> levels);
@@ -167,7 +167,7 @@ class Logger {
      * @param filename Path to the log file
      * @param legacy If set on true, will write all previous logs
      */
-    static void logToFile(std::string filename, bool legacy = true);
+    static void logToFile(const std::string& filename, bool legacy = true);
 
     /**
      * @brief If set on true will enable file logging
@@ -186,7 +186,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t trace_s(std::string message);
+    static size_t trace_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an TRACE entry
@@ -203,7 +203,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t debug_s(std::string message);
+    static size_t debug_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an DEBUG entry
@@ -220,7 +220,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t info_s(std::string message);
+    static size_t info_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an INFO entry
@@ -237,7 +237,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t warn_s(std::string message);
+    static size_t warn_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an WARN entry
@@ -254,7 +254,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t error_s(std::string message);
+    static size_t error_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an ERROR entry
@@ -271,7 +271,7 @@ class Logger {
      * @param message Message to log
      * @return The id of the current entry
      */
-    static size_t fatal_s(std::string message);
+    static size_t fatal_s(const std::string& message);
 
     /**
      * @brief Concatenate and log the given elements as an FATAL entry
@@ -288,13 +288,6 @@ class Logger {
      * @brief Logger Singleton private constructor
      */
     Logger();
-
-    /**
-     * @brief Get the string format of a given logging level
-     * @param level The logging level
-     * @return The string formatted logging level
-     */
-    static std::string formatLogLevel(LogLevel level);
 
     /**
      * @brief Nonformatted raw log entries
@@ -323,6 +316,12 @@ class Logger {
      */
     std::ofstream loggingFile;
 
+    /**
+     * @brief Get the string format of a given logging level
+     * @param level The logging level
+     * @return The string formatted logging level
+     */
+    static std::string formatLogLevel(LogLevel level);
 
     /**
      * @brief Time mode of the log entries (Local or UTC - absolute)
