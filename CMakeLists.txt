@@ -53,6 +53,7 @@ set(HEADERS
         include/core/mesh.h
         include/core/result.h
         include/core/utilities.h
+        include/logger/common.h
         include/logger/logger.h
         include/logger/log_entries.h)
 

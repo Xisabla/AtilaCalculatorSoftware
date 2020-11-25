@@ -11,6 +11,7 @@
 #ifndef ATILACALCULATORSOFTWARE_LOGGER_H
 #define ATILACALCULATORSOFTWARE_LOGGER_H
 
+#include "common.h"
 #include "core/utilities.h"
 #include "log_entries.h"
 
@@ -24,17 +25,6 @@
  * @brief Imported class
  */
 class LogEntries;
-
-/**
- * @brief Logging time mode, TimeUTC means use abo
- */
-enum LogTimeMode { TimeLocal, TimeUTC };
-
-/**
- * @brief Logging level of a log entry, used to filter log entries, each filtering level will hide
- * lower level entries
- */
-enum LogLevel { Trace = -1, Debug = 0, Info = 1, Warn = 2, Error = 3, Fatal = 4 };
 
 /**
  * @class LogMetaData
@@ -87,6 +77,17 @@ class Logger {
      */
     size_t
     log(const std::string& message, LogLevel level = Debug, time_t timestamp = time(nullptr));
+
+    /**
+     * @brief Get the formatted string of a log entry
+     * @param metaData Meta data of the log entry
+     * @param message Message of the log entry
+     * @param format The format to apply to the log entry
+     * @return The string formatted log entry
+     */
+    static std::string format(LogMetaData metaData,
+                              const std::string& message,
+                              const std::string& format = Logger::getLoggingFormat());
 
     /**
      * @brief Retrieve the current instance of logger or create a new one
@@ -238,17 +239,6 @@ class Logger {
      * @return The string formatted logging level
      */
     static std::string formatLogLevel(LogLevel level);
-
-    /**
-     * @brief Get the formatted string of a log entry
-     * @param metaData Meta data of the log entry
-     * @param message Message of the log entry
-     * @param format The format to apply to the log entry
-     * @return The string formatted log entry
-     */
-    std::string format(LogMetaData metaData,
-                       const std::string& message,
-                       const std::string& format = Logger::getLoggingFormat());
 
     /**
      * @brief Nonformatted raw log entries

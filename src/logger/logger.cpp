@@ -81,6 +81,32 @@ size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp)
     return this->entries->size() - 1;
 }
 
+std::string
+Logger::format(LogMetaData metaData, const std::string& message, const std::string& format) {
+    time_t timestamp = metaData.getTimestamp();
+    LogLevel level = metaData.getLogLevel();
+
+    // TODO: Split into "formatTime", "formatLogLevel", "formatMessage"
+    // TODO: Add colorizing if a flag is set
+    tm* t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
+
+    std::string formatted = std::regex_replace(format, std::regex("%message%"), message);
+    formatted = std::regex_replace(formatted, std::regex("%level%"), formatLogLevel(level));
+    formatted = std::regex_replace(formatted, std::regex("%dt%"), std::to_string(timestamp));
+    formatted = std::regex_replace(formatted, std::regex("%dt:yday%"), std::to_string(t->tm_yday));
+    formatted = std::regex_replace(formatted, std::regex("%dt:wday%"), std::to_string(t->tm_wday));
+    formatted = std::regex_replace(formatted, std::regex("%dt:year%"), std::to_string(t->tm_year));
+    formatted =
+    std::regex_replace(formatted, std::regex("%dt:mon%"), std::to_string(t->tm_mon + 1));
+    formatted = std::regex_replace(formatted, std::regex("%dt:mday%"), std::to_string(t->tm_mday));
+    formatted = std::regex_replace(formatted, std::regex("%dt:hour%"), std::to_string(t->tm_hour));
+    formatted = std::regex_replace(formatted, std::regex("%dt:min%"), std::to_string(t->tm_min));
+    formatted =
+    std::regex_replace(formatted, std::regex("%dt:sec%"), std::to_string(std::min(t->tm_sec, 59)));
+
+    return formatted;
+}
+
 size_t Logger::trace_s(std::string message) {
     return Logger::getInstance()->log(std::move(message), Trace);
 }
@@ -121,30 +147,4 @@ std::string Logger::formatLogLevel(LogLevel level) {
     if (level == Fatal) return "FATAL";
 
     return "DEBUG";
-}
-
-std::string
-Logger::format(LogMetaData metaData, const std::string& message, const std::string& format) {
-    time_t timestamp = metaData.getTimestamp();
-    LogLevel level = metaData.getLogLevel();
-
-    // TODO: Split into "formatTime", "formatLogLevel", "formatMessage"
-    // TODO: Add colorizing if a flag is set
-    tm* t = Logger::timeMode == TimeUTC ? gmtime(&timestamp) : localtime(&timestamp);
-
-    std::string formatted = std::regex_replace(format, std::regex("%message%"), message);
-    formatted = std::regex_replace(formatted, std::regex("%level%"), formatLogLevel(level));
-    formatted = std::regex_replace(formatted, std::regex("%dt%"), std::to_string(timestamp));
-    formatted = std::regex_replace(formatted, std::regex("%dt:yday%"), std::to_string(t->tm_yday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:wday%"), std::to_string(t->tm_wday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:year%"), std::to_string(t->tm_year));
-    formatted =
-    std::regex_replace(formatted, std::regex("%dt:mon%"), std::to_string(t->tm_mon + 1));
-    formatted = std::regex_replace(formatted, std::regex("%dt:mday%"), std::to_string(t->tm_mday));
-    formatted = std::regex_replace(formatted, std::regex("%dt:hour%"), std::to_string(t->tm_hour));
-    formatted = std::regex_replace(formatted, std::regex("%dt:min%"), std::to_string(t->tm_min));
-    formatted =
-    std::regex_replace(formatted, std::regex("%dt:sec%"), std::to_string(std::min(t->tm_sec, 59)));
-
-    return formatted;
 }
