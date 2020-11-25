@@ -1,5 +1,21 @@
 #!/bin/bash
 
+#
+# SCRIPT  fix-new-line.sh
+# AUTHOR  Gautier MIQUET <xisabla.dev@gmail.com>
+# DATE:   2020-11-25
+# REV:    1.0.D (Valid are A, B, D, T and P)
+#               (For Alpha, Beta, Dev, Test and Production)
+#
+# PLATFORM: GNU/Linux
+#
+# PURPOSE:  Check if the given files ends with a new line
+#   Append a new line if it not the case
+#
+# USAGE:    ./fix-new-line.sh <file>
+#           ./fix-new-line.sh <file1> <file2> ... <file_n>
+#
+
 if [ $# -lt 1 ]; then
 	echo "Usage: $0 <file> [file2] ..."
 	exit 1
