@@ -29,7 +29,9 @@ time_t LogMetaData::getTimestamp() const { return this->timestamp; }
 //  LOGGER
 //  --------------------------------------------------------------------------------------
 
-Logger::Logger() = default;
+Logger::Logger() : entries(new LogEntries()) {};
+
+Logger::~Logger() { delete this->entries; }
 
 LogTimeMode Logger::timeMode = TimeLocal;
 
@@ -48,6 +50,10 @@ Logger* Logger::getInstance() {
     if (Logger::instance == nullptr) Logger::instance = new Logger();
 
     return Logger::instance;
+}
+
+LogEntries * Logger::getLogs() {
+    return Logger::getInstance()->entries;
 }
 
 std::string Logger::getLoggingFormat() {
@@ -69,12 +75,12 @@ void Logger::setLoggingFormat(std::string format) { Logger::logFormat = std::mov
 size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp) {
     LogMetaData metaData(level, timestamp);
 
-    this->entries.emplace_back(metaData, message);
+    this->entries->emplace_back(metaData, message);
 
     // TODO: Remove this or use a flag to turn on/off logging in console (depending on the loglevel)
     std::cout << this->format(metaData, message) << std::endl;
 
-    return this->entries.size() - 1;
+    return this->entries->size() - 1;
 }
 
 size_t Logger::trace_s(std::string message) {

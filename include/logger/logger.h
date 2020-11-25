@@ -12,12 +12,18 @@
 #define ATILACALCULATORSOFTWARE_LOGGER_H
 
 #include "core/utilities.h"
+#include "log_entries.h"
 
 #include <ctime>
 #include <map>
 #include <regex>
 #include <string>
 #include <vector>
+
+/**
+ * @brief Imported class
+ */
+class LogEntries;
 
 /**
  * @brief Logging time mode, TimeUTC means use abo
@@ -87,6 +93,12 @@ class Logger {
      * @return The Logger object instance reference
      */
     static Logger* getInstance();
+
+    /**
+     * @brief Get the log entries
+     * @return A pointer to the log entries container
+     */
+    static LogEntries* getLogs();
 
     /**
      * @return The current logging formatting string
@@ -216,6 +228,11 @@ class Logger {
     Logger();
 
     /**
+     * @brief Logger destructor
+     */
+    ~Logger();
+
+    /**
      * @brief Get the string format of a given logging level
      * @param level The logging level
      * @return The string formatted logging level
@@ -236,7 +253,7 @@ class Logger {
     /**
      * @brief Nonformatted raw log entries
      */
-    std::vector<std::pair<LogMetaData, std::string>> entries;
+    LogEntries* entries;
 
     /**
      * @brief Time mode of the log entries (Local or UTC - absolute)
