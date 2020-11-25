@@ -17,7 +17,7 @@ Node::Node(unsigned int id, const float* coord): id(id) {
     this->coord[0] = coord[0];
     this->coord[1] = coord[1];
     this->coord[2] = coord[2];
-};
+}
 
 Node::Node(unsigned int id, float x, float y, float z): id(id) {
     this->coord[0] = x;
@@ -41,6 +41,8 @@ float Node::getZ() { return this->coord[2]; }
 //  --------------------------------------------------------------------------------------
 
 Mesh::Mesh(gzFile file, dataFields(fields)) {
+    Logger::debug("Reading mesh...");
+    Logger::trace("Asserting mesh header");
     // Check if the header is fine
     if (strcmp("dimension", fields[2]) != 0)
         __THROW__("Cannot read binary file: fields[2], expected \"dimensions\", got \"" +
@@ -58,6 +60,14 @@ Mesh::Mesh(gzFile file, dataFields(fields)) {
     this->elementName = fields[5];
     this->nodeCount = static_cast<unsigned int>(std::atoi(fields[7]));
 
+    Logger::trace("Mesh: ",
+                  this->name,
+                  " ",
+                  this->dimCount,
+                  " dimensions (",
+                  this->nodeCount,
+                  " nodes/elements)");
+
     char buffer[GZ_BUFFER_SIZE];
 
     // Continue reading
@@ -72,6 +82,8 @@ Mesh::Mesh(gzFile file, dataFields(fields)) {
 
     // Read Elements
     if (!strcmp(fields[0], "Elements")) this->readElements(file, buffer);
+
+    Logger::debug("Reading mesh: Done");
 }
 
 size_t Mesh::maxNodeCount = 0;
@@ -140,6 +152,7 @@ GiD_ElementType Mesh::getGiDElementType(const char* element) {
     if (it != Mesh::GiD_ElementTypeEncoding.end())
         return Mesh::GiD_ElementTypeEncoding.at(elementString);
 
+    Logger::fatal("Unable to find element type of type: ", element);
     __THROW__("Cannot find the type of the given element: " + element);
 }
 
@@ -148,6 +161,7 @@ GiD_ElementType Mesh::getGiDElementType(const char* element) {
 //  --------------------------------------------------------------------------------------
 
 void Mesh::readCoordinates(gzFile& file, char* buffer) {
+    Logger::trace("Mesh: ", this->name, ": reading coordinates...");
     unsigned int nodeId = 1;
     unsigned int count = 1;
 
@@ -182,9 +196,12 @@ void Mesh::readCoordinates(gzFile& file, char* buffer) {
 
     // Update maxNodeCount
     Mesh::maxNodeCount = std::max(Mesh::maxNodeCount, this->nodes.size());
+    Logger::trace(
+    "Mesh: ", this->name, ": reading coordinates: Done - ", this->nodes.size(), " nodes read");
 }
 
 void Mesh::readElements(gzFile& file, char* buffer) {
+    Logger::trace("Mesh: ", this->name, ": reading elements...");
     const unsigned int n = nodeCount + 1;
     const unsigned int elemSize = n * sizeof(int);
     unsigned int elementCount = 1;
@@ -226,4 +243,6 @@ void Mesh::readElements(gzFile& file, char* buffer) {
     this->elementsConnectivity = connectivity;
     this->elements = elements;
     this->elementCount = nodeShift;
+
+    Logger::trace("Mesh: ", this->name, ": reading elements: Done - ", elementCount, " elements");
 }

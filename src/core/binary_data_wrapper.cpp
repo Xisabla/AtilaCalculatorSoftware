@@ -38,6 +38,7 @@ QStringList BinaryDataWrapper::getInformationList() const { return this->informa
 //  --------------------------------------------------------------------------------------
 
 void BinaryDataWrapper::loadResult(Result& result, const int& component) {
+    Logger::info("Reading result ", result.getAnalysis(), ":", component, "...");
     this->scalars = vtkNew<vtkFloatArray>();
     this->scalars->SetNumberOfValues(result.getValuesCount());
 
@@ -51,6 +52,7 @@ void BinaryDataWrapper::loadResult(Result& result, const int& component) {
     // NOTE: Can be optimized by not adding irrelevant information
     while (this->informationList.size() > 4) this->informationList.removeLast();
 
+    Logger::debug("Updating information list");
     this->informationList << (QString::fromStdString("Result analysis ").toUpper() +
                               QString::fromStdString(result.getAnalysis()))
                           << (QString::fromStdString("Result ").toUpper() +
@@ -59,6 +61,8 @@ void BinaryDataWrapper::loadResult(Result& result, const int& component) {
                               QString::number(result.getStep()))
                           << (QString::fromStdString("Choice ").toUpper() +
                               QString::number(component));
+
+    Logger::info("Reading result ", result.getAnalysis(), ":", component, " : Done");
 }
 
 //  --------------------------------------------------------------------------------------
@@ -77,18 +81,22 @@ void BinaryDataWrapper::loadMeshInformation(Mesh& mesh) {
 }
 
 void BinaryDataWrapper::convertFromGiD() {
+    Logger::debug("Converting mesh values to VTK elements...");
     this->points = vtkNew<vtkPoints>();
     this->unstructuredGrid = vtkNew<vtkUnstructuredGrid>();
 
     for (Mesh& mesh: this->meshes) {
         // Append information
+        Logger::trace("Loading mesh information");
         this->loadMeshInformation(mesh);
 
         // Add node to points
+        Logger::trace("Inserting nodes as points");
         for (Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());
         this->unstructuredGrid->SetPoints(this->points);
 
         for (unsigned int i = 0; i < mesh.getElementCount(); i++) {
+            Logger::trace("Adding element ", i, " to the VTK UnstructuredGrid");
             auto [id, nid] = mesh.getElement(i);
 
             if (id != i + 1) break;
@@ -108,6 +116,8 @@ void BinaryDataWrapper::convertFromGiD() {
             }
         }
     }
+
+    Logger::debug("Converting mesh values to VTK elements: Done");
 }
 
 vtkSmartPointer<vtkCell> BinaryDataWrapper::getPolygonVTKCell(const std::string& meshElement,

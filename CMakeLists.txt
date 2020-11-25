@@ -52,7 +52,10 @@ set(HEADERS
         include/core/main_window.h
         include/core/mesh.h
         include/core/result.h
-        include/core/utilities.h)
+        include/core/utilities.h
+        include/logger/common.h
+        include/logger/logger.h
+        include/logger/log_entries.h)
 
 # Source files
 set(SOURCES
@@ -62,7 +65,9 @@ set(SOURCES
         src/core/main_window.cpp
         src/core/mesh.cpp
         src/core/result.cpp
-        src/core/utilities.cpp)
+        src/core/utilities.cpp
+        src/logger/logger.cpp
+        src/logger/log_entries.cpp)
 
 # -----------------------------------------------------------------------------
 # Dependencies

@@ -10,7 +10,8 @@
 #ifndef ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H
 #define ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H
 
-#include "binary_data.h"
+#include "core/binary_data.h"
+#include "logger/logger.h"
 
 #include <QString>
 #include <QStringList>

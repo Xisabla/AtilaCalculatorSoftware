@@ -15,6 +15,7 @@
 
 BinaryData::BinaryData(const std::string& file) {
     // Read compressed file in r1 mode
+    Logger::info("Verifying BinaryData file: ", file.c_str());
     this->file = gzopen(file.c_str(), "r1");
 
     char buffer[GZ_BUFFER_SIZE];
@@ -30,6 +31,7 @@ BinaryData::BinaryData(const std::string& file) {
 
 BinaryData::~BinaryData() {
     // Close file on destruction (when another file is opened)
+    Logger::trace("Destructing BinaryData");
     if (this->file != nullptr) gzclose(this->file);
     this->meshes.clear();
     this->results.clear();
@@ -49,6 +51,7 @@ std::vector<Result>& BinaryData::getResults() { return this->results; }
 //  --------------------------------------------------------------------------------------
 
 void BinaryData::readMeshes() {
+    Logger::info("Reading meshes...");
     char buffer[GZ_BUFFER_SIZE];
     dataFields fields;
 
@@ -62,14 +65,21 @@ void BinaryData::readMeshes() {
 
         currentPos = gztell(file);
         size = getFields(file, buffer, fields);
+
+        Logger::debug("Mesh read, current pos: ", currentPos);
     }
+
+    Logger::debug("No more mesh to read");
 
     // Check final position
     if (gzseek(file, currentPos, SEEK_SET) == -1)
         __THROW__("Cannot read binary file; Invalid final position");
+
+    Logger::info("Reading meshes: Done");
 }
 
 std::optional<Result> BinaryData::readResult() {
+    Logger::trace("Reading one result...");
     if (Mesh::maxNodeCount == 0) return std::nullopt;
 
     char buffer[GZ_BUFFER_SIZE];
@@ -81,18 +91,23 @@ std::optional<Result> BinaryData::readResult() {
     // Check for componentCount and read result
     if (!strcmp(fields[0], "Result")) {
         if (!strcmp(fields[4], "Vector")) {
+            Logger::trace("Returning Vector result...");
             return Result(file, fields, 4);
         } else if (!strcmp(fields[4], "Scalar")) {
+            Logger::trace("Returning Scalar result...");
             return Result(file, fields, 1);
         } else if (!strcmp(fields[4], "Matrix")) {
+            Logger::trace("Returning Matrix result...");
             return Result(file, fields, 6);
         }
     }
 
+    Logger::warn("No more result to read");
     return std::nullopt;
 }
 
 std::vector<Result> BinaryData::readResults(unsigned int n) {
+    Logger::info("Reading all results...");
     if (n > 0 && this->results.size() >= n) return this->results;
     unsigned int current = static_cast<int>(this->results.size());
 
@@ -103,5 +118,6 @@ std::vector<Result> BinaryData::readResults(unsigned int n) {
         if (n > 0 && ++current >= n) break;
     }
 
+    Logger::info("Reading all results: Done");
     return this->results;
 }

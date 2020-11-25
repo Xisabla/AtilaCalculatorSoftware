@@ -9,6 +9,8 @@
 =========================================================================*/
 #include "core/main_window.h"
 
+#include "logger/logger.h"
+
 #if VTK_VERSION_NUMBER >= 89000000000ULL
 #define VTK890 1
 #endif
@@ -18,13 +20,18 @@
 //  --------------------------------------------------------------------------------------
 
 MainWindow::MainWindow(char* dataDirectory) {
-
+    Logger::info("Initializing MainWindow...");
     this->objectDirectory = QString::fromUtf8(dataDirectory);
+    Logger::debug("Using default data directory: ",
+                  dataDirectory == nullptr ? "./" : dataDirectory);
+
     this->setupUi(this);
     this->model = new QStringListModel(this);
 
     vtkNew<vtkNamedColors> colors;
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+
+    Logger::debug("Setting OpenGL Render Window");
 #if VTK890
     this->qvtkWidget->setRenderWindow(renderWindow);
 #else
@@ -36,6 +43,7 @@ MainWindow::MainWindow(char* dataDirectory) {
     renderer->SetBackground(colors->GetColor3d("SteelBlue").GetData());
 
     // Connect VTK with Qt
+    Logger::debug("Setting MainWindow Render");
 #if VTK890
     this->qvtkWidget->renderWindow()->AddRenderer(renderer);
     this->qvtkWidget->renderWindow()->SetWindowName("AtilaSoftwareCalculator");
@@ -50,6 +58,7 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->setWindowTitle(QString::fromStdString("AtilaSoftwareCalculator"));
 
     // Actions
+    Logger::debug("Connecting view action");
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->actionZoomOnArea, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
@@ -58,13 +67,16 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
     // Disable view action by default
+    Logger::debug("Disabling unreachable view action");
     this->menuResults->setDisabled(true);
     this->actionZoomOnArea->setDisabled(true);
     this->actionResetCamera->setDisabled(true);
     this->actionInteractWithObject->setDisabled(true);
 
     // Disable undone actions
+    Logger::debug("Disabling undone features actions");
     this->actionExportToText->setDisabled(true);
+    Logger::info("Initializing MainWindow: Done");
 }
 
 //  --------------------------------------------------------------------------------------
@@ -72,6 +84,7 @@ MainWindow::MainWindow(char* dataDirectory) {
 //  --------------------------------------------------------------------------------------
 
 void MainWindow::slotExit() {
+    Logger::info("Exiting...");
     this->close();
     qApp->exit();
 }
@@ -80,14 +93,20 @@ void MainWindow::slotOpenFile() {
     QString filename =
     QFileDialog::getOpenFileName(this, "Select a .res file", this->objectDirectory, "Res (*.res)");
 
-    // Stop if no given file/action cancelled
-    if (filename.isEmpty()) return;
+    if (!filename.isEmpty()) {
+        Logger::info("Opening resource file: ", filename.toStdString());
 
-    // Load the binary data and show the object and scalar bar
-    this->loadBinaryData(filename.toStdString());
+        // Load the binary data and show the object and scalar bar
+        this->loadBinaryData(filename.toStdString());
+
+        Logger::info("Resource file loaded.");
+    } else {
+        Logger::warn("Invalid or empty filename: ", filename.toStdString());
+    }
 }
 
 void MainWindow::slotResetCamera() {
+    Logger::info("Reset Camera");
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
 #else
@@ -96,6 +115,7 @@ void MainWindow::slotResetCamera() {
 }
 
 void MainWindow::slotZoomArea() {
+    Logger::info("Reset Interactor to RubberZoom");
     vtkNew<vtkInteractorStyleRubberBandZoom> style;
 #if VTK890
     this->qvtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
@@ -105,6 +125,7 @@ void MainWindow::slotZoomArea() {
 }
 
 void MainWindow::slotInteractWithObject() {
+    Logger::info("Reset Interactor to Camera");
     vtkNew<vtkInteractorStyleTrackballCamera> style;
 #if VTK890
     this->qvtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
@@ -114,6 +135,7 @@ void MainWindow::slotInteractWithObject() {
 }
 
 void MainWindow::slotResult(Result& result, const unsigned int& component) {
+    Logger::info("Change result to ", result.getAnalysis(), ":", component);
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
@@ -127,6 +149,7 @@ void MainWindow::slotResult(Result& result, const unsigned int& component) {
 //  --------------------------------------------------------------------------------------
 
 void MainWindow::initAxes() {
+    Logger::debug("Initializing axes module...");
     vtkNew<vtkNamedColors> colors;
 
     double rgba[4] = { .0, .0, .0, .0 };
@@ -146,12 +169,14 @@ void MainWindow::initAxes() {
     axesWidget->SetEnabled(1);
 
     this->axesWidget = axesWidget;
+    Logger::debug("Initializing axes module: Done");
 }
 
 void MainWindow::setVTK(Result& result, const int& component) {
     this->binary->loadResult(result, component);
 
     // Update information list
+    Logger::trace("Initialize Information StringList");
     this->model->setStringList(this->binary->getInformationList());
     this->listView->setModel(this->model);
     this->listView->adjustSize();
@@ -161,25 +186,30 @@ void MainWindow::setVTK(Result& result, const int& component) {
                         this->binary->getScalars()->GetRange()[1] };
 
     // Lookup table
+    Logger::debug("Instantiate VTK LookupTable");
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->SetNumberOfTableValues(this->binary->getScalars()->GetNumberOfTuples() + 1);
     lookupTable->SetTableRange(range);
     lookupTable->Build();
 
+    Logger::debug("Set Result scalars");
     this->binary->getUnstructuredGrid()->GetPointData()->SetScalars(this->binary->getScalars());
 
     // Mapper
+    Logger::debug("Instantiate VTK DataSetMapper");
     vtkNew<vtkDataSetMapper> mapper;
     mapper->SetInputData(this->binary->getUnstructuredGrid());
     mapper->SetScalarRange(range);
     mapper->SetLookupTable(lookupTable);
 
     // Side scalar bar
+    Logger::debug("Instantiate VTK ScalarBarActor");
     vtkNew<vtkScalarBarActor> scalarBar;
     scalarBar->SetLookupTable(mapper->GetLookupTable());
     scalarBar->SetTitle(std::string(result.getAnalysis() + std::to_string(component)).c_str());
     scalarBar->UnconstrainedFontSizeOn();
     scalarBar->SetNumberOfLabels(5);
+    Logger::info("Bar ratio is ", scalarBar->GetBarRatio() / 2.0);
     scalarBar->SetBarRatio(scalarBar->GetBarRatio() / 2.0);
 
     // Poly actor (3D Object)
@@ -187,6 +217,7 @@ void MainWindow::setVTK(Result& result, const int& component) {
     polyActor->SetMapper(mapper);
 
     // Add actors and reset camera
+    Logger::debug("Add Renderer camera actors");
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
@@ -206,6 +237,7 @@ void MainWindow::loadBinaryData(const std::string& filename) {
     this->binary = new BinaryDataWrapper(filename);
 
     // Enable view actions
+    Logger::info("Enable view menu actions");
     this->actionZoomOnArea->setEnabled(true);
     this->actionResetCamera->setEnabled(true);
     this->actionInteractWithObject->setEnabled(true);
@@ -218,8 +250,11 @@ void MainWindow::loadBinaryData(const std::string& filename) {
 }
 
 void MainWindow::unloadBinaryData() {
+    Logger::debug("Unloading loaded data...");
+    Logger::trace("Free binary");
     delete this->binary;
 
+    Logger::trace("Remove Render view props");
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #else
@@ -227,16 +262,18 @@ void MainWindow::unloadBinaryData() {
 #endif
 
     this->clearBinaryResults();
+    Logger::debug("Unloading loaded data: Done");
 }
 
 void MainWindow::setBinaryResults() {
-
+    Logger::debug("Setting results menu...");
     // Set result actions
     std::vector<float> steps;
     std::map<float, QMenu*> stepMenus;
 
     // Add results menus
-    for (auto&& result: this->binary->getResults()) {
+    for (auto& result: this->binary->getResults()) {
+        Logger::trace("Adding result sub-menu entry ", result.getStep());
         if (!std::binary_search(steps.begin(), steps.end(), result.getStep())) {
             steps.push_back(result.getStep());
             QMenu* stepMenuItem = this->menuResults->addMenu(QString::number(result.getStep()));
@@ -250,10 +287,17 @@ void MainWindow::setBinaryResults() {
         for (unsigned int i = 0; i < result.getComponentCount(); i++) {
             QAction* resultItemAction;
 
+
             if (!result.getComponents().empty()) {
+                Logger::trace("Adding result sub-menu entry item ",
+                              result.getComponents().at(i),
+                              " (",
+                              result.getStep(),
+                              ")");
                 resultItemAction =
                 menu->addAction(QString::fromStdString(result.getComponents().at(i)));
             } else {
+                Logger::trace("Adding result sub-menu entry item ", i, " (", result.getStep(), ")");
                 resultItemAction = menu->addAction(QString::number(i));
             }
 
@@ -264,7 +308,13 @@ void MainWindow::setBinaryResults() {
     }
 
     // Enable results menu
+    Logger::trace("Enable results menu");
     this->menuResults->setEnabled(true);
+    Logger::debug("Setting results menu: Done");
 }
 
-void MainWindow::clearBinaryResults() { this->menuResults->clear(); }
+void MainWindow::clearBinaryResults() {
+    Logger::debug("Clearing results menu: Done");
+    this->menuResults->clear();
+    Logger::debug("Clearing results menu: Done");
+}

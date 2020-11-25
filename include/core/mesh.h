@@ -10,7 +10,8 @@
 #ifndef ATILACALCULATORSOFTWARE_MESH_H
 #define ATILACALCULATORSOFTWARE_MESH_H
 
-#include "utilities.h"
+#include "core/utilities.h"
+#include "logger/logger.h"
 
 #include <algorithm>
 #include <cmath>
