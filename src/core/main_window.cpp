@@ -66,6 +66,15 @@ MainWindow::MainWindow(char* dataDirectory) {
     connect(
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
 
+    // Menu shortcuts
+    Logger::debug("Setting view shortcuts");
+    this->actionExit->setShortcut(Qt::CTRL + Qt::Key_Q);
+    this->actionOpenFile->setShortcut(Qt::CTRL + Qt::Key_O);
+    this->actionExportToText->setShortcut(Qt::CTRL + Qt::Key_E);
+    this->actionZoomOnArea->setShortcut(Qt::Key_M);
+    this->actionResetCamera->setShortcut(Qt::Key_Space);
+    this->actionInteractWithObject->setShortcut(Qt::Key_I);
+
     // Disable view action by default
     Logger::debug("Disabling unreachable view action");
     this->menuResults->setDisabled(true);
