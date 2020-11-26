@@ -15,17 +15,20 @@
 #           ./check-includable.sh <file1> <file2> ... <file_n>
 #
 
+# Include folders
 INCLUDE_DIRS=(
   /usr/include/
   /usr/local/include/
 )
 
+# Add include folders sub directories
 for dir in "${INCLUDE_DIRS[@]}"; do
   for sub in $(ls -1p "$dir/" | grep '/$'); do
     INCLUDE_DIRS+=("$dir$sub")
   done
 done
 
+# Check if the given file is an include folder
 function check_includable() {
   for dir in "${INCLUDE_DIRS[@]}"; do
     if [ -f "$dir$1" ]; then
@@ -42,6 +45,7 @@ function check_includable() {
   return 1
 }
 
+# Check for each given files
 for lib in "$@"; do
   check_includable "$lib" || exit 1
 done

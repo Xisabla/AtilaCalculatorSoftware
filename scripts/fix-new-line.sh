@@ -16,11 +16,7 @@
 #           ./fix-new-line.sh <file1> <file2> ... <file_n>
 #
 
-if [ $# -lt 1 ]; then
-	echo "Usage: $0 <file> [file2] ..."
-	exit 1
-fi
-
+# Check if the given file ends with a new line, if not append one
 function fix_new_line() {
 	if [ ! -f "$1" ]; then
 		echo "File \"$1\" not found"
@@ -38,6 +34,7 @@ function fix_new_line() {
 	return 0
 }
 
+# Check for all given files
 for file in "$@"
 do
   fix_new_line "$file" || exit 1

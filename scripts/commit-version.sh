@@ -23,8 +23,10 @@
 # NOTE:     Will make a patch change by default if no argument given
 #
 
+# version.h file
 VERSION_HEADER_FILE="./include/version.h"
 
+# Set the given version type (PATCH, MINOR, MAJOR) value to 0
 function reset_version() {
     sed -i "s/#define ACS_VERSION_$1 [0-9]*/#define ACS_VERSION_$1 0/g" "$VERSION_HEADER_FILE" \
       && return 0
@@ -32,6 +34,7 @@ function reset_version() {
     return 1
 }
 
+# Set the given version type (PATCH, MINOR, MAJOR) value to the given version
 function set_version() {
   sed -i "s/#define ACS_VERSION_$1 [0-9]*/#define ACS_VERSION_$1 $2/g" "$VERSION_HEADER_FILE" \
       && return 0
@@ -39,12 +42,14 @@ function set_version() {
     return 1
 }
 
+# Get the given version type (PATCH, MINOR, MAJOR) value
 function get_version() {
   grep "#define ACS_VERSION_$1"  "$VERSION_HEADER_FILE" | cut -d ' ' -f3
 
   return 0
 }
 
+# Increment the given version type (PATCH, MINOR, MAJOR) value
 function increment_version() {
   current=$(get_version "$1")
 
@@ -54,12 +59,15 @@ function increment_version() {
   return 1
 }
 
+# Get the full version
 function print_version() {
     echo "$(get_version MAJOR).$(get_version MINOR).$(get_version PATCH)"
 }
 
+# Store old version for commit message
 old_version=$(print_version)
 
+# Parse arguments
 case $1 in
 --major)
   increment_version MAJOR
@@ -75,8 +83,10 @@ case $1 in
   ;;
 esac
 
+# Commit message
 message="Change version $old_version --> $(print_version)"
 
+# Git add and commit
 git add . \
   && git commit -S -m "$message" \
   && exit 0
