@@ -86,6 +86,9 @@ esac
 # Commit message
 message="Change version $old_version --> $(print_version)"
 
+# Show commit message
+echo "Commit message: $message"
+
 # Git add and commit
 git add . \
   && git commit -S -m "$message" \
