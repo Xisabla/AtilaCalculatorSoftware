@@ -64,7 +64,7 @@ std::tuple<int&, float*> Result::getResult(const unsigned int& id) {
 
 // const int Result::toPostGid() {
 //
-//}
+// }
 
 //  --------------------------------------------------------------------------------------
 //  RESULT > PRIVATE METHODS

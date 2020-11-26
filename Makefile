@@ -7,7 +7,7 @@
 #----------------------------------------------------------------------------------------#
 
 CLANG_FORMAT_OPTIONS=--verbose -i --style=file
-CLANG_FORMAT_FILES=src/**/*.cpp include/**/*.h include/**.h
+CLANG_FORMAT_FILES=$(wildcard ./include/**/**.h ./include/**.h ./src/**/**.cpp ./src/**.cpp)
 CMAKE_FLAGS=-Wno-dev
 CPP_CHECK_FLAGS=--enable=all --quiet --suppress=unusedFunction --suppress=copyCtorPointerCopying
 
@@ -24,26 +24,10 @@ help: ## Show this help.
 	@printf "\n\033[32m%-30s     \033[32m %s\033[0m\n" "RECIPE" "DESCRIPTION"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "make \033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: check-boost
-check-boost: ## Check for boost include file (assuming that all boost include files might be present)
-ifeq (,$(wildcard /usr/include/boost/version.hpp))
-$(error "boost installation not found")
-endif
-
-.PHONY: check-gidpost
-check-gidpost: /usr/local/include/gidpost.h ## Check for gidpost include file
-
-.PHONY: check-hdf5
-check-hdf5: /usr/include/hdf5.h ## Check for hdf5 include file
-
-.PHONY: check-vtk
-check-vtk: /usr/include/vtk/vtk_hdf5.h ## Check for vtk hdf5 include file (assuming that all vtk include files might be present)
-
-.PHONY: check-zlib
-check-zlib: /usr/include/zlib.h ## Check for zlib include file
-
 .PHONY: check-dependencies ## Check for needed dependencies
-check-dependencies: check-boost check-gidpost check-hdf5 check-vtk check-zlib
+check-dependencies:
+	@./scripts/check-includable.sh boost/version.hpp gidpost.h hdf5.h vtk_hdf5.h zlib.h && \
+		echo "Dependencies check ok"
 
 .PHONY: clean
 clean: ## Clean build files
@@ -56,7 +40,8 @@ doc: ## Generate documentation using Doxygen
 
 .PHONY: format
 format: ## Format sources using clang-format
-	clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
+	@./scripts/fix-new-line.sh $(CLANG_FORMAT_FILES)
+	@clang-format $(CLANG_FORMAT_OPTIONS) $(CLANG_FORMAT_FILES)
 
 .PHONY: check
 check: ## Run ccp-check code analysis
