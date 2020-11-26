@@ -17,9 +17,7 @@ jobs:
       - name: Install doxygen
         run: sudo apt install doxygen
       - name: Update documents version
-        run: |
-          sed -i "s/# AtilaCalculatorSoftware v[ 0-9\.]*/# AtilaCalculatorSoftware v$(cat "include/version.h" |grep "#define" |grep "VERSION_MAJOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_MINOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_PATCH" |cut -d ' ' -f3)/" README.md
-          sed -i "s/PROJECT_NUMBER[ ]*=[ 0-9\.]*/PROJECT_NUMBER         = $(cat "include/version.h" |grep "#define" |grep "VERSION_MAJOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_MINOR" |cut -d ' ' -f3).$(cat "include/version.h" |grep "#define" |grep "VERSION_PATCH" |cut -d ' ' -f3)/" Doxyfile
+        run: ./scripts/update-version.sh ./README.md ./Doxyfile
       - name: Commit version update
         run: |
           git config --local user.email "action@github.com"
@@ -34,17 +32,7 @@ jobs:
       - name: Run doxygen
         run: doxygen ./Doxyfile
       - name: Remove uncessessary files
-        run: |
-          rm -rf build
-          rm -rf cmake
-          rm -rf data
-          rm -rf include
-          rm -rf qt
-          rm -rf src
-          rm -rf .clang-format
-          rm -rf CMakeLists.txt
-          rm -rf Doxyfile
-          rm -rf Makefile
+        run: ./scripts/prepare-documentation.sh
       - name: Commit documentation
         run: |
           git config --local user.email "action@github.com"
