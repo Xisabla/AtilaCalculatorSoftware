@@ -4,8 +4,11 @@ C++ Interface Software for Atila fem resources files
 
 Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware/doc/)
 
+![screenshot](./.github/images/screen1.png)
+
 ## Dependencies
 
+- [Qt5](https://www.qt.io/)
 - [Boost](https://www.boost.org/) 1.72
 - [GiDPost](https://www.gidhome.com/gid-plus/tools/476/gidpost/) 2.7
 - [zlib](https://zlib.net/)
