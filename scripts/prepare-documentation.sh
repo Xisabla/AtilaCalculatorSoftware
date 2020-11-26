@@ -29,7 +29,7 @@ REMOVE=(
 # Remove all unneeded files/directories
 for elem in "${REMOVE[@]}"
 do
-  echo "rm -rf $elem"
+  rm -rf "$elem"
 done
 
 exit 0
