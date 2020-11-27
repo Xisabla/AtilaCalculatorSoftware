@@ -34,6 +34,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkVersion.h>
+#include <vtkVertexGlyphFilter.h>
 
 /**
  * @class MainWindow
@@ -49,52 +50,71 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
 
   public slots:
     /**
-     * Stop the application
+     * @brief Stop the application
      */
     void slotExit();
 
     /**
-     * Open and read object file, then render it
+     * @brief Open and read object file, then render it
      */
     void slotOpenFile();
 
     /**
-     * Reset the camera view as default
-     */
-    void slotResetCamera();
-
-    /**
-     * Allow the user to select an area to zoom on
+     * @brief Allow the user to select an area to zoom on
      */
     void slotZoomArea();
 
     /**
-     * Reset the interactor to allow object interaction after zoomArea
+     * @brief Reset the interactor to allow object interaction after zoomArea
      */
     void slotInteractWithObject();
 
     /**
-     * Select the result to visualise
+     * @brief Shows the objects node if toggled on checked, otherwise hide it
+     */
+    void slotShowNodes();
+
+    /**
+     * @brief Reset the camera view as default
+     */
+    void slotResetCamera();
+
+    /**
+     * @brief Select the result to visualise
      * @param result Result to visualise
-     * @param component Choice for setVTK method
+     * @param component Choice for showResult method
      */
     void slotResult(Result& result, const unsigned int& component);
 
   private:
     /**
-     * Initialize axes view
+     * @brief Initialize axes view
      */
     void initAxes();
 
     /**
-     * Load the VKT result and show it
+     * @brief Load result and show elements
      * @param result Result read by the binary data
-     * @param component
+     * @param component Component to show
      */
-    void setVTK(Result& result, const int& component);
+    void showResult(Result& result, const int& component);
 
     /**
-     * Read binary data and load it, then print the scalars and show the object, also set the
+     * @brief Show the 3D polygon of the given result
+     * @param result Result read by the binary data
+     * @param component Component to show
+     */
+    void show3DPoly(Result& result, const int& component);
+
+    /**
+     * @brief Show the nodes of the result
+     * @param result Result read by the binary data
+     * @param component Component from which nodes will be read
+     */
+    void showNodes();
+
+    /**
+     * @brief Read binary data and load it, then print the scalars and show the object, also set the
      * "Results" menu @see setBinaryResults
      * @param filename Path to the resource gzFile to read data from
      */
@@ -117,12 +137,12 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     void clearBinaryResults();
 
     /**
-     * Path to directory that stores the objects to open
+     * @brief Path to directory that stores the objects to open
      */
     QString objectDirectory;
 
     /**
-     * Movable widget that shows the axes
+     * @brief Movable widget that shows the axes
      */
     vtkSmartPointer<vtkOrientationMarkerWidget> axesWidget;
 
@@ -132,7 +152,12 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     QStringListModel* model;
 
     /**
-     * Data imported from the current .res file
+     * @brief Actor of node showing
+     */
+    vtkProp* nodeActor = nullptr;
+
+    /**
+     * @brief Data imported from the current .res file
      */
     BinaryDataWrapper* binary = nullptr;
 };
