@@ -6,7 +6,9 @@ Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware
 
 ![screenshot](./.github/images/screen1.png)
 
-## Dependencies
+## Building
+
+### Dependencies
 
 - [Qt5](https://www.qt.io/)
 - [Boost](https://www.boost.org/) 1.72
@@ -28,8 +30,9 @@ Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware
 Other methods/distribution might occur with some issues with the vtk module `vtkGUISupportQt`.
 We are aware of this issue but cannot give support as it is related to VTK itself and not our actual project.
 
+We also built a [docker image](https://hub.docker.com/r/xisabla/arch-user-vtk-atila) based on archlinux with all the dependencies, make sure to log as `user` and to pull the project in the home directory. You can use this image to build the project.
 
-## Building and running
+### Build instructions
 
 ```shell script
 mkdir build && cd build
