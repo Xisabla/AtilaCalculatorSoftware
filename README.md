@@ -4,8 +4,13 @@ C++ Interface Software for Atila fem resources files
 
 Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware/doc/)
 
-## Dependencies
+![screenshot](./.github/images/screen1.png)
 
+## Building
+
+### Dependencies
+
+- [Qt5](https://www.qt.io/)
 - [Boost](https://www.boost.org/) 1.72
 - [GiDPost](https://www.gidhome.com/gid-plus/tools/476/gidpost/) 2.7
 - [zlib](https://zlib.net/)
@@ -19,8 +24,15 @@ Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware
   - 8.0.1
   - 8.0.0
   - 7.1.0
+  
+**NOTE:** Building is working well on [Archlinux](https://www.archlinux.org/) with *AUR* package [vtk](https://www.archlinux.org/packages/community/x86_64/vtk/) 8.2.0-15.
 
-## Building and running
+Other methods/distribution might occur with some issues with the vtk module `vtkGUISupportQt`.
+We are aware of this issue but cannot give support as it is related to VTK itself and not our actual project.
+
+We also built a [docker image](https://hub.docker.com/r/xisabla/arch-user-vtk-atila) based on archlinux with all the dependencies, make sure to log as `user` and to pull the project in the home directory. You can use this image to build the project.
+
+### Build instructions
 
 ```shell script
 mkdir build && cd build
