@@ -62,9 +62,10 @@ MainWindow::MainWindow(char* dataDirectory) {
     connect(this->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(this->actionZoomOnArea, SIGNAL(triggered()), this, SLOT(slotZoomArea()));
-    connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
     connect(
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
+    connect(this->actionShowNodes, SIGNAL(triggered()), this, SLOT(slotShowNodes()));
+    connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
 
     // Menu shortcuts
     Logger::debug("Setting view shortcuts");
@@ -72,15 +73,17 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->actionOpenFile->setShortcut(Qt::CTRL + Qt::Key_O);
     this->actionExportToText->setShortcut(Qt::CTRL + Qt::Key_E);
     this->actionZoomOnArea->setShortcut(Qt::Key_M);
-    this->actionResetCamera->setShortcut(Qt::Key_Space);
     this->actionInteractWithObject->setShortcut(Qt::Key_I);
+    this->actionShowNodes->setShortcut(Qt::CTRL + Qt::Key_N);
+    this->actionResetCamera->setShortcut(Qt::Key_Space);
 
     // Disable view action by default
     Logger::debug("Disabling unreachable view action");
     this->menuResults->setDisabled(true);
     this->actionZoomOnArea->setDisabled(true);
-    this->actionResetCamera->setDisabled(true);
     this->actionInteractWithObject->setDisabled(true);
+    this->actionShowNodes->setDisabled(true);
+    this->actionResetCamera->setDisabled(true);
 
     // Disable undone actions
     Logger::debug("Disabling undone features actions");
@@ -114,15 +117,6 @@ void MainWindow::slotOpenFile() {
     }
 }
 
-void MainWindow::slotResetCamera() {
-    Logger::info("Reset Camera");
-#if VTK890
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
-#else
-    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
-#endif
-}
-
 void MainWindow::slotZoomArea() {
     Logger::info("Reset Interactor to RubberZoom");
     vtkNew<vtkInteractorStyleRubberBandZoom> style;
@@ -143,6 +137,32 @@ void MainWindow::slotInteractWithObject() {
 #endif
 }
 
+void MainWindow::slotShowNodes() {
+    Logger::info("Toggle node showing on: ", this->actionShowNodes->isChecked() ? "true" : "false");
+    if (this->actionShowNodes->isChecked()) {
+        this->showNodes();
+    } else if (this->nodeActor != nullptr) {
+#if VTK890
+        this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveActor(
+        this->nodeActor);
+#else
+        this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveActor(
+        this->nodeActor);
+#endif
+    } else {
+        Logger::error("Trying to hide nodes on non loaded poly node actor");
+    }
+}
+
+void MainWindow::slotResetCamera() {
+    Logger::info("Reset Camera");
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+#endif
+}
+
 void MainWindow::slotResult(Result& result, const unsigned int& component) {
     Logger::info("Change result to ", result.getAnalysis(), ":", component);
 #if VTK890
@@ -150,7 +170,7 @@ void MainWindow::slotResult(Result& result, const unsigned int& component) {
 #else
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #endif
-    this->setVTK(result, static_cast<int>(component));
+    this->showResult(result, static_cast<int>(component));
 }
 
 //  --------------------------------------------------------------------------------------
@@ -181,16 +201,30 @@ void MainWindow::initAxes() {
     Logger::debug("Initializing axes module: Done");
 }
 
-void MainWindow::setVTK(Result& result, const int& component) {
+void MainWindow::showResult(Result& result, const int& component) {
     this->binary->loadResult(result, component);
 
     // Update information list
-    Logger::trace("Initialize Information StringList");
+    Logger::debug("Initialize Information StringList");
     this->model->setStringList(this->binary->getInformationList());
     this->listView->setModel(this->model);
     this->listView->adjustSize();
     this->listView->setVisible(true);
 
+    this->show3DPoly(result, component);
+
+    if (this->actionShowNodes->isChecked()) this->showNodes();
+
+    Logger::debug("Reset camera");
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+#endif
+}
+
+void MainWindow::show3DPoly(Result& result, const int& component) {
+    Logger::info("Show 3D Polygon");
     double range[2] = { this->binary->getScalars()->GetRange()[0],
                         this->binary->getScalars()->GetRange()[1] };
 
@@ -226,15 +260,50 @@ void MainWindow::setVTK(Result& result, const int& component) {
     polyActor->SetMapper(mapper);
 
     // Add actors and reset camera
-    Logger::debug("Add Renderer camera actors");
+    Logger::debug("Add 3DPoly actors");
 #if VTK890
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
 #else
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(polyActor);
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor2D(scalarBar);
-    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->ResetCamera();
+#endif
+}
+
+void MainWindow::showNodes() {
+    Logger::info("Show nodes");
+
+    // Get points
+    Logger::debug("Load points");
+    vtkSmartPointer<vtkPolyData> pointsPolyData = vtkSmartPointer<vtkPolyData>::New();
+    pointsPolyData->SetPoints(this->binary->getUnstructuredGrid()->GetPoints());
+
+    // Set vertex
+    Logger::trace("Set vertex filter");
+    vtkSmartPointer<vtkVertexGlyphFilter> vertexFilter =
+    vtkSmartPointer<vtkVertexGlyphFilter>::New();
+    vertexFilter->SetInputData(pointsPolyData);
+    vertexFilter->Update();
+
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+    polyData->ShallowCopy(vertexFilter->GetOutput());
+
+    // Visualization
+    vtkSmartPointer<vtkPolyDataMapper> pointsMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    pointsMapper->SetInputData(polyData);
+
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(pointsMapper);
+    actor->GetProperty()->SetPointSize(2);
+
+    // Store node actor
+    this->nodeActor = actor;
+
+    Logger::debug("Add nodes actor");
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(actor);
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(actor);
 #endif
 }
 
@@ -250,16 +319,18 @@ void MainWindow::loadBinaryData(const std::string& filename) {
     this->actionZoomOnArea->setEnabled(true);
     this->actionResetCamera->setEnabled(true);
     this->actionInteractWithObject->setEnabled(true);
+    this->actionShowNodes->setEnabled(true);
 
     // Add results menus
     this->setBinaryResults();
 
     // Set the view
-    this->setVTK(this->binary->getResults().front(), 0);
+    this->showResult(this->binary->getResults().front(), 0);
 }
 
 void MainWindow::unloadBinaryData() {
     Logger::debug("Unloading loaded data...");
+    this->nodeActor = nullptr;
     Logger::trace("Free binary");
     delete this->binary;
 
