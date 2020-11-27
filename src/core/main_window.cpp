@@ -139,10 +139,16 @@ void MainWindow::slotInteractWithObject() {
 
 void MainWindow::slotShowNodes() {
     Logger::info("Toggle node showing on: ", this->actionShowNodes->isChecked() ? "true" : "false");
-    if(this->actionShowNodes->isChecked()) {
+    if (this->actionShowNodes->isChecked()) {
         this->showNodes();
-    } else if(this->nodeActor != nullptr) {
-        this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveActor(this->nodeActor);
+    } else if (this->nodeActor != nullptr) {
+#if VTK890
+        this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveActor(
+        this->nodeActor);
+#else
+        this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveActor(
+        this->nodeActor);
+#endif
     } else {
         Logger::error("Trying to hide nodes on non loaded poly node actor");
     }
@@ -207,7 +213,7 @@ void MainWindow::showResult(Result& result, const int& component) {
 
     this->show3DPoly(result, component);
 
-    if(this->actionShowNodes->isChecked()) this->showNodes();
+    if (this->actionShowNodes->isChecked()) this->showNodes();
 
     Logger::debug("Reset camera");
 #if VTK890
@@ -274,7 +280,8 @@ void MainWindow::showNodes() {
 
     // Set vertex
     Logger::trace("Set vertex filter");
-    vtkSmartPointer<vtkVertexGlyphFilter> vertexFilter = vtkSmartPointer<vtkVertexGlyphFilter>::New();
+    vtkSmartPointer<vtkVertexGlyphFilter> vertexFilter =
+    vtkSmartPointer<vtkVertexGlyphFilter>::New();
     vertexFilter->SetInputData(pointsPolyData);
     vertexFilter->Update();
 
