@@ -4,7 +4,7 @@ C++ Interface Software for Atila fem resources files
 
 Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware/doc/)
 
-![screenshot](./.github/images/screen1.png)
+![screenshot](https://raw.githubusercontent.com/Xisabla/AtilaCalculatorSoftware/master/.github/images/screen1.png)
 
 ## Building
 
@@ -64,4 +64,4 @@ To add a new feature/enhancement:
 
 ## License
 
-Project under [MIT License](./LICENSE.md)
+Project under [MIT License](https://github.com/Xisabla/AtilaCalculatorSoftware/blob/master/LICENSE.md)
