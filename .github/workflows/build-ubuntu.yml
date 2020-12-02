@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies from aptitude
         run: |
           DEBIAN_FRONTEND=noninteractive sudo apt update
-          DEBIAN_FRONTEND=noninteractive sudo apt install build-essential cmake git libglew-dev libhdf5-dev libqt5x11extras5-dev libxt-dev python3-dev qt5-default qttools5-dev wget zip zlib1g --yes
+          DEBIAN_FRONTEND=noninteractive sudo apt install build-essential cmake git libglew-dev libhdf5-dev libqt5x11extras5-dev libxt-dev python3-dev qt5-default qttools5-dev tree wget zip zlib1g --yes
 
       - name: Install gidpost
         run: |
@@ -48,6 +48,12 @@ jobs:
           -DVTK_WRAP_PYTHON=OFF \
           -S vtk/ -B vtk-build/
           make -C vtk-build/ -j$(($(nproc) - 1))
+
+      - name: debug things
+        run : |
+          tree ./
+          tree ../
+          nproc
 
       - name: Build project
         run : |
