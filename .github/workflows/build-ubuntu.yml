@@ -30,6 +30,17 @@ jobs:
           make -C gidpost-2.7/build/ -j$(($(nproc) - 1))
           sudo make -C gidpost-2.7/build/ install
 
+      - name: debug tree
+        run : |
+          tree ./
+          tree ../
+          nproc
+
+      - name: debug ls
+        run : |
+          ls -al
+          ls -al ../
+
       - name: Build vtk 8.2.0
         run : |
           git clone https://gitlab.kitware.com/vtk/vtk.git
@@ -48,17 +59,6 @@ jobs:
           -DVTK_WRAP_PYTHON=OFF \
           -S vtk/ -B vtk-build/
           make -C vtk-build/ -j$(($(nproc) - 1))
-
-      - name: debug tree
-        run : |
-          tree ./
-          tree ../
-          nproc
-
-      - name: debug ls
-        run : |
-          ls -al
-          ls -al ../
 
       - name: Build project
         run : |
