@@ -9,6 +9,12 @@ jobs:
     name: Build on Ubuntu
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
       - name: Cache vtk build
         id: cache-vtk-build
         uses: actions/cache@v2
