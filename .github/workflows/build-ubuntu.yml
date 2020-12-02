@@ -36,19 +36,8 @@ jobs:
           make -C gidpost-2.7/build/ -j$(($(nproc) - 1))
           sudo make -C gidpost-2.7/build/ install
 
-      - name: debug tree
-        run : |
-          tree ./
-          tree ../
-          nproc
-
-      - name: debug ls
-        run : |
-          ls -al
-          ls -al ../
-
       - name: Build vtk 8.2.0
-        run : |
+        run: |
           git clone https://gitlab.kitware.com/vtk/vtk.git
           cd vtk && \
           git checkout tags/v8.2.0 && \
@@ -67,6 +56,16 @@ jobs:
           make -C vtk-build/ -j$(($(nproc) - 1))
 
       - name: Build project
-        run : |
+        run: |
           cmake -DVTK_DIR:PATH=vtk-build -S ./ -B build/
           make -C build/ -j$(($(nproc) - 1))
+
+      - name: Automatic release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "v$(./scripts/print-version.sh)"
+          prerelease: false
+          title: "AtilaCalculatorSoftware v$(./scripts/print-version.sh)"
+          files: |
+            ./build/AtilaCalculatorSoftware
