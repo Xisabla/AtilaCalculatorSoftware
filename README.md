@@ -27,6 +27,8 @@ Documentation available [here](https://xisabla.github.io/AtilaCalculatorSoftware
   
 ### Build instructions
 
+Complete instructions can be found [on the wiki](https://github.com/Xisabla/AtilaCalculatorSoftware/wiki/Building)
+
 ```shell script
 mkdir build && cd build
 cmake ../ # or cmake -DVTK_DIR:PATH=/path/to/vtk/build ../ -Wno-dev
