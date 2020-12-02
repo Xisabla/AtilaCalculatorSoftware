@@ -38,7 +38,7 @@ LogEntries LogEntries::filter(const std::set<LogLevel>& whitelist) {
     LogEntries filtered;
 
     for (auto& entry: *this) {
-        if (whitelist.contains(entry.first.getLogLevel())) filtered.push_back(entry);
+        if (whitelist.count(entry.first.getLogLevel()) > 0) filtered.push_back(entry);
     }
 
     return filtered;
@@ -69,7 +69,7 @@ LogEntries LogEntries::exclude(const std::set<LogLevel>& blacklist) {
     LogEntries filtered;
 
     for (auto& entry: *this) {
-        if (!blacklist.contains(entry.first.getLogLevel())) filtered.push_back(entry);
+        if (!blacklist.count(entry.first.getLogLevel()) > 0) filtered.push_back(entry);
     }
 
     return filtered;
