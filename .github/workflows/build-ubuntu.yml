@@ -1,4 +1,4 @@
-name: Build (Ubuntu 20.04)
+name: Build
 
 on:
   push:
@@ -9,10 +9,18 @@ jobs:
     name: Build on Ubuntu
     runs-on: ubuntu-20.04
     steps:
+      - name: Cache vtk build
+        id: cache-vtk-build
+        uses: actions/cache@v2
+        with:
+          path: vtk-build
+          key: ${{ runner.os }}-vtk
+
       - name: Install dependencies from aptitude
         run: |
           DEBIAN_FRONTEND=noninteractive sudo apt update
           DEBIAN_FRONTEND=noninteractive sudo apt install build-essential cmake git libglew-dev libhdf5-dev libqt5x11extras5-dev libxt-dev python3-dev qt5-default qttools5-dev wget zip zlib1g --yes
+
       - name: Install gidpost
         run: |
           wget https://www.gidhome.com/archive/Tools/gidpost/gidpost-2.7.zip
@@ -21,6 +29,7 @@ jobs:
           cmake -S gidpost-2.7/ -B gidpost-2.7/build/
           make -C gidpost-2.7/build/ -j$(($(nproc) - 1))
           sudo make -C gidpost-2.7/build/ install
+
       - name: Build vtk 8.2.0
         run : |
           git clone https://gitlab.kitware.com/vtk/vtk.git
@@ -39,6 +48,7 @@ jobs:
           -DVTK_WRAP_PYTHON=OFF \
           -S vtk/ -B vtk-build/
           make -C vtk-build/ -j$(($(nproc) - 1))
+
       - name: Build project
         run : |
           cmake -DVTK_DIR:PATH=vtk-build -S ./ -B build/
