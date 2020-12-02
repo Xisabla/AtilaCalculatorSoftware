@@ -20,7 +20,7 @@ jobs:
           sed -i '8,18 s/^/#/' gidpost-2.7/CMakeLists.txt
           cmake -S gidpost-2.7/ -B gidpost-2.7/build/
           make -C gidpost-2.7/build/ -j$(($(nproc) - 1))
-          make -C gidpost-2.7/build/ install
+          sudo make -C gidpost-2.7/build/ install
       - name: Build vtk 8.2.0
         run : |
           git clone https://gitlab.kitware.com/vtk/vtk.git
