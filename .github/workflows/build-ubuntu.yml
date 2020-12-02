@@ -64,8 +64,9 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "v$(./scripts/print-version.sh)"
+          automatic_release_tag: "latest"
           prerelease: false
-          title: "AtilaCalculatorSoftware v$(./scripts/print-version.sh)"
+          title: "AtilaCalculatorSoftware latest"
           files: |
             ./build/AtilaCalculatorSoftware
+            ./LICENSE.md
