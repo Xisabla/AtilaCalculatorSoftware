@@ -49,11 +49,16 @@ jobs:
           -S vtk/ -B vtk-build/
           make -C vtk-build/ -j$(($(nproc) - 1))
 
-      - name: debug things
+      - name: debug tree
         run : |
           tree ./
           tree ../
           nproc
+
+      - name: debug ls
+        run : |
+          ls -al
+          ls -al ../
 
       - name: Build project
         run : |
