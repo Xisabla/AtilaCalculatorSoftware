@@ -26,7 +26,8 @@ MainWindow::MainWindow(char* dataDirectory) {
                   dataDirectory == nullptr ? "./" : dataDirectory);
 
     this->setupUi(this);
-    this->model = new QStringListModel(this);
+    this->informationListModel = new QStringListModel(this);
+    this->elementsListModel = new QStringListModel(this);
 
     vtkNew<vtkNamedColors> colors;
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
@@ -54,6 +55,7 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->informationLabel->setVisible(false);
     this->elementsLabel->setVisible(false);
     this->informationListView->setVisible(false);
+    this->elementsListView->setVisible(false);
     this->initAxes();
     renderer->ResetCamera();
 
@@ -68,6 +70,43 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->actionInteractWithObject, SIGNAL(triggered()), this, SLOT(slotInteractWithObject()));
     connect(this->actionShowNodes, SIGNAL(triggered()), this, SLOT(slotShowNodes()));
     connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
+
+    // List Actions
+    this->elementsListView->setContextMenuPolicy(Qt::CustomContextMenu);
+    // TODO: Make this a SLOT
+    // TODO: Use TreeWidget from list OR Check boxes (in a container)
+    // - TreeWidget: Tweak to toggle enable/disable from right click (like above)
+    // - Checkbox: Toggle on checkbox toggle
+    // Both cases: In BinaryDataWrapper, add:
+    //  - disableElement(name) --> void
+    //  - enableElement(name) --> void
+    //  - getDisabledElements() --> QStringList/vector<string>
+    //  - getEnabledElements() --> QStringList/vector<string>
+    // or maybe just:
+    //  - getElements() --> vector<pair<string, bool>>
+    connect(this->elementsListView, &QListView::customContextMenuRequested, [this](QPoint pos) {
+        std::cout << "Toggle element" << std::endl;
+        /*try {
+            int index = this->elementsListView->indexAt(pos).row();
+
+            if(this->elementsListModel->stringList().size() >= index + 1) {
+                QStringList elements;
+
+                for(auto &e : this->elementsListModel->stringList()) {
+                    if(e == this->elementsListModel->stringList().at(index)) {
+                        elements << (QString("(disabled) ") + e);
+                    } else {
+                        elements << e;
+                    }
+                }
+
+                this->elementsListModel->setStringList(elements);
+                this->elementsListView->setModel(this->elementsListModel);
+            }
+        } catch (std::exception &e) {
+            Logger::error(e.what());
+        }*/
+    });
 
     // Menu shortcuts
     Logger::debug("Setting view shortcuts");
@@ -207,13 +246,19 @@ void MainWindow::showResult(Result& result, const int& component) {
     this->binary->loadResult(result, component);
 
     // Update information list
-    Logger::debug("Initialize Information StringList");
-    this->model->setStringList(this->binary->getInformationList());
-    this->informationListView->setModel(this->model);
+    Logger::debug("Show information and loaded elements");
+    this->informationListModel->setStringList(this->binary->getInformationList());
+    this->informationListView->setModel(this->informationListModel);
     this->informationListView->adjustSize();
+
+    this->elementsListModel->setStringList(this->binary->getElementsList());
+    this->elementsListView->setModel(this->elementsListModel);
+    this->elementsListView->adjustSize();
+
     this->informationLabel->setVisible(true);
     this->elementsLabel->setVisible(true);
     this->informationListView->setVisible(true);
+    this->elementsListView->setVisible(true);
 
     this->show3DPoly(result, component);
 

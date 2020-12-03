@@ -85,6 +85,42 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QListView" name="elementsListView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>275</y>
+      <width>310</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Mono</family>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="isWrapping" stdset="0">
+     <bool>true</bool>
+    </property>
+    <property name="resizeMode">
+     <enum>QListView::Adjust</enum>
+    </property>
+    <property name="layoutMode">
+     <enum>QListView::SinglePass</enum>
+    </property>
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
    <widget class="QLabel" name="elementsLabel">
     <property name="geometry">
      <rect>
@@ -118,6 +154,7 @@
    <zorder>qvtkWidget</zorder>
    <zorder>informationListView</zorder>
    <zorder>informationLabel</zorder>
+   <zorder>elementsListView</zorder>
    <zorder>elementsLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">

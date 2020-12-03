@@ -149,7 +149,12 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * @brief Information module model
      */
-    QStringListModel* model;
+    QStringListModel* informationListModel;
+
+    /**
+     * @brief Elements list model
+     */
+    QStringListModel* elementsListModel;
 
     /**
      * @brief Actor of node showing
