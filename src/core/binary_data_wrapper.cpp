@@ -90,6 +90,10 @@ void BinaryDataWrapper::convertFromGiD() {
         Logger::trace("Loading mesh information");
         this->loadMeshInformation(mesh);
 
+        // Append element
+        if(this->elements.count(mesh.getElementName()) == 0)
+            this->elements.insert(mesh.getElementName());
+
         // Add node to points
         Logger::trace("Inserting nodes as points");
         for (Node& node: mesh.getNodes()) this->points->InsertNextPoint(node.getCoords());

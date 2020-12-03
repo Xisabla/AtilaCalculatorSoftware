@@ -110,6 +110,11 @@ class BinaryDataWrapper : public BinaryData {
      * @brief Information about the current results
      */
     QStringList informationList;
+
+    /**
+     * @brief All elements loaded by the mesh
+     */
+    std::set<std::string> elements;
 };
 
 #endif // ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H
