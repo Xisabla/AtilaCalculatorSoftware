@@ -156,6 +156,11 @@ include_directories(
 )
 
 # link other libs (gidpost, zlib, hdf5)
-target_link_libraries(AtilaCalculatorSoftware -lgidpost)
+if (APPLE)
+  include_directories(/usr/local/include)
+else()
+  target_link_libraries(AtilaCalculatorSoftware -lgidpost)
+endif()
+
 target_link_libraries(AtilaCalculatorSoftware -lz)
 target_link_libraries(AtilaCalculatorSoftware ${HDF5_LIBRARIES})
