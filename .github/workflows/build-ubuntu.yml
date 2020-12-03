@@ -1,0 +1,72 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build on Ubuntu
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Cache vtk build
+        id: cache-vtk-build
+        uses: actions/cache@v2
+        with:
+          path: vtk-build
+          key: ${{ runner.os }}-vtk
+
+      - name: Install dependencies from aptitude
+        run: |
+          DEBIAN_FRONTEND=noninteractive sudo apt update
+          DEBIAN_FRONTEND=noninteractive sudo apt install build-essential cmake git libglew-dev libhdf5-dev libqt5x11extras5-dev libxt-dev python3-dev qt5-default qttools5-dev tree wget zip zlib1g --yes
+
+      - name: Install gidpost
+        run: |
+          wget https://www.gidhome.com/archive/Tools/gidpost/gidpost-2.7.zip
+          unzip gidpost-2.7.zip
+          sed -i '8,18 s/^/#/' gidpost-2.7/CMakeLists.txt
+          cmake -S gidpost-2.7/ -B gidpost-2.7/build/
+          make -C gidpost-2.7/build/ -j$(($(nproc) - 1))
+          sudo make -C gidpost-2.7/build/ install
+
+      - name: Build vtk 8.2.0
+        run: |
+          git clone https://gitlab.kitware.com/vtk/vtk.git
+          cd vtk && \
+          git checkout tags/v8.2.0 && \
+          cd ../
+          cmake \
+          -DBUILD_SHARED_LIBS=ON \
+          -DBUILD_TESTING=OFF \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DVTK_Group_Qt=ON \
+          -DVTK_QT_VERSION=5 \
+          -DVTK_Group_Rendering=ON \
+          -DVTK_RENDERING_BACKEND=OpenGL2 \
+          -DVTK_WRAP_JAVA=OFF \
+          -DVTK_WRAP_PYTHON=OFF \
+          -S vtk/ -B vtk-build/
+          make -C vtk-build/ -j$(($(nproc) - 1))
+
+      - name: Build project
+        run: |
+          cmake -DVTK_DIR:PATH=vtk-build -S ./ -B build/
+          make -C build/ -j$(($(nproc) - 1))
+
+      - name: Automatic release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "AtilaCalculatorSoftware latest"
+          files: |
+            ./build/AtilaCalculatorSoftware
+            ./LICENSE.md

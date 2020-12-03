@@ -249,3 +249,6 @@ build/
 # Log files
 logs/
 *.log
+
+# Github workflows
+!.github/workflows/build*
