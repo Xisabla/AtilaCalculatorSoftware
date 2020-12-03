@@ -71,6 +71,11 @@ class BinaryDataWrapper : public BinaryData {
      */
     QStringList getInformationList() const;
 
+    /**
+     * @return The list of loaded elements
+     */
+    QStringList getElementsList() const;
+
   private:
     /**
      * @brief Read information from the mesh and write it to the informationList
@@ -107,14 +112,19 @@ class BinaryDataWrapper : public BinaryData {
     vtkSmartPointer<vtkFloatArray> scalars;
 
     /**
+     * @brief All elements loaded by the mesh
+     */
+    std::set<std::string> elements;
+
+    /**
      * @brief Information about the current results
      */
     QStringList informationList;
 
     /**
-     * @brief All elements loaded by the mesh
+     * @brief List of elements
      */
-    std::set<std::string> elements;
+    QStringList elementsList;
 };
 
 #endif // ATILACALCULATORSOFTWARE_BINARY_DATA_WRAPPER_H

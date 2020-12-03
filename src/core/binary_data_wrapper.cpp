@@ -33,6 +33,8 @@ vtkSmartPointer<vtkFloatArray> BinaryDataWrapper::getScalars() const { return th
 
 QStringList BinaryDataWrapper::getInformationList() const { return this->informationList; }
 
+QStringList BinaryDataWrapper::getElementsList() const { return this->elementsList; }
+
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER > PUBLIC METHODS
 //  --------------------------------------------------------------------------------------
@@ -91,8 +93,10 @@ void BinaryDataWrapper::convertFromGiD() {
         this->loadMeshInformation(mesh);
 
         // Append element
-        if(this->elements.count(mesh.getElementName()) == 0)
+        if(this->elements.count(mesh.getElementName()) == 0) {
             this->elements.insert(mesh.getElementName());
+            this->elementsList << (QString::fromStdString(mesh.getElementName()));
+        }
 
         // Add node to points
         Logger::trace("Inserting nodes as points");
@@ -119,6 +123,14 @@ void BinaryDataWrapper::convertFromGiD() {
                                                        polygon->GetPointIds());
             }
         }
+    }
+
+    // TODO: Remove this
+    srand(time(nullptr));
+    for(int i = 0; i < rand() % 15; i++) {
+        std::string elem = "Dummy" + std::to_string(i);
+        this->elements.insert(elem);
+        this->elementsList << QString::fromStdString(elem);
     }
 
     Logger::debug("Converting mesh values to VTK elements: Done");
