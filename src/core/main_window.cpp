@@ -51,7 +51,9 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
     this->qvtkWidget->GetRenderWindow()->SetWindowName("AtilaSoftwareCalculator");
 #endif
-    this->listView->setVisible(false);
+    this->informationLabel->setVisible(false);
+    this->elementsLabel->setVisible(false);
+    this->informationListView->setVisible(false);
     this->initAxes();
     renderer->ResetCamera();
 
@@ -207,9 +209,11 @@ void MainWindow::showResult(Result& result, const int& component) {
     // Update information list
     Logger::debug("Initialize Information StringList");
     this->model->setStringList(this->binary->getInformationList());
-    this->listView->setModel(this->model);
-    this->listView->adjustSize();
-    this->listView->setVisible(true);
+    this->informationListView->setModel(this->model);
+    this->informationListView->adjustSize();
+    this->informationLabel->setVisible(true);
+    this->elementsLabel->setVisible(true);
+    this->informationListView->setVisible(true);
 
     this->show3DPoly(result, component);
 
