@@ -55,7 +55,7 @@ void BinaryData::readMeshes() {
     char buffer[GZ_BUFFER_SIZE];
     dataFields fields;
 
-    z_off_t currentPos = gztell(file);
+    off_t currentPos = gztell(file);
     unsigned int size = getFields(file, buffer, fields);
 
     // While we can a mesh
