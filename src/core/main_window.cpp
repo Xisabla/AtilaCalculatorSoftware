@@ -27,7 +27,6 @@ MainWindow::MainWindow(char* dataDirectory) {
 
     this->setupUi(this);
     this->informationListModel = new QStringListModel(this);
-    this->elementsListModel = new QStringListModel(this);
 
     vtkNew<vtkNamedColors> colors;
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
@@ -53,9 +52,7 @@ MainWindow::MainWindow(char* dataDirectory) {
     this->qvtkWidget->GetRenderWindow()->SetWindowName("AtilaSoftwareCalculator");
 #endif
     this->informationLabel->setVisible(false);
-    this->elementsLabel->setVisible(false);
     this->informationListView->setVisible(false);
-    this->elementsListView->setVisible(false);
     this->initAxes();
     renderer->ResetCamera();
 
@@ -71,43 +68,6 @@ MainWindow::MainWindow(char* dataDirectory) {
     connect(this->actionShowNodes, SIGNAL(triggered()), this, SLOT(slotShowNodes()));
     connect(this->actionResetCamera, SIGNAL(triggered()), this, SLOT(slotResetCamera()));
 
-    // List Actions
-    this->elementsListView->setContextMenuPolicy(Qt::CustomContextMenu);
-    // TODO: Make this a SLOT
-    // TODO: Use TreeWidget from list OR Check boxes (in a container)
-    // - TreeWidget: Tweak to toggle enable/disable from right click (like above)
-    // - Checkbox: Toggle on checkbox toggle
-    // Both cases: In BinaryDataWrapper, add:
-    //  - disableElement(name) --> void
-    //  - enableElement(name) --> void
-    //  - getDisabledElements() --> QStringList/vector<string>
-    //  - getEnabledElements() --> QStringList/vector<string>
-    // or maybe just:
-    //  - getElements() --> vector<pair<string, bool>>
-    connect(this->elementsListView, &QListView::customContextMenuRequested, [this](QPoint pos) {
-        std::cout << "Toggle element" << std::endl;
-        /*try {
-            int index = this->elementsListView->indexAt(pos).row();
-
-            if(this->elementsListModel->stringList().size() >= index + 1) {
-                QStringList elements;
-
-                for(auto &e : this->elementsListModel->stringList()) {
-                    if(e == this->elementsListModel->stringList().at(index)) {
-                        elements << (QString("(disabled) ") + e);
-                    } else {
-                        elements << e;
-                    }
-                }
-
-                this->elementsListModel->setStringList(elements);
-                this->elementsListView->setModel(this->elementsListModel);
-            }
-        } catch (std::exception &e) {
-            Logger::error(e.what());
-        }*/
-    });
-
     // Menu shortcuts
     Logger::debug("Setting view shortcuts");
     this->actionExit->setShortcut(Qt::CTRL + Qt::Key_Q);
@@ -120,6 +80,7 @@ MainWindow::MainWindow(char* dataDirectory) {
 
     // Disable view action by default
     Logger::debug("Disabling unreachable view action");
+    this->menuElements->setDisabled(true);
     this->menuResults->setDisabled(true);
     this->actionZoomOnArea->setDisabled(true);
     this->actionInteractWithObject->setDisabled(true);
@@ -204,16 +165,6 @@ void MainWindow::slotResetCamera() {
 #endif
 }
 
-void MainWindow::slotResult(Result& result, const unsigned int& component) {
-    Logger::info("Change result to ", result.getAnalysis(), ":", component);
-#if VTK890
-    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-#else
-    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
-#endif
-    this->showResult(result, static_cast<int>(component));
-}
-
 //  --------------------------------------------------------------------------------------
 //  MAIN WINDOW > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
@@ -243,6 +194,15 @@ void MainWindow::initAxes() {
 }
 
 void MainWindow::showResult(Result& result, const int& component) {
+    this->lastResult = &result;
+    this->lastResultComponent = component;
+
+#if VTK890
+    this->qvtkWidget->renderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#else
+    this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
+#endif
+
     this->binary->loadResult(result, component);
 
     // Update information list
@@ -251,14 +211,8 @@ void MainWindow::showResult(Result& result, const int& component) {
     this->informationListView->setModel(this->informationListModel);
     this->informationListView->adjustSize();
 
-    this->elementsListModel->setStringList(this->binary->getElementsList());
-    this->elementsListView->setModel(this->elementsListModel);
-    this->elementsListView->adjustSize();
-
     this->informationLabel->setVisible(true);
-    this->elementsLabel->setVisible(true);
     this->informationListView->setVisible(true);
-    this->elementsListView->setVisible(true);
 
     this->show3DPoly(result, component);
 
@@ -370,7 +324,8 @@ void MainWindow::loadBinaryData(const std::string& filename) {
     this->actionInteractWithObject->setEnabled(true);
     this->actionShowNodes->setEnabled(true);
 
-    // Add results menus
+    // Add menus
+    this->setBinaryElements();
     this->setBinaryResults();
 
     // Set the view
@@ -380,6 +335,8 @@ void MainWindow::loadBinaryData(const std::string& filename) {
 void MainWindow::unloadBinaryData() {
     Logger::debug("Unloading loaded data...");
     this->nodeActor = nullptr;
+    this->lastResult = nullptr;
+    this->lastResultComponent = 0;
     Logger::trace("Free binary");
     delete this->binary;
 
@@ -390,8 +347,41 @@ void MainWindow::unloadBinaryData() {
     this->qvtkWidget->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->RemoveAllViewProps();
 #endif
 
+    this->clearBinaryElements();
     this->clearBinaryResults();
     Logger::debug("Unloading loaded data: Done");
+}
+
+void MainWindow::setBinaryElements() {
+    Logger::debug("Setting elements menu...");
+
+    for (auto& element: this->binary->getElements()) {
+        QAction* elementAction = menuElements->addAction(QString::fromStdString(element));
+        elementAction->setCheckable(true);
+        elementAction->setChecked(!this->binary->isElementHidden(element));
+
+        connect(elementAction, &QAction::triggered, [this, elementAction, element]() {
+            Logger::debug("Toggle element: ", element);
+
+            this->binary->toggleElement(element);
+            elementAction->setChecked(!this->binary->isElementHidden(element));
+            this->binary->reload();
+            this->showResult(this->lastResult == nullptr ? this->binary->getResults().front() :
+                                                           *(this->lastResult),
+                             this->lastResultComponent);
+        });
+    }
+
+    // Enable elements menu
+    Logger::trace("Enable elements menu");
+    this->menuElements->setEnabled(true);
+    Logger::debug("Setting elements menu: Done");
+}
+
+void MainWindow::clearBinaryElements() {
+    Logger::debug("Clearing elements menu");
+    this->menuElements->clear();
+    Logger::debug("Clearing elements menu: Done");
 }
 
 void MainWindow::setBinaryResults() {
@@ -431,7 +421,8 @@ void MainWindow::setBinaryResults() {
             }
 
             connect(resultItemAction, &QAction::triggered, [this, &result, i]() {
-                this->slotResult(result, i);
+                Logger::info("Change result to ", result.getAnalysis(), ":", i);
+                this->showResult(result, static_cast<int>(i));
             });
         }
     }
@@ -443,7 +434,7 @@ void MainWindow::setBinaryResults() {
 }
 
 void MainWindow::clearBinaryResults() {
-    Logger::debug("Clearing results menu: Done");
+    Logger::debug("Clearing results menu");
     this->menuResults->clear();
     Logger::debug("Clearing results menu: Done");
 }
