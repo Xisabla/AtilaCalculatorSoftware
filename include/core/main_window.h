@@ -164,8 +164,14 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     BinaryDataWrapper* binary = nullptr;
 
+    /**
+     * @brief Last loaded result
+     */
     Result* lastResult = nullptr;
 
+    /**
+     * @brief Last loaded result component
+     */
     int lastResultComponent = 0;
 };
 
