@@ -57,6 +57,34 @@ class BinaryDataWrapper : public BinaryData {
     void loadResult(Result& result, const int& component);
 
     /**
+     * @brief Re-read points, use to update hidden/shown elements
+     */
+    void reload();
+
+    /**
+     * @brief Prevent an element from being plot
+     * @param element Element to prevent from plotting
+     */
+    void hideElement(const std::string& element);
+
+    /**
+     * @brief Set a hidden element to non hidden
+     * @param element Element to set
+     */
+    void showElement(const std::string& element);
+
+    /**
+     * @brief Set hidden element to non hidden and non hidden element to shown
+     * @param element Element to toggle
+     */
+    void toggleElement(const std::string& element);
+
+    /**
+     * @brief Set all elements to non hidden
+     */
+    void showAllElements();
+
+    /**
      * @return The DataSet of points of the loaded and converted GiD resource file
      */
     vtkSmartPointer<vtkUnstructuredGrid> getUnstructuredGrid() const;
@@ -65,6 +93,21 @@ class BinaryDataWrapper : public BinaryData {
      * @return Observed values of the loaded result
      */
     vtkSmartPointer<vtkFloatArray> getScalars() const;
+
+    /**
+     * @return A set of the loaded elements
+     */
+    std::set<std::string> getElements() const;
+
+    /**
+     * @return A set of all the hidden elements
+     */
+    std::set<std::string> getHiddenElements() const;
+
+    /**
+     * @return True if the given element is set on hidden
+     */
+    bool isElementHidden(const std::string& element) const;
 
     /**
      * @return Information about the current results as a QT usable object
@@ -105,6 +148,16 @@ class BinaryDataWrapper : public BinaryData {
      * @brief Observed values
      */
     vtkSmartPointer<vtkFloatArray> scalars;
+
+    /**
+     * @brief All elements loaded by the mesh
+     */
+    std::set<std::string> elements;
+
+    /**
+     * @brief GiD elements of the mesh that won't be shown
+     */
+    std::set<std::string> hiddenElements;
 
     /**
      * @brief Information about the current results

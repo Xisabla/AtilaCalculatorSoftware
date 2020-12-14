@@ -19,7 +19,7 @@
      <widget class="QVTKOpenGLNativeWidget" name="qvtkWidget" native="true"/>
     </item>
    </layout>
-   <widget class="QListView" name="listView">
+   <widget class="QListView" name="informationListView">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -55,7 +55,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="informationLabel">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -86,8 +86,8 @@
     </property>
    </widget>
    <zorder>qvtkWidget</zorder>
-   <zorder>listView</zorder>
-   <zorder>label</zorder>
+   <zorder>informationListView</zorder>
+   <zorder>informationLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -119,6 +119,11 @@
     <addaction name="separator"/>
     <addaction name="actionResetCamera"/>
    </widget>
+   <widget class="QMenu" name="menuElements">
+    <property name="title">
+     <string>Elements</string>
+    </property>
+   </widget>
    <widget class="QMenu" name="menuResults">
     <property name="title">
      <string>Results</string>
@@ -126,6 +131,7 @@
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuElements"/>
    <addaction name="menuResults"/>
   </widget>
   <action name="actionOpenFile">
@@ -141,6 +147,11 @@
   <action name="actionExportToText">
    <property name="text">
     <string>Export (.msh)</string>
+   </property>
+  </action>
+  <action name="actionElements">
+   <property name="text">
+    <string>Elements</string>
    </property>
   </action>
   <action name="actionResults">

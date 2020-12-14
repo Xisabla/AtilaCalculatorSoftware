@@ -151,7 +151,8 @@ size_t Logger::log(const std::string& message, LogLevel level, time_t timestamp)
 
     size_t index = this->entries->size() - 1;
 
-    if (this->verbose && this->verbosityLevels.count(level) > 0) std::cout << formatted << std::endl;
+    if (this->verbose && this->verbosityLevels.count(level) > 0)
+        std::cout << formatted << std::endl;
 
     if (this->fileLogging && this->loggingFile.is_open())
         this->loggingFile << formatted << std::endl;

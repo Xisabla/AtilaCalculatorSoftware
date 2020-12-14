@@ -79,13 +79,6 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      */
     void slotResetCamera();
 
-    /**
-     * @brief Select the result to visualise
-     * @param result Result to visualise
-     * @param component Choice for showResult method
-     */
-    void slotResult(Result& result, const unsigned int& component);
-
   private:
     /**
      * @brief Initialize axes view
@@ -126,6 +119,16 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     void unloadBinaryData();
 
     /**
+     * @brief Add action item to "Elements" menu for each elements of the loaded meshes
+     */
+    void setBinaryElements();
+
+    /**
+     * @brief Remove all actions of the "Elements" menu
+     */
+    void clearBinaryElements();
+
+    /**
      * @brief Add action item to "Results" menu for each component of each loaded results of binary
      * data
      */
@@ -149,7 +152,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     /**
      * @brief Information module model
      */
-    QStringListModel* model;
+    QStringListModel* informationListModel;
 
     /**
      * @brief Actor of node showing
@@ -160,6 +163,10 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
      * @brief Data imported from the current .res file
      */
     BinaryDataWrapper* binary = nullptr;
+
+    Result* lastResult = nullptr;
+
+    int lastResultComponent = 0;
 };
 
 #endif

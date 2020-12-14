@@ -22,6 +22,28 @@ BinaryDataWrapper::BinaryDataWrapper(const std::string& file): BinaryData(file) 
 BinaryDataWrapper::~BinaryDataWrapper() = default;
 
 //  --------------------------------------------------------------------------------------
+//  BINARY DATA WRAPPER > SETTERS
+//  --------------------------------------------------------------------------------------
+
+void BinaryDataWrapper::hideElement(const std::string& element) {
+    this->hiddenElements.insert(element);
+}
+
+void BinaryDataWrapper::showElement(const std::string& element) {
+    if (this->hiddenElements.count(element) != 0) this->hiddenElements.erase(element);
+}
+
+void BinaryDataWrapper::toggleElement(const std::string& element) {
+    if (this->isElementHidden(element)) {
+        this->showElement(element);
+    } else {
+        this->hideElement(element);
+    }
+}
+
+void BinaryDataWrapper::showAllElements() { this->hiddenElements = {}; }
+
+//  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER > GETTERS
 //  --------------------------------------------------------------------------------------
 
@@ -30,6 +52,14 @@ vtkSmartPointer<vtkUnstructuredGrid> BinaryDataWrapper::getUnstructuredGrid() co
 }
 
 vtkSmartPointer<vtkFloatArray> BinaryDataWrapper::getScalars() const { return this->scalars; }
+
+std::set<std::string> BinaryDataWrapper::getElements() const { return this->elements; }
+
+std::set<std::string> BinaryDataWrapper::getHiddenElements() const { return this->hiddenElements; }
+
+bool BinaryDataWrapper::isElementHidden(const std::string& element) const {
+    return this->hiddenElements.count(element) > 0;
+}
 
 QStringList BinaryDataWrapper::getInformationList() const { return this->informationList; }
 
@@ -65,6 +95,12 @@ void BinaryDataWrapper::loadResult(Result& result, const int& component) {
     Logger::info("Reading result ", result.getAnalysis(), ":", component, " : Done");
 }
 
+void BinaryDataWrapper::reload() {
+    Logger::info("Reloading points");
+
+    this->convertFromGiD();
+}
+
 //  --------------------------------------------------------------------------------------
 //  BINARY DATA WRAPPER > PRIVATE METHODS
 //  --------------------------------------------------------------------------------------
@@ -84,11 +120,22 @@ void BinaryDataWrapper::convertFromGiD() {
     Logger::debug("Converting mesh values to VTK elements...");
     this->points = vtkNew<vtkPoints>();
     this->unstructuredGrid = vtkNew<vtkUnstructuredGrid>();
+    this->elements = {};
 
     for (Mesh& mesh: this->meshes) {
         // Append information
         Logger::trace("Loading mesh information");
         this->loadMeshInformation(mesh);
+
+        // Append element
+        if (this->elements.count(mesh.getElementName()) == 0)
+            this->elements.insert(mesh.getElementName());
+
+        // Skip if element is hidden
+        if (this->hiddenElements.count(mesh.getElementName()) > 0) {
+            Logger::warn("Skipped element ", mesh.getElementName());
+            continue;
+        }
 
         // Add node to points
         Logger::trace("Inserting nodes as points");
